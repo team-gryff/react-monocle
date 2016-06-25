@@ -1,0 +1,44 @@
+{
+  "name": "react-monocle",
+  "version": "0.0.1",
+  "description": "A developer tool to visualize a React application's component hierarchy.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/team-gryff/react-monocle.git"
+  },
+  "keywords": [
+    "react",
+    "visualization",
+    "d3",
+    "developer",
+    "tool"
+  ],
+  "author": "Michael-Bryant Choa, Jenna Davis, Jerry Mao",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/team-gryff/react-monocle/issues"
+  },
+  "homepage": "https://github.com/team-gryff/react-monocle#readme",
+  "dependencies": {
+    "d3": "^3.5.17",
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.10.4",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.5.0",
+    "chai": "^3.5.0",
+    "cheerio": "^0.20.0",
+    "enzyme": "^2.3.0",
+    "jsdom": "^9.2.1",
+    "mocha": "^2.5.3",
+    "react-addons-test-utils": "^15.1.0",
+    "webpack": "^1.13.1"
+  }
+}
