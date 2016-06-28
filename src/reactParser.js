@@ -1,18 +1,58 @@
+'use strict';
+
 const acorn = require('acorn-jsx');  
 const esrecurse = require('esrecurse');  
-const t = require('ast-types').builders;  
 
-function jsToD3Ast(js) {
-  const jsAst = acorn.parse(js);
-  if (jsAst.body.length === 0) throw new Error('Empty AST input');
-  
-  const output = [];
+let jsAst;
+
+function getES5ReactComponents() {
+  let output = [];
+  let currVariableName;
   esrecurse.visit(jsAst, {
-    VariableDeclarator(node) {
-      output.push(node.id.name);
+    VariableDeclarator: function (node) {
+      currVariableName = node.id.name;
+      this.visitChildren(node);
     },
+    MemberExpression: function (node) {
+      if (currVariableName) {
+        if (node.property && node.property.name === "createClass") {
+          output.push({
+            name: currVariableName
+          });
+          currVariableName = undefined;
+        }
+      }
+    }
   });
   return output;
 }
 
-module.exports = jsToD3Ast;
+function isReactComponent (node) {
+  return (node.superClass.property && node.superClass.property.name === "Component")
+    || node.superClass.name === "Component"
+}
+
+function getES6ReactComponents() {
+  let output = [];
+  esrecurse.visit(jsAst, {
+    ClassDeclaration: function (node) {
+      if (isReactComponent(node)) {
+        output.push({
+          name: node.id.name,
+        });
+      }
+    }
+  });
+  return output;
+}
+
+function jsToAst(js) {
+  jsAst = acorn.parse(js);
+  if (jsAst.body.length === 0) throw new Error('Empty AST input');
+}
+
+module.exports = { 
+  jsToAst, 
+  getES5ReactComponents, 
+  getES6ReactComponents 
+};
