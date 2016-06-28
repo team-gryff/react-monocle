@@ -41,6 +41,7 @@
     "enzyme": "^2.3.0",
     "escodegen": "^1.8.0",
     "esrecurse": "^4.1.0",
+    "jasmine": "^2.4.1",
     "jsdom": "^9.2.1",
     "mocha": "^2.5.3",
     "react-addons-test-utils": "^15.1.0",
