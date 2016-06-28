@@ -23,6 +23,9 @@
     "url": "https://github.com/team-gryff/react-monocle/issues"
   },
   "homepage": "https://github.com/team-gryff/react-monocle#readme",
+  "bin": {
+    "snippet": "./index.js"
+  },
   "dependencies": {
     "d3": "^3.5.17",
     "react": "^15.1.0",
