@@ -4,7 +4,7 @@
   "description": "A developer tool to visualize a React application's component hierarchy.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha ./src/test/test.js"
   },
   "repository": {
     "type": "git",
@@ -32,6 +32,9 @@
     "react-dom": "^15.1.0"
   },
   "devDependencies": {
+    "acorn": "^3.2.0",
+    "acorn-jsx": "^3.0.1",
+    "ast-types": "^0.8.16",
     "babel-core": "^6.10.4",
     "babel-loader": "^6.2.4",
     "babel-preset-es2015": "^6.9.0",
@@ -39,6 +42,9 @@
     "chai": "^3.5.0",
     "cheerio": "^0.20.0",
     "enzyme": "^2.3.0",
+    "escodegen": "^1.8.0",
+    "esrecurse": "^4.1.0",
+    "jasmine": "^2.4.1",
     "jsdom": "^9.2.1",
     "mocha": "^2.5.3",
     "react-addons-test-utils": "^15.1.0",
