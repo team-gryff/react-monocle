@@ -23,9 +23,11 @@ describe('ESTree AST Parser Tests', function() {
         render: function() {
           return <div>
             <SearchBar />
-            <div>
-              Testing
-            </div>
+            <div>Testing</div>
+            <SearchResults>
+              <Result />
+              <Result />
+            </SearchResults>
           </div>
         }
       });
@@ -44,7 +46,15 @@ describe('ESTree AST Parser Tests', function() {
       jsToAst(es5NestedComponents);
       expect(getES5ReactComponents()).to.deep.equal({ 
         name: 'Main',
-        children: [{ name: 'SearchBar'}],
+        children: [
+          { name: 'SearchBar', children: [] }, 
+          { name: 'SearchResults',
+            children: [
+              { name: 'Result', children: [] }, 
+              { name: 'Result', children: [] }
+            ]
+          }
+        ],
       });
     });
   });
@@ -55,9 +65,40 @@ describe('ESTree AST Parser Tests', function() {
       class Main extends Component {}
     `;
 
+    let es6NestedComponents = `
+      class Main extends Component {
+        render () {
+          return <div>
+            <SearchBar />
+            <div>Testing</div>
+            <SearchResults>
+              <Result />
+              <Result />
+            </SearchResults>
+          </div>
+        }
+      }
+    `;
+
     it('should return object with name of top-level components in js file using es6', function() {
       jsToAst(es6Components);
       expect(getES6ReactComponents()).to.deep.equal({ name: 'Main' });
+    });
+
+    it('should return object with \'Main\' as top-level component with nested children components', function() {
+      jsToAst(es6NestedComponents);
+      expect(getES6ReactComponents()).to.deep.equal({ 
+        name: 'Main',
+        children: [
+          { name: 'SearchBar', children: [] }, 
+          { name: 'SearchResults',
+            children: [
+              { name: 'Result', children: [] }, 
+              { name: 'Result', children: [] }
+            ]
+          }
+        ],
+      });
     });
   });
 });

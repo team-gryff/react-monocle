@@ -16,50 +16,40 @@ const htmlElements = ['a', 'article', 'audio', 'b', 'body', 'br', 'button', 'can
 let jsAst;
 
 function getES5ReactComponents() {
-  let output = {};
-  let currVariableName;
+  let output = {}, topJsxComponent;
   esrecurse.visit(jsAst, {
     VariableDeclarator: function (node) {
-      currVariableName = node.id.name;
+      topJsxComponent = node.id.name;
       this.visitChildren(node);
     },
     MemberExpression: function (node) {
-      if (currVariableName) {
-        if (node.property && node.property.name === "createClass") {
-          output.name = currVariableName
-        }
-      }
-    },
-    Property: function (node) {
-      if (node.key.name === "render") {
-        this.visitChildren(node);
-      }
-    },
-    ReturnStatement: function (node) {
-      if (node.argument.type === 'JSXElement') {
-        this.visitChildren(node);
+      if (node.property && node.property.name === "createClass") {
+        output.name = topJsxComponent;
       }
     },
     JSXElement: function (node) {
-      var jsxComponentsArr = node
-        .children
-        .filter(jsx => {
-          return jsx.type === "JSXElement" &&
-            htmlElements.indexOf(jsx.openingElement.name.name) < 0
-        });
-      for (let prop in output) {
-        if (output[prop] === currVariableName) {
-          output.children = jsxComponentsArr.map(jsx => {
-            return { name: jsx.openingElement.name.name };
-          });
-        }
-      }
+      output.children = getChildJSXElements(node);
     },
   });
   return output;
 }
 
-function isReactComponent (node) {
+function getChildJSXElements (node) {
+  if (node.children.length === 0) return [];
+  var childJsxComponentsArr = node
+    .children
+    .filter(jsx => jsx.type === "JSXElement" 
+    && htmlElements.indexOf(jsx.openingElement.name.name) < 0);
+  return childJsxComponentsArr
+    .map(child => {
+      return {
+        name: child.openingElement.name.name,
+        children: getChildJSXElements(child),
+      };
+    })
+}
+
+function isES6ReactComponent (node) {
   return (node.superClass.property && node.superClass.property.name === "Component")
     || node.superClass.name === "Component"
 }
@@ -68,10 +58,14 @@ function getES6ReactComponents() {
   let output = {};
   esrecurse.visit(jsAst, {
     ClassDeclaration: function (node) {
-      if (isReactComponent(node)) {
-        output.name = node.id.name
+      if (isES6ReactComponent(node)) {
+        output.name = node.id.name;
+        this.visitChildren(node);
       }
-    }
+    },
+    JSXElement: function (node) {
+      output.children = getChildJSXElements(node);
+    },
   });
   return output;
 }
