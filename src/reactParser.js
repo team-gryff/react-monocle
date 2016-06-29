@@ -13,15 +13,15 @@ const htmlElements = ['a', 'article', 'audio', 'b', 'body', 'br', 'button', 'can
                       'strong', 'style', 'sub', 'summary', 'table', 'tbody', 'td', 'thead', 'title',
                       'tr', 'track', 'u', 'ul', 'var', 'video', 'wbr'];
 
-let jsAst;
+let ast;
 
 /**
  * Recursively walks AST and extracts ES5 React component names, child components, props and state
  * @returns {Object} Nested object containing name, children, props and state properties of components
  */
-function getES5ReactComponents() {
+function getES5ReactComponents(ast) {
   let output = {}, topJsxComponent;
-  esrecurse.visit(jsAst, {
+  esrecurse.visit(ast, {
     VariableDeclarator: function (node) {
       topJsxComponent = node.id.name;
       this.visitChildren(node);
@@ -85,9 +85,9 @@ function isES6ReactComponent (node) {
  * Recursively walks AST and extracts ES6 React component names, child components, props and state
  * @returns {Object} Nested object containing name, children, props and state properties of components
  */
-function getES6ReactComponents() {
+function getES6ReactComponents(ast) {
   let output = {};
-  esrecurse.visit(jsAst, {
+  esrecurse.visit(ast, {
     ClassDeclaration: function (node) {
       if (isES6ReactComponent(node)) {
         output.name = node.id.name;
@@ -106,10 +106,10 @@ function getES6ReactComponents() {
  * @param js
  */
 function jsToAst(js) {
-  jsAst = acorn.parse(js, { 
+  ast = acorn.parse(js, { 
     plugins: { jsx: true }
   });
-  if (jsAst.body.length === 0) throw new Error('Empty AST input');
+  if (ast.body.length === 0) throw new Error('Empty AST input');
 }
 
 module.exports = { 
