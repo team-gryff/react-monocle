@@ -21,15 +21,11 @@ describe('ESTree AST Parser Tests', function() {
       expect(getES5ReactComponents).to.be.a.function;
     });
 
-    it('should return object with name of top-level components in js file es5', function() {
-      jsToAst(es5ParserFixtures.singleMainApp);
-      expect(getES5ReactComponents()).to.deep.equal({ name: 'Main' });
-    });
-
     it('should return object with \'Main\' as top-level component with child property containing array with single object with name property equal \'SearchBar\'', function() {
       jsToAst(es5ParserFixtures.nestedComponents);
       expect(getES5ReactComponents()).to.deep.equal({ 
         name: 'Main',
+        props: [],
         children: [
           { name: 'SearchBar', 
             children: [],
@@ -55,6 +51,7 @@ describe('ESTree AST Parser Tests', function() {
       jsToAst(es5ParserFixtures.componentWithProps);
       expect(getES5ReactComponents()).to.deep.equal({
         name: 'Main',
+        props: [],
         children: [
           { name: 'SearchBar' ,
             children: [],
@@ -102,7 +99,7 @@ describe('ESTree AST Parser Tests', function() {
         ],
       });
     });
-
+    
     it('should return object with props property', function() {
       jsToAst(es6ParserFixtures.componentWithProps);
       expect(getES6ReactComponents()).to.deep.equal({
@@ -116,7 +113,8 @@ describe('ESTree AST Parser Tests', function() {
             ]
           }
         ],
-      })
-    })
+      });
+    });
+
   });
 });

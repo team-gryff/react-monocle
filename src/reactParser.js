@@ -33,6 +33,7 @@ function getES5ReactComponents() {
     },
     JSXElement: function (node) {
       output.children = getChildJSXElements(node);
+      output.props = getReactProps(node);
     },
   });
   return output;
@@ -43,7 +44,7 @@ function getES5ReactComponents() {
  * @param {Node} node
  * @returns {Array} Array of all JSX props on React component
  */
-function getChildProps (node) {
+function getReactProps (node) {
   if (node.openingElement.attributes.length === 0) return [];
   return node.openingElement.attributes
     .map(attribute => { return { name: attribute.name.name }; });
@@ -65,7 +66,7 @@ function getChildJSXElements (node) {
       return {
         name: child.openingElement.name.name,
         children: getChildJSXElements(child),
-        props: getChildProps(child),
+        props: getReactProps(child),
       };
     })
 }
