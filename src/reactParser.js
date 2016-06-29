@@ -13,7 +13,6 @@ const htmlElements = ['a', 'article', 'audio', 'b', 'body', 'br', 'button', 'can
                       'strong', 'style', 'sub', 'summary', 'table', 'tbody', 'td', 'thead', 'title',
                       'tr', 'track', 'u', 'ul', 'var', 'video', 'wbr'];
 
-let ast;
 
 /**
  * Recursively walks AST and extracts ES5 React component names, child components, props and state
@@ -106,7 +105,7 @@ function getES6ReactComponents(ast) {
  * @param js
  */
 function jsToAst(js) {
-  ast = acorn.parse(js, { 
+  const ast = acorn.parse(js, { 
     plugins: { jsx: true }
   });
   if (ast.body.length === 0) throw new Error('Empty AST input');
@@ -114,6 +113,7 @@ function jsToAst(js) {
 
 module.exports = { 
   jsToAst, 
+  isES6ReactComponent,
   getES5ReactComponents, 
   getES6ReactComponents 
 };
