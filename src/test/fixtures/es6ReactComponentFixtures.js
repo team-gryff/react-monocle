@@ -1,8 +1,8 @@
 module.exports = {
-  singleMainApp: `var Main = React.createClass({ })`,
+  singleMainApp: `class Main extends Component {}`,
   nestedComponents: `
-    var Main = React.createClass({
-      render: function() {
+    class Main extends Component {
+      render () {
         return <div>
           <SearchBar />
           <div>Testing</div>
@@ -12,6 +12,6 @@ module.exports = {
           </SearchResults>
         </div>
       }
-    });
+    }
   `,
 }

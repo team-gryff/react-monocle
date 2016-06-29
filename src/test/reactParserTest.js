@@ -49,32 +49,15 @@ describe('ESTree AST Parser Tests', function() {
 
   describe('ES6 React Component Parsing Tests', function() {
     const getES6ReactComponents = require('../reactParser.js').getES6ReactComponents;
-    let es6Components = `
-      class Main extends Component {}
-    `;
-
-    let es6NestedComponents = `
-      class Main extends Component {
-        render () {
-          return <div>
-            <SearchBar />
-            <div>Testing</div>
-            <SearchResults>
-              <Result />
-              <Result />
-            </SearchResults>
-          </div>
-        }
-      }
-    `;
+    const es6ParserFixtures = require('./fixtures/es6ReactComponentFixtures.js');
 
     it('should return object with name of top-level components in js file using es6', function() {
-      jsToAst(es6Components);
+      jsToAst(es6ParserFixtures.singleMainApp);
       expect(getES6ReactComponents()).to.deep.equal({ name: 'Main' });
     });
 
     it('should return object with \'Main\' as top-level component with nested children components', function() {
-      jsToAst(es6NestedComponents);
+      jsToAst(es6ParserFixtures.nestedComponents);
       expect(getES6ReactComponents()).to.deep.equal({ 
         name: 'Main',
         children: [
