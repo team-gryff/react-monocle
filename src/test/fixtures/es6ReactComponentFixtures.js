@@ -14,4 +14,16 @@ module.exports = {
       }
     }
   `,
+  componentWithProps: `
+    class Main extends Component { 
+      render () {
+        return <div>
+          <SearchBar 
+            onChange={this.handleTextChange}
+            onSubmit={this.handleSubmit} >
+          </SearchBar>
+        </div>
+      }
+    };
+  `,
 }

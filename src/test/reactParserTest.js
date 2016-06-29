@@ -102,5 +102,21 @@ describe('ESTree AST Parser Tests', function() {
         ],
       });
     });
+
+    it('should return object with props property', function() {
+      jsToAst(es6ParserFixtures.componentWithProps);
+      expect(getES6ReactComponents()).to.deep.equal({
+        name: 'Main',
+        children: [
+          { name: 'SearchBar' ,
+            children: [],
+            props: [
+              { name: 'onChange' },
+              { name: 'onSubmit' }
+            ]
+          }
+        ],
+      })
+    })
   });
 });
