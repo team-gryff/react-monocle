@@ -31,20 +31,41 @@ describe('ESTree AST Parser Tests', function() {
       expect(getES5ReactComponents()).to.deep.equal({ 
         name: 'Main',
         children: [
-          { name: 'SearchBar', children: [] }, 
+          { name: 'SearchBar', 
+            children: [],
+            props: [] }, 
           { name: 'SearchResults',
             children: [
-              { name: 'Result', children: [] }, 
-              { name: 'Result', children: [] }
-            ]
+              { name: 'Result', 
+                children: [],
+                props: [] 
+              }, 
+              { name: 'Result', 
+                children: [],
+                props: []
+              },
+            ],
+            props: [],
           }
         ],
       });
     });
 
-    // it('should return object with props property', function() {
-    //   jsTo
-    // })
+    it('should return object with props property', function() {
+      jsToAst(es5ParserFixtures.componentWithProps);
+      expect(getES5ReactComponents()).to.deep.equal({
+        name: 'Main',
+        children: [
+          { name: 'SearchBar' ,
+            children: [],
+            props: [
+              { name: 'onChange' },
+              { name: 'onSubmit' }
+            ]
+          }
+        ],
+      })
+    })
   });
 
   describe('ES6 React Component Parsing Tests', function() {
@@ -61,12 +82,22 @@ describe('ESTree AST Parser Tests', function() {
       expect(getES6ReactComponents()).to.deep.equal({ 
         name: 'Main',
         children: [
-          { name: 'SearchBar', children: [] }, 
+          { name: 'SearchBar', 
+            children: [],
+            props: [] 
+          }, 
           { name: 'SearchResults',
             children: [
-              { name: 'Result', children: [] }, 
-              { name: 'Result', children: [] }
-            ]
+              { name: 'Result', 
+                children: [],
+                props: [] 
+              }, 
+              { name: 'Result', 
+                children: [],
+                props: [] 
+              }
+            ],
+            props: [],
           }
         ],
       });

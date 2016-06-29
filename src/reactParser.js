@@ -34,6 +34,12 @@ function getES5ReactComponents() {
   return output;
 }
 
+function getChildProps (node) {
+  if (node.openingElement.attributes.length === 0) return [];
+  return node.openingElement.attributes
+    .map(attribute => { return { name: attribute.name.name }; });
+}
+
 function getChildJSXElements (node) {
   if (node.children.length === 0) return [];
   var childJsxComponentsArr = node
@@ -45,6 +51,7 @@ function getChildJSXElements (node) {
       return {
         name: child.openingElement.name.name,
         children: getChildJSXElements(child),
+        props: getChildProps(child),
       };
     })
 }
