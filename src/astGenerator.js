@@ -5,7 +5,6 @@ const acorn = require('acorn-jsx/inject')(require('acorn'));
 
 
 function astGenerator(directory) {
-  console.log(directory);
   // using directory of component to turn into string for acorn
   const stringed = fs.readFileSync(directory, {encoding:'utf-8'});
   let result = {}, name;
