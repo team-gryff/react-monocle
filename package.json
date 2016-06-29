@@ -24,10 +24,13 @@
   },
   "homepage": "https://github.com/team-gryff/react-monocle#readme",
   "bin": {
-    "snippet": "./index.js"
+    "monocle": "bin/cmd.js"
   },
   "dependencies": {
+    "commander": "^2.9.0",
     "d3": "^3.5.17",
+    "glob": "^7.0.5",
+    "lodash.assign": "^4.0.9",
     "react": "^15.1.0",
     "react-dom": "^15.1.0"
   },
