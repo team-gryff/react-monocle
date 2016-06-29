@@ -15,35 +15,19 @@ describe('ESTree AST Parser Tests', function() {
 
   describe('ES5 React Component Parsing Tests', function() {
     const getES5ReactComponents = require('../reactParser.js').getES5ReactComponents;
-    let es5Components = `
-      var Main = React.createClass({ });
-    `;
-    let es5NestedComponents = `
-      var Main = React.createClass({
-        render: function() {
-          return <div>
-            <SearchBar />
-            <div>Testing</div>
-            <SearchResults>
-              <Result />
-              <Result />
-            </SearchResults>
-          </div>
-        }
-      });
-    `;
+    const es5ParserFixtures = require('./fixtures/es5ReactComponentFixtures.js');
 
     it('getES5ReactComponents should be a function', function() {
       expect(getES5ReactComponents).to.be.a.function;
     });
 
     it('should return object with name of top-level components in js file es5', function() {
-      jsToAst(es5Components);
+      jsToAst(es5ParserFixtures.singleMainApp);
       expect(getES5ReactComponents()).to.deep.equal({ name: 'Main' });
     });
 
     it('should return object with \'Main\' as top-level component with child property containing array with single object with name property equal \'SearchBar\'', function() {
-      jsToAst(es5NestedComponents);
+      jsToAst(es5ParserFixtures.nestedComponents);
       expect(getES5ReactComponents()).to.deep.equal({ 
         name: 'Main',
         children: [
@@ -57,36 +41,23 @@ describe('ESTree AST Parser Tests', function() {
         ],
       });
     });
+
+    // it('should return object with props property', function() {
+    //   jsTo
+    // })
   });
 
   describe('ES6 React Component Parsing Tests', function() {
     const getES6ReactComponents = require('../reactParser.js').getES6ReactComponents;
-    let es6Components = `
-      class Main extends Component {}
-    `;
-
-    let es6NestedComponents = `
-      class Main extends Component {
-        render () {
-          return <div>
-            <SearchBar />
-            <div>Testing</div>
-            <SearchResults>
-              <Result />
-              <Result />
-            </SearchResults>
-          </div>
-        }
-      }
-    `;
+    const es6ParserFixtures = require('./fixtures/es6ReactComponentFixtures.js');
 
     it('should return object with name of top-level components in js file using es6', function() {
-      jsToAst(es6Components);
+      jsToAst(es6ParserFixtures.singleMainApp);
       expect(getES6ReactComponents()).to.deep.equal({ name: 'Main' });
     });
 
     it('should return object with \'Main\' as top-level component with nested children components', function() {
-      jsToAst(es6NestedComponents);
+      jsToAst(es6ParserFixtures.nestedComponents);
       expect(getES6ReactComponents()).to.deep.equal({ 
         name: 'Main',
         children: [
