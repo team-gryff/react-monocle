@@ -15,6 +15,10 @@ const htmlElements = ['a', 'article', 'audio', 'b', 'body', 'br', 'button', 'can
 
 let ast;
 
+/**
+ * Recursively walks AST and extracts ES5 React component names, child components, props and state
+ * @returns {Object} Nested object containing name, children, props and state properties of components
+ */
 function getES5ReactComponents(ast) {
   let output = {}, topJsxComponent;
   esrecurse.visit(ast, {
@@ -29,17 +33,28 @@ function getES5ReactComponents(ast) {
     },
     JSXElement: function (node) {
       output.children = getChildJSXElements(node);
+      output.props = getReactProps(node);
     },
   });
   return output;
 }
 
-function getChildProps (node) {
+/**
+ * Returns array of props from React component passed to input
+ * @param {Node} node
+ * @returns {Array} Array of all JSX props on React component
+ */
+function getReactProps (node) {
   if (node.openingElement.attributes.length === 0) return [];
   return node.openingElement.attributes
     .map(attribute => { return { name: attribute.name.name }; });
 }
 
+/**
+ * Returns array of children components of React component passed to input
+ * @param {Node} node
+ * @returns {Array} Array of (nested) children of React component passed in
+ */
 function getChildJSXElements (node) {
   if (node.children.length === 0) return [];
   var childJsxComponentsArr = node
@@ -51,16 +66,25 @@ function getChildJSXElements (node) {
       return {
         name: child.openingElement.name.name,
         children: getChildJSXElements(child),
-        props: getChildProps(child),
+        props: getReactProps(child),
       };
     })
 }
 
+/**
+ * Returns if AST node is an ES6 React component
+ * @param {Node} node
+ * @return {Boolean} Determines if AST node is a React component node 
+ */
 function isES6ReactComponent (node) {
   return (node.superClass.property && node.superClass.property.name === "Component")
     || node.superClass.name === "Component"
 }
 
+/**
+ * Recursively walks AST and extracts ES6 React component names, child components, props and state
+ * @returns {Object} Nested object containing name, children, props and state properties of components
+ */
 function getES6ReactComponents(ast) {
   let output = {};
   esrecurse.visit(ast, {
@@ -77,6 +101,10 @@ function getES6ReactComponents(ast) {
   return output;
 }
 
+/**
+ * Helper function to convert Javascript stringified code to an AST using acorn-jsx library
+ * @param js
+ */
 function jsToAst(js) {
   ast = acorn.parse(js, { 
     plugins: { jsx: true }
