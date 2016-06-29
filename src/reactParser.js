@@ -41,22 +41,25 @@ function getES5ReactComponents() {
       }
     },
     JSXElement: function (node) {
-      var jsxComponentsArr = node
-        .children
-        .filter(jsx => {
-          return jsx.type === "JSXElement" &&
-            htmlElements.indexOf(jsx.openingElement.name.name) < 0
-        });
-      for (let prop in output) {
-        if (output[prop] === currVariableName) {
-          output.children = jsxComponentsArr.map(jsx => {
-            return { name: jsx.openingElement.name.name };
-          });
-        }
-      }
+      output.children = getChildJSXElements(node);
     },
   });
   return output;
+}
+
+function getChildJSXElements (node) {
+  if (node.children.length === 0) return [];
+  var childJsxComponentsArr = node
+    .children
+    .filter(jsx => jsx.type === "JSXElement" 
+    && htmlElements.indexOf(jsx.openingElement.name.name) < 0);
+  return childJsxComponentsArr
+    .map(child => {
+      return {
+        name: child.openingElement.name.name,
+        children: getChildJSXElements(child),
+      };
+    })
 }
 
 function isReactComponent (node) {

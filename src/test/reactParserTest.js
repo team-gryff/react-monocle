@@ -23,9 +23,11 @@ describe('ESTree AST Parser Tests', function() {
         render: function() {
           return <div>
             <SearchBar />
-            <div>
-              Testing
-            </div>
+            <div>Testing</div>
+            <SearchResults>
+              <Result />
+              <Result />
+            </SearchResults>
           </div>
         }
       });
@@ -44,7 +46,15 @@ describe('ESTree AST Parser Tests', function() {
       jsToAst(es5NestedComponents);
       expect(getES5ReactComponents()).to.deep.equal({ 
         name: 'Main',
-        children: [{ name: 'SearchBar'}],
+        children: [
+          { name: 'SearchBar', children: [] }, 
+          { name: 'SearchResults',
+            children: [
+              { name: 'Result', children: [] }, 
+              { name: 'Result', children: [] }
+            ]
+          }
+        ],
       });
     });
   });
