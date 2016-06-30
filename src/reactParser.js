@@ -2,7 +2,7 @@
 
 const acorn = require('acorn-jsx');  
 const esrecurse = require('esrecurse');  
-
+const escodegen = require('escodegen');
 
 const htmlElements = ['a', 'article', 'audio', 'b', 'body', 'br', 'button', 'canvas', 'caption',
                       'code', 'dialog', 'div', 'dl', 'dt', 'em', 'embed', 'font', 'footer', 'form',
@@ -31,11 +31,33 @@ function getES5ReactComponents(ast) {
         output.name = topJsxComponent;
       }
     },
+    ObjectExpression: function (node) {
+      const getInitialStateProp = node.properties.filter(prop => prop.key.name === "getInitialState")[0];
+      if (getInitialStateProp) {
+        output.state = getES5ReactStates(getInitialStateProp);
+      }
+      this.visitChildren(node);
+    },
     JSXElement: function (node) {
       output.children = getChildJSXElements(node);
       output.props = getReactProps(node);
     },
   });
+  return output;
+}
+
+function getES5ReactStates (node) {
+  const stateStr = escodegen.generate(node.value.body.body[0].argument);
+  let states;
+  eval('states = ' + stateStr);
+
+  let output = [];
+  for (let state in states) {
+    output.push({
+      name: state,
+      value: states[state]
+    });
+  }
   return output;
 }
 
@@ -125,5 +147,5 @@ module.exports = {
   jsToAst, 
   componentChecker,
   getES5ReactComponents, 
-  getES6ReactComponents 
+  getES6ReactComponents,
 };
