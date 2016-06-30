@@ -26,4 +26,22 @@ module.exports = {
       }
     });
   `,
+  componentWithState: `
+    var Main = React.createClass({
+      getInitialState: function () {
+        return {
+          search: '',
+          ajaxData: [],
+          number: 0,
+          boolean: true,
+          object: {
+            address: '',
+          },
+        };
+      },
+      render: function () {
+        return <div>Test</div>
+      }
+    });
+  `,
 }

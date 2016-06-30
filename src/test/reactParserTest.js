@@ -60,8 +60,23 @@ describe('ESTree AST Parser Tests', function() {
             ]
           }
         ],
-      })
-    })
+      });
+    });
+
+    it('should return object with state property', function() {
+      expect(getES5ReactComponents(jsToAst(es5ParserFixtures.componentWithState))).to.deep.equal({
+        name: 'Main',
+        props: [],
+        state: [
+          { name: 'search', value: '' },
+          { name: 'ajaxData', value: [] },
+          { name: 'number', value: 0 },
+          { name: 'boolean', value: true },
+          { name: 'object', value: { address: ''} },
+        ],
+        children: [],
+      });
+    });
   });
 
   describe('ES6 React Component Parsing Tests', function() {
@@ -96,7 +111,7 @@ describe('ESTree AST Parser Tests', function() {
         ],
       });
     });
-    
+
     it('should return object with props property', function() {
       expect(getES6ReactComponents(jsToAst(es6ParserFixtures.componentWithProps))).to.deep.equal({
         name: 'Main',
@@ -113,4 +128,5 @@ describe('ESTree AST Parser Tests', function() {
     });
 
   });
+
 });
