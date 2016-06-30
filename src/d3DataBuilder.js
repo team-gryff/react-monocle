@@ -23,7 +23,7 @@ function d3DataBuilder(obj) {
   function treeAddition(node) {
     if (node.children.length === 0) return;
     for (let i = 0; i < node.children.length; i++) {
-      if (formated.hasOwnProperty(node.children[i].name)) node.children[i].children = formated[node.children[i].name].children;
+      if (formated.hasOwnProperty(node.children[i].name)) node.children[i].children = cloneDeep(formated[node.children[i].name].children);
       if (node.children[i].children.length > 0) treeAddition(node.children[i]);
     }
   }
