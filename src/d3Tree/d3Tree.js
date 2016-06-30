@@ -31,7 +31,7 @@ function create(element, treeData) {
 }
 
 function update(source) {
-  let root = source[0];
+  let root = source;
   root.x0 = 0;
   root.y0 = h / 2;
   let nodes = tree.nodes(root).reverse();

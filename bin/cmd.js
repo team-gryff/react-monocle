@@ -5,7 +5,7 @@ const glob = require('glob');
 const astGenerator = require('../src/astGenerator');
 const assign = require('lodash.assign');
 const d3DataBuilder = require('../src/d3DataBuilder');
-const renderHtml = require('../src/renderHtml.js')
+const renderHtml = require('../src/d3Tree/renderHtml')
 
 // specifying one required parameter
 program
