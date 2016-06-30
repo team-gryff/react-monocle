@@ -28,7 +28,6 @@ function d3DataBuilder(obj) {
     }
   }
   treeAddition(result);
-  console.log(result);
   return result;
 }
 
