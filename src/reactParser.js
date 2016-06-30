@@ -114,9 +114,16 @@ function jsToAst(js) {
   return ast;
 }
 
+function componentChecker(ast) {
+  for (let i = 0; i < ast.body.length; i++) {
+    if (ast.body[i].type === 'ClassDeclaration' || ast.body[i].type === 'ExportDefaultDeclaration') return true;
+  }
+  return false;
+}
+
 module.exports = { 
   jsToAst, 
-  isES6ReactComponent,
+  componentChecker,
   getES5ReactComponents, 
   getES6ReactComponents 
 };

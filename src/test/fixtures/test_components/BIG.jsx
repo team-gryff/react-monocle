@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-class BIG extends React.Component {
+export default class BIG extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -19,4 +19,3 @@ class BIG extends React.Component {
 }
 
 
-export default BIG;

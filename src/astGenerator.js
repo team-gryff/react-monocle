@@ -30,7 +30,7 @@ function astGenerator(directory) {
         return result;
         // finding entry point
       } else if (ast.body[i].expression.callee && ast.body[i].expression.callee.object.name === 'ReactDOM' && ast.body[i].expression.callee.property.name === 'render') {
-        result.ENTRY = ast;
+        result.ENTRY = ast.body[i].expression.arguments[0].openingElement.name.name;
         return result;
       }
     }
