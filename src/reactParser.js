@@ -16,6 +16,7 @@ const htmlElements = ['a', 'article', 'audio', 'b', 'body', 'br', 'button', 'can
 
 /**
  * Recursively walks AST and extracts ES5 React component names, child components, props and state
+ * @param {ast} ast
  * @returns {Object} Nested object containing name, children, props and state properties of components
  */
 function getES5ReactComponents(ast) {
@@ -82,6 +83,7 @@ function isES6ReactComponent (node) {
 
 /**
  * Recursively walks AST and extracts ES6 React component names, child components, props and state
+ * @param {ast} ast
  * @returns {Object} Nested object containing name, children, props and state properties of components
  */
 function getES6ReactComponents(ast) {
@@ -109,6 +111,7 @@ function jsToAst(js) {
     plugins: { jsx: true }
   });
   if (ast.body.length === 0) throw new Error('Empty AST input');
+  return ast;
 }
 
 module.exports = { 

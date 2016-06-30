@@ -22,8 +22,8 @@ describe('ESTree AST Parser Tests', function() {
     });
 
     it('should return object with \'Main\' as top-level component with child property containing array with single object with name property equal \'SearchBar\'', function() {
-      jsToAst(es5ParserFixtures.nestedComponents);
-      expect(getES5ReactComponents()).to.deep.equal({ 
+
+      expect(getES5ReactComponents(jsToAst(es5ParserFixtures.nestedComponents))).to.deep.equal({ 
         name: 'Main',
         props: [],
         children: [
@@ -48,8 +48,7 @@ describe('ESTree AST Parser Tests', function() {
     });
 
     it('should return object with props property', function() {
-      jsToAst(es5ParserFixtures.componentWithProps);
-      expect(getES5ReactComponents()).to.deep.equal({
+      expect(getES5ReactComponents(jsToAst(es5ParserFixtures.componentWithProps))).to.deep.equal({
         name: 'Main',
         props: [],
         children: [
@@ -70,13 +69,11 @@ describe('ESTree AST Parser Tests', function() {
     const es6ParserFixtures = require('./fixtures/es6ReactComponentFixtures.js');
 
     it('should return object with name of top-level components in js file using es6', function() {
-      jsToAst(es6ParserFixtures.singleMainApp);
-      expect(getES6ReactComponents()).to.deep.equal({ name: 'Main' });
+      expect(getES6ReactComponents(jsToAst(es6ParserFixtures.singleMainApp))).to.deep.equal({ name: 'Main' });
     });
 
     it('should return object with \'Main\' as top-level component with nested children components', function() {
-      jsToAst(es6ParserFixtures.nestedComponents);
-      expect(getES6ReactComponents()).to.deep.equal({ 
+      expect(getES6ReactComponents(jsToAst(es6ParserFixtures.nestedComponents))).to.deep.equal({ 
         name: 'Main',
         children: [
           { name: 'SearchBar', 
@@ -101,8 +98,7 @@ describe('ESTree AST Parser Tests', function() {
     });
     
     it('should return object with props property', function() {
-      jsToAst(es6ParserFixtures.componentWithProps);
-      expect(getES6ReactComponents()).to.deep.equal({
+      expect(getES6ReactComponents(jsToAst(es6ParserFixtures.componentWithProps))).to.deep.equal({
         name: 'Main',
         children: [
           { name: 'SearchBar' ,
