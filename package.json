@@ -28,6 +28,7 @@
     "monocle": "bin/cmd.js"
   },
   "dependencies": {
+    "app-root-path": "^1.2.1",
     "commander": "^2.9.0",
     "d3": "^3.5.17",
     "glob": "^7.0.5",

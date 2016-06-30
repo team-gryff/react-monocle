@@ -4,7 +4,8 @@ const program = require('commander');
 const glob = require('glob');
 const astGenerator = require('../src/astGenerator');
 const assign = require('lodash.assign');
-const d3DataBuilder = require('../src/d3DataBuilder')
+const d3DataBuilder = require('../src/d3DataBuilder');
+const renderHtml = require('../src/renderHtml.js')
 
 // specifying one required parameter
 program
@@ -24,5 +25,7 @@ program
     let componentObject = assign.apply(null, astz); // combining into one file
     if (entry) componentObject = assign(componentObject, astGenerator(entry));
     const formatedD3Object = d3DataBuilder(componentObject);
+    console.log(formatedD3Object);
+    renderHtml(formatedD3Object);
   })
 })()
