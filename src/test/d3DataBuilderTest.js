@@ -10,7 +10,7 @@ const astGenerator = require('../astGenerator')
 
 
 
-describe('d3DataBuilder Unit Tests', function() {
+xdescribe('d3DataBuilder Unit Tests', function() {
   const app = __dirname + '/fixtures/test_components/app.jsx';
   const BIG = __dirname + '/fixtures/test_components/BIG.jsx';
   const Biggie = __dirname + '/fixtures/test_components/Biggie.jsx';
