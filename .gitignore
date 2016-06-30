@@ -1,4 +1,5 @@
 /node_modules/
+react-monocle.html
 .DS_Store
 npm-debug.log
 bundle.js
