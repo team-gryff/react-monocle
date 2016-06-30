@@ -18,7 +18,7 @@
     "developer",
     "tool"
   ],
-  "author": "Michael-Bryant Choa, Jenna Davis, Jerry Mao",
+  "author": "Michael-Bryant Choa <mbchoa@gmail.com>, Jenna Davis <jennadavis92@gmail.com>, Jerry Mao <jerryy.mao@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/team-gryff/react-monocle/issues"
