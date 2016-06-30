@@ -21,9 +21,8 @@ program
   // globs to match any jsx in directory called
   glob(`**/*.${ext}`, {cwd: directory, nosort:true, ignore: 'node_modules/**'}, (err, files) => {
     const astz = files.map(ele => {return astGenerator(ele)})
-    const componentObject = assign.apply(null, astz); // combining into one file
-    if (entry) componentObject.ENTRY = astGenerator(entry);
+    let componentObject = assign.apply(null, astz); // combining into one file
+    if (entry) componentObject = assign(componentObject, astGenerator(entry));
     const formatedD3Object = d3DataBuilder(componentObject);
-    console.log(formatedD3Object);
   })
 })()
