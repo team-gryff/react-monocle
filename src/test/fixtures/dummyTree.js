@@ -1,5 +1,6 @@
 module.exports = {
   "name":"BigPoppa",
+  "methods": [ 'handeClick' ],
   "state":[
     {
       "name":"foo",
@@ -14,11 +15,13 @@ module.exports = {
     {
       "name":"Notorious",
       "state":[],
+      "methods":[],
       "children": [
         {
           "name":"BIG",
           "children":[],
           "state":[],
+          "methods":[],
           "props": [
             {"name":"foo"},
             {"name":"click"}
@@ -35,6 +38,7 @@ module.exports = {
       "name":"Biggie",
       "children":[],
       "state":[],
+      "methods":[],
       "props": [
         {
           "name":"bar"

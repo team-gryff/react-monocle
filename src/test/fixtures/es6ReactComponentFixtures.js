@@ -4,7 +4,8 @@ module.exports = {
     name: 'Main',
     props: [],
     state: [],
-    children: [] 
+    children: [],
+    methods: [],
   },
   nestedComponents: `
     class Main extends Component {
@@ -24,25 +25,30 @@ module.exports = {
     name: 'Main',
     props: [],
     state: [],
+    methods: [],
     children: [
       { name: 'SearchBar', 
         children: [],
         props: [],
-        state: [] 
+        state: [],
+        methods: [],
       }, 
       { name: 'SearchResults',
         props: [],
         state: [],
+        methods: [],
         children: [
           { name: 'Result', 
             children: [],
             props: [],
             state: [],
+            methods: [],
           }, 
           { name: 'Result', 
             children: [],
             props: [],
             state: [], 
+            methods: [],
           }
         ],
       }
@@ -64,10 +70,12 @@ module.exports = {
     name: 'Main',
     props: [],
     state: [],
+    methods: [],
     children: [
       { name: 'SearchBar' ,
         children: [],
         state: [],
+        methods: [],
         props: [
           { name: 'onChange' },
           { name: 'onSubmit' }
@@ -110,6 +118,7 @@ module.exports = {
       }}
     ],
     children: [],
+    methods: [],
   },
   componentWithMethods: `
     class Main extends Component {

@@ -13,7 +13,7 @@ describe('ESTree AST Parser Tests', function() {
     expect(jsToAst.bind(jsToAst,'')).to.throw(Error, /Empty AST input/);
   });
 
-  describe('ES5 React Component Parsing Tests', function() {
+  xdescribe('ES5 React Component Parsing Tests', function() {
     const getES5ReactComponents = require('../reactParser.js').getES5ReactComponents;
     const es5ParserFixtures = require('./fixtures/es5ReactComponentFixtures.js');
 
@@ -73,6 +73,6 @@ describe('ESTree AST Parser Tests', function() {
   });
 
   describe('ES6 Stateless Functional Component Parsing Tests', function() {
-
+    
   })
 });
