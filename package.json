@@ -1,6 +1,6 @@
 {
   "name": "react-monocle",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "description": "A developer tool to visualize a React application's component hierarchy.",
   "main": "index.js",
   "scripts": {
@@ -25,12 +25,15 @@
   },
   "homepage": "https://github.com/team-gryff/react-monocle#readme",
   "bin": {
-    "monocle": "bin/cmd.js"
+    "monocle": "./bin/cmd.js"
   },
   "dependencies": {
-    "app-root-path": "^1.2.1",
+    "acorn": "^3.2.0",
+    "acorn-jsx": "^3.0.1",
     "commander": "^2.9.0",
     "d3": "^3.5.17",
+    "escodegen": "^1.8.0",
+    "esrecurse": "^4.1.0",
     "glob": "^7.0.5",
     "lodash.assign": "^4.0.9",
     "lodash.clonedeep": "^4.3.2",
@@ -38,22 +41,9 @@
     "react-dom": "^15.1.0"
   },
   "devDependencies": {
-    "acorn": "^3.2.0",
-    "acorn-jsx": "^3.0.1",
-    "ast-types": "^0.8.16",
-    "babel-core": "^6.10.4",
-    "babel-loader": "^6.2.4",
-    "babel-preset-es2015": "^6.9.0",
-    "babel-preset-react": "^6.5.0",
     "chai": "^3.5.0",
-    "cheerio": "^0.20.0",
-    "enzyme": "^2.3.0",
-    "escodegen": "^1.8.0",
-    "esrecurse": "^4.1.0",
-    "jasmine": "^2.4.1",
     "jsdom": "^9.2.1",
     "mocha": "^2.5.3",
-    "react-addons-test-utils": "^15.1.0",
     "webpack": "^1.13.1"
   }
 }
