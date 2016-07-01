@@ -1,29 +1,43 @@
 module.exports = {
-  name: 'BigPoppa',
-  state: {
-    foo: true,
-    bar: 'yo ima string'
-  },
-  props: [],
-  children: [
+  "name":"BigPoppa",
+  "state":[
     {
-      name: 'Notorious',
-      state: null,
-      props: ['foo', 'bar', 'click'],
-      children: [
+      "name":"foo",
+      "value":true
+    },
+    {
+      "name":"bar",
+      "value":"yo ima string"
+    }
+  ],
+  "children": [
+    {
+      "name":"Notorious",
+      "children": [
         {
-          name: 'BIG',
-          state: null,
-          props:['foo, click'],
-          children: []
+          "name":"BIG",
+          "children":[],
+          "props": [
+            {"name":"foo"},
+            {"name":"click"}
+          ]
         }
+      ],
+      "props": [
+        {"name":"foo"},
+        {"name":"bar"},
+        {"name":"click"}
       ]
     },
     {
-      name: 'Biggie',
-      state: null,
-      props: ['bar'],
-      children: []
+      "name":"Biggie",
+      "children": [],
+      "props": [
+        {
+          "name":"bar"
+        }
+      ]
     }
-  ]
+  ],
+  "props":[]
 }

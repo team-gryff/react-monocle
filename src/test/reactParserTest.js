@@ -90,6 +90,7 @@ describe('ESTree AST Parser Tests', function() {
     it('should return object with \'Main\' as top-level component with nested children components', function() {
       expect(getES6ReactComponents(jsToAst(es6ParserFixtures.nestedComponents))).to.deep.equal({ 
         name: 'Main',
+        props: [],
         children: [
           { name: 'SearchBar', 
             children: [],
@@ -115,6 +116,7 @@ describe('ESTree AST Parser Tests', function() {
     it('should return object with props property', function() {
       expect(getES6ReactComponents(jsToAst(es6ParserFixtures.componentWithProps))).to.deep.equal({
         name: 'Main',
+        props: [],
         children: [
           { name: 'SearchBar' ,
             children: [],
@@ -127,6 +129,23 @@ describe('ESTree AST Parser Tests', function() {
       });
     });
 
+    it('should return object with state property', function() {
+      expect(getES6ReactComponents(jsToAst(es6ParserFixtures.componentWithState))).to.deep.equal({
+        name: 'Main',
+        props: [],
+        state: [
+          { name: 'number', value: 2 },
+          { name: 'string', value: 'hello' },
+          { name: 'boolean', value: true },
+          { name: 'array', value: [1, 'hello', true] },
+          { name: 'object', value: { 
+            name: 'hello again',
+            age: 27,
+            engineer: true
+          }}
+        ],
+        children: [],
+      });
+    });
   });
-
 });

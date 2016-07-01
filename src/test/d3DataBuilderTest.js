@@ -1,7 +1,6 @@
 'use strict';
 const expect = require('chai').expect;
 const assign = require('lodash.assign');
-const dummyTree = require('./fixtures/dummyTree');
 const d3DataBuilder = require('../d3DataBuilder');
 const astGenerator = require('../astGenerator')
 
@@ -40,7 +39,7 @@ describe('d3DataBuilder Unit Tests', function() {
   })
 
   it('should account for state', function() {
-    expect(d3Obj.state.foo && d3Obj.state.bar).to.be.true;
+    expect(d3Obj).to.deep.equal(require('./fixtures/dummyTree'));
   })
 
 })
