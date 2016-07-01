@@ -19,12 +19,13 @@ const htmlElements = ['a', 'article', 'audio', 'b', 'body', 'br', 'button', 'can
  * @returns {Object} Nested object containing name, children, props and state properties of components
  */
 function getES5ReactComponents(ast) {
-    let output = {
+  let output = {
     name: '',
     state: [],
     props: [],
-    children: []
-  }, topJsxComponent;
+    children: [],
+  }, 
+  topJsxComponent;
   esrecurse.visit(ast, {
     VariableDeclarator: function (node) {
       topJsxComponent = node.id.name;
@@ -62,6 +63,7 @@ function getReactStates (node) {
       value: states[state]
     });
   }
+  
   return output;
 }
 
@@ -93,6 +95,7 @@ function getChildJSXElements (node) {
         name: child.openingElement.name.name,
         children: getChildJSXElements(child),
         props: getReactProps(child),
+        state: [],
       };
     })
 }
@@ -115,9 +118,9 @@ function isES6ReactComponent (node) {
 function getES6ReactComponents(ast) {
   let output = {
     name: '',
-    state: [],
     props: [],
-    children: []
+    state: [],
+    children: [],
   };
   esrecurse.visit(ast, {
     ClassDeclaration: function (node) {
@@ -136,7 +139,7 @@ function getES6ReactComponents(ast) {
       output.props = getReactProps(node);
     },
   });
-  
+
   return output;
 }
 
