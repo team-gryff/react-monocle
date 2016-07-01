@@ -22,60 +22,18 @@ describe('ESTree AST Parser Tests', function() {
     });
 
     it('should return object with \'Main\' as top-level component with child property containing array with single object with name property equal \'SearchBar\'', function() {
-
-      expect(getES5ReactComponents(jsToAst(es5ParserFixtures.nestedComponents))).to.deep.equal({ 
-        name: 'Main',
-        props: [],
-        children: [
-          { name: 'SearchBar', 
-            children: [],
-            props: [] }, 
-          { name: 'SearchResults',
-            children: [
-              { name: 'Result', 
-                children: [],
-                props: [] 
-              }, 
-              { name: 'Result', 
-                children: [],
-                props: []
-              },
-            ],
-            props: [],
-          }
-        ],
-      });
+      expect(getES5ReactComponents(jsToAst(es5ParserFixtures.nestedComponents)))
+        .to.deep.equal(es5ParserFixtures.nestedComponentsOutput);
     });
 
     it('should return object with props property', function() {
-      expect(getES5ReactComponents(jsToAst(es5ParserFixtures.componentWithProps))).to.deep.equal({
-        name: 'Main',
-        props: [],
-        children: [
-          { name: 'SearchBar' ,
-            children: [],
-            props: [
-              { name: 'onChange' },
-              { name: 'onSubmit' }
-            ]
-          }
-        ],
-      });
+      expect(getES5ReactComponents(jsToAst(es5ParserFixtures.componentWithProps)))
+        .to.deep.equal(es5ParserFixtures.componentWithPropsOutput);
     });
 
     it('should return object with state property', function() {
-      expect(getES5ReactComponents(jsToAst(es5ParserFixtures.componentWithState))).to.deep.equal({
-        name: 'Main',
-        props: [],
-        state: [
-          { name: 'search', value: '' },
-          { name: 'ajaxData', value: [] },
-          { name: 'number', value: 0 },
-          { name: 'boolean', value: true },
-          { name: 'object', value: { address: ''} },
-        ],
-        children: [],
-      });
+      expect(getES5ReactComponents(jsToAst(es5ParserFixtures.componentWithState)))
+        .to.deep.equal(es5ParserFixtures.componentWithStateOutput);
     });
   });
 
@@ -83,69 +41,24 @@ describe('ESTree AST Parser Tests', function() {
     const getES6ReactComponents = require('../reactParser.js').getES6ReactComponents;
     const es6ParserFixtures = require('./fixtures/es6ReactComponentFixtures.js');
 
-    xit('should return object with name of top-level components in js file using es6', function() {
-      expect(getES6ReactComponents(jsToAst(es6ParserFixtures.singleMainApp))).to.deep.equal({ name: 'Main' });
+    it('should return object with name of top-level components in js file using es6', function() {
+      expect(getES6ReactComponents(jsToAst(es6ParserFixtures.singleMainApp)))
+        .to.deep.equal(es6ParserFixtures.singleMainAppOutput);
     });
 
-    xit('should return object with \'Main\' as top-level component with nested children components', function() {
-      expect(getES6ReactComponents(jsToAst(es6ParserFixtures.nestedComponents))).to.deep.equal({ 
-        name: 'Main',
-        props: [],
-        children: [
-          { name: 'SearchBar', 
-            children: [],
-            props: [] 
-          }, 
-          { name: 'SearchResults',
-            children: [
-              { name: 'Result', 
-                children: [],
-                props: [] 
-              }, 
-              { name: 'Result', 
-                children: [],
-                props: [] 
-              }
-            ],
-            props: [],
-          }
-        ],
-      });
+    it('should return object with \'Main\' as top-level component with nested children components', function() {
+     expect(getES6ReactComponents(jsToAst(es6ParserFixtures.nestedComponents)))
+      .to.deep.equal(es6ParserFixtures.nestedComponentsOutput);
     });
 
-    xit('should return object with props property', function() {
-      expect(getES6ReactComponents(jsToAst(es6ParserFixtures.componentWithProps))).to.deep.equal({
-        name: 'Main',
-        props: [],
-        children: [
-          { name: 'SearchBar' ,
-            children: [],
-            props: [
-              { name: 'onChange' },
-              { name: 'onSubmit' }
-            ]
-          }
-        ],
-      });
+    it('should return object with props property', function() {
+      expect(getES6ReactComponents(jsToAst(es6ParserFixtures.componentWithProps)))
+        .to.deep.equal(es6ParserFixtures.componentWithPropsOutput);
     });
 
     it('should return object with state property', function() {
-      expect(getES6ReactComponents(jsToAst(es6ParserFixtures.componentWithState))).to.deep.equal({
-        name: 'Main',
-        props: [],
-        state: [
-          { name: 'number', value: 2 },
-          { name: 'string', value: 'hello' },
-          { name: 'boolean', value: true },
-          { name: 'array', value: [1, 'hello', true] },
-          { name: 'object', value: { 
-            name: 'hello again',
-            age: 27,
-            engineer: true
-          }}
-        ],
-        children: [],
-      });
+      expect(getES6ReactComponents(jsToAst(es6ParserFixtures.componentWithState)))
+        .to.deep.equal(es6ParserFixtures.componentWithStateOutput);
     });
   });
 });

@@ -13,10 +13,12 @@ module.exports = {
   "children": [
     {
       "name":"Notorious",
+      "state":[],
       "children": [
         {
           "name":"BIG",
           "children":[],
+          "state":[],
           "props": [
             {"name":"foo"},
             {"name":"click"}
@@ -31,7 +33,8 @@ module.exports = {
     },
     {
       "name":"Biggie",
-      "children": [],
+      "children":[],
+      "state":[],
       "props": [
         {
           "name":"bar"
