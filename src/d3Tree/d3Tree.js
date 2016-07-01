@@ -65,8 +65,7 @@ function update(source) {
   .attr("stroke", "black")
   .style("fill", function (d) {
     return d._children ? "lightsteelblue" : "#fff";
-  })
-  .on("click", click);
+  });
 
   nodeEnter.append("text")
   .attr("x", function(d) {
@@ -75,8 +74,34 @@ function update(source) {
   .attr("y", 3)
   .attr("dy", "0em")
   .text(function (d) {
-      return (`Component: ${d.name} Props: ${d.depth} Methods: onClick`);
-    });
+    let stateArr = [];
+    let propsArr = [];
+    let status;
+    if (d.state && d.props) {
+      stateArr = d.state.map(i => {
+        return i.name;
+      });
+      propsArr = d.props.map(i => {
+        return i.name;
+      });
+      stateArr = stateArr.join(', ');
+      propsArr = propsArr.join(', ');
+      status = `State: ${stateArr}, Props: ${propsArr}`;
+    } else if (d.state) {
+      stateArr = d.state.map(i => {
+        return i.name;
+      });
+      stateArr = stateArr.join(', ');
+      status = `State: ${d.stateArr}`;
+    } else if (d.props) {
+        propsArr = d.props.map(i => {
+          return i.name;
+        });
+      propsArr = propsArr.join(', ');
+      status = `Props: ${propsArr}`;
+    }
+    return (`Component: ${d.name}, ${status} Methods: ${d.methods}`);
+  });
 
   wrap(d3.selectAll("text"), wrapLength);
 
@@ -157,19 +182,6 @@ function update(source) {
     d.x0 = d.x;
     d.y0 = d.y;
   });
-}
-
-// Toggle children on click.
-function click(d) {
-  console.log(d.children)
-  if (d.children) {
-    d._children = d.children;
-    d.children = null;
-  } else {
-    d.children = d._children;
-    d._children = null;
-  }
-  update(d);
 }
 
 function wrap(text, width) {
