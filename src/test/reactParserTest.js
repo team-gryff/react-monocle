@@ -35,6 +35,11 @@ describe('ESTree AST Parser Tests', function() {
       expect(getES5ReactComponents(jsToAst(es5ParserFixtures.componentWithState)))
         .to.deep.equal(es5ParserFixtures.componentWithStateOutput);
     });
+
+    it('should return object with methods property', function() {
+      expect(getES5ReactComponents(jsToAst(es5ParserFixtures.componentWithMethods)))
+        .to.deep.equal(es5ParserFixtures.componentWithMethodsOutput);
+    });
   });
 
   describe('ES6 React Component Parsing Tests', function() {
@@ -59,6 +64,11 @@ describe('ESTree AST Parser Tests', function() {
     it('should return object with state property', function() {
       expect(getES6ReactComponents(jsToAst(es6ParserFixtures.componentWithState)))
         .to.deep.equal(es6ParserFixtures.componentWithStateOutput);
+    });
+
+    it('should return object with methods property', function() {
+      expect(getES6ReactComponents(jsToAst(es6ParserFixtures.componentWithMethods)))
+        .to.deep.equal(es6ParserFixtures.componentWithMethodsOutput);
     });
   });
 

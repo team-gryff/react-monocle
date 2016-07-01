@@ -111,4 +111,30 @@ module.exports = {
     ],
     children: [],
   },
+  componentWithMethods: `
+    class Main extends Component {
+      // React Component Lifecycle Methods
+      componentDidMount () {  }
+      componentWillMount () {  }
+      componentWillReceiveProps () {  }
+      shouldComponentUpdate () {  }
+      componentWillUpdate () {  }
+      componentDidUpdate () {  }
+      componentWillUnmount () {  }
+      
+      // Custom Component-Level Methods
+      handleSubmit (e) {  }
+      handleReceiveData (e) {  }
+      render () {
+        return <div>Test</div>
+      }
+    }
+  `,
+  componentWithMethodsOutput: {
+    name: 'Main',
+    props: [],
+    children: [],
+    state: [],
+    methods: ['handleSubmit', 'handleReceiveData'],
+  }
 }
