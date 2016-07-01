@@ -129,8 +129,10 @@ function getES6ReactComponents(ast) {
         this.visitChildren(node);
       }
     },
-    ObjectExpression: function (node) {
-      output.state = getReactStates(node);
+    ExpressionStatement: function(node) {
+      if  (node.expression.left && node.expression.left.property && node.expression.left.property.name === 'state') {
+        output.state = getReactStates(node.expression.right)
+      }
     },
     JSXElement: function (node) {
       output.children = getChildJSXElements(node);

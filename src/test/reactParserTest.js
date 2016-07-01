@@ -61,4 +61,8 @@ describe('ESTree AST Parser Tests', function() {
         .to.deep.equal(es6ParserFixtures.componentWithStateOutput);
     });
   });
+
+  describe('ES6 Stateless Functional Component Parsing Tests', function() {
+
+  })
 });
