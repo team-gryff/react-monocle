@@ -1,4 +1,5 @@
 const fs = require('fs');
+const appRoot = require('app-root-path')
 
 
 function renderHtml(d3Obj) {

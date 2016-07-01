@@ -143,6 +143,11 @@ function getES6ReactComponents(ast) {
   return output;
 }
 
+function getStatelessFunctionalComponents(ast) {
+
+  return;
+}
+
 /**
  * Helper function to convert Javascript stringified code to an AST using acorn-jsx library
  * @param js
@@ -167,4 +172,5 @@ module.exports = {
   componentChecker,
   getES5ReactComponents, 
   getES6ReactComponents,
+  getStatelessFunctionalComponents
 };

@@ -30,7 +30,10 @@ function d3DataBuilder(obj) {
     if (!node.children) throw new Error('Invalid Node! Something went wrong with the parsing (no children array)')
     if (node.children.length === 0) return;
     for (let i = 0; i < node.children.length; i++) {
-      if (formatted.hasOwnProperty(node.children[i].name)) node.children[i].children = cloneDeep(formatted[node.children[i].name].children);
+      if (formatted.hasOwnProperty(node.children[i].name)) {
+        node.children[i].children = cloneDeep(formatted[node.children[i].name].children);
+        node.children[i].state = cloneDeep(formatted[node.children[i].name].state);
+      }
       else throw new Error('Parse Error: Could not find needed componenet')
       if (node.children[i].children.length > 0) treeAddition(node.children[i]);
     }
