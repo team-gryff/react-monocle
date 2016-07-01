@@ -23,14 +23,12 @@ function getES5ReactComponents(ast) {
   topJsxComponent;
   esrecurse.visit(ast, {
     VariableDeclarator: function (node) {
-      topJsxComponent = node.id.name;
       this.visitChildren(node);
     },
     MemberExpression: function (node) {
       if (node.property && node.property.name === "createClass") {
         output.name = topJsxComponent;
       }
-      this.visitChildren(node);
     },
     ObjectExpression: function (node) {
       node.properties.forEach(prop => {
@@ -53,6 +51,7 @@ function getES5ReactComponents(ast) {
       output.props = getReactProps(node);
     },
   });
+  console.log(output.name);
   return output;
 }
 
@@ -145,6 +144,7 @@ function getES6ReactComponents(ast) {
       if  (node.expression.left && node.expression.left.property && node.expression.left.property.name === 'state') {
         output.state = getReactStates(node.expression.right)
       }
+      this.visitChildren(node);
     },
     JSXElement: function (node) {
       output.children = getChildJSXElements(node);
@@ -156,8 +156,27 @@ function getES6ReactComponents(ast) {
 }
 
 function getStatelessFunctionalComponents(ast) {
+  let output = {
+    name: '',
+    props: [],
+    state: [],
+    methods: [],
+    children: [],
+  },
+  topJsxComponent;
+  esrecurse.visit(ast, {
+    VariableDeclarator: function (node) {
+      if (output.name === '') output.name = topJsxComponent = node.id.name;
+      this.visitChildren(node);
+    },
 
-  return;
+    JSXElement: function (node) {
+      output.children = getChildJSXElements(node);
+      output.props = getReactProps(node);
+    },
+  })
+  console.log(output);
+  return output;
 }
 
 /**
@@ -174,7 +193,8 @@ function jsToAst(js) {
 
 function componentChecker(ast) {
   for (let i = 0; i < ast.body.length; i++) {
-    if (ast.body[i].type === 'ClassDeclaration' || ast.body[i].type === 'ExportDefaultDeclaration') return true;
+    if (ast.body[i].type === 'ClassDeclaration') return true;
+    if (ast.body[i].type === 'ExportDefaultDeclaration' && ast.body[i].declaration.type === 'AssignmentExpression') return true;
   }
   return false;
 }

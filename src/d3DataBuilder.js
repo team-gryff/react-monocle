@@ -17,9 +17,10 @@ function d3DataBuilder(obj) {
   for (let key in obj) {
     if (key === 'ENTRY') continue;
     if (reactParser.componentChecker(obj[key])) {
-      formatted[key] = reactParser.getES6ReactComponents(obj[key]);
     } else {
-      formatted[key] = reactParser.getES5ReactComponents(obj[key]);
+      let es5obj = reactParser.getES5ReactComponents(obj[key]);
+      if (es5obj.name !== '') formatted[key] = es5obj;
+      else formatted[key] = reactParser.getStatelessFunctionalComponents(obj[key]);
     }
   }
 
