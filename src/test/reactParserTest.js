@@ -13,7 +13,7 @@ describe('ESTree AST Parser Tests', function() {
     expect(jsToAst.bind(jsToAst,'')).to.throw(Error, /Empty AST input/);
   });
 
-  describe('ES5 React Component Parsing Tests', function() {
+  xdescribe('ES5 React Component Parsing Tests', function() {
     const getES5ReactComponents = require('../reactParser.js').getES5ReactComponents;
     const es5ParserFixtures = require('./fixtures/es5ReactComponentFixtures.js');
 
@@ -34,6 +34,11 @@ describe('ESTree AST Parser Tests', function() {
     it('should return object with state property', function() {
       expect(getES5ReactComponents(jsToAst(es5ParserFixtures.componentWithState)))
         .to.deep.equal(es5ParserFixtures.componentWithStateOutput);
+    });
+
+    it('should return object with methods property', function() {
+      expect(getES5ReactComponents(jsToAst(es5ParserFixtures.componentWithMethods)))
+        .to.deep.equal(es5ParserFixtures.componentWithMethodsOutput);
     });
   });
 
@@ -59,6 +64,11 @@ describe('ESTree AST Parser Tests', function() {
     it('should return object with state property', function() {
       expect(getES6ReactComponents(jsToAst(es6ParserFixtures.componentWithState)))
         .to.deep.equal(es6ParserFixtures.componentWithStateOutput);
+    });
+
+    it('should return object with methods property', function() {
+      expect(getES6ReactComponents(jsToAst(es6ParserFixtures.componentWithMethods)))
+        .to.deep.equal(es6ParserFixtures.componentWithMethodsOutput);
     });
   });
 

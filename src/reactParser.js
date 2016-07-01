@@ -4,14 +4,8 @@ const acorn = require('acorn-jsx');
 const esrecurse = require('esrecurse');  
 const escodegen = require('escodegen');
 
-const htmlElements = ['a', 'article', 'audio', 'b', 'body', 'br', 'button', 'canvas', 'caption',
-                      'code', 'dialog', 'div', 'dl', 'dt', 'em', 'embed', 'font', 'footer', 'form',
-                      'frame', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'html', 'i', 'iframe', 'img',
-                      'input', 'kbd', 'label', 'legend', 'li', 'link', 'main', 'map', 'noscript',
-                      'object', 'ol', 'option', 'p', 'param', 'pre', 'progress', 'q', 'rb', 'rt',
-                      'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span',
-                      'strong', 'style', 'sub', 'summary', 'table', 'tbody', 'td', 'thead', 'title',
-                      'tr', 'track', 'u', 'ul', 'var', 'video', 'wbr'];
+const htmlElements = require('./constants.js').htmlElements;
+const reactMethods = require('./constants.js').reactMethods;
 
 /**
  * Recursively walks AST and extracts ES5 React component names, child components, props and state
@@ -49,6 +43,10 @@ function getES5ReactComponents(ast) {
     },
   });
   return output;
+}
+
+function getReactMethods (node) {
+
 }
 
 function getReactStates (node) {
@@ -96,6 +94,7 @@ function getChildJSXElements (node) {
         children: getChildJSXElements(child),
         props: getReactProps(child),
         state: [],
+        methods: [],
       };
     })
 }
@@ -120,6 +119,7 @@ function getES6ReactComponents(ast) {
     name: '',
     props: [],
     state: [],
+    methods: [],
     children: [],
   };
   esrecurse.visit(ast, {
@@ -129,7 +129,12 @@ function getES6ReactComponents(ast) {
         this.visitChildren(node);
       }
     },
-    ExpressionStatement: function(node) {
+    MethodDefinition: function (node) {
+      if (reactMethods.indexOf(node.key.name) < 0)
+        output.methods.push(node.key.name);
+      this.visitChildren(node);
+    },
+    ExpressionStatement: function (node) {
       if  (node.expression.left && node.expression.left.property && node.expression.left.property.name === 'state') {
         output.state = getReactStates(node.expression.right)
       }
