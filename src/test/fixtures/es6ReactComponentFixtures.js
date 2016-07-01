@@ -15,7 +15,7 @@ module.exports = {
     }
   `,
   componentWithProps: `
-    class Main extends Component { 
+    class Main extends Component {
       render () {
         return <div>
           <SearchBar 
@@ -24,6 +24,26 @@ module.exports = {
           </SearchBar>
         </div>
       }
-    };
+    }
+  `,
+  componentWithState: `
+    class Main extends Component {
+      constructor () {
+        this.state = {
+          number: 2,
+          string: 'hello',
+          boolean: true,
+          array: [1, 'hello', true],
+          object: {
+            name: 'hello again',
+            age: 27,
+            engineer: true
+          }
+        }
+      }
+      render () {
+        <div>Test</div>
+      }
+    }
   `,
 }

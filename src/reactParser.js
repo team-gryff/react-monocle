@@ -13,7 +13,6 @@ const htmlElements = ['a', 'article', 'audio', 'b', 'body', 'br', 'button', 'can
                       'strong', 'style', 'sub', 'summary', 'table', 'tbody', 'td', 'thead', 'title',
                       'tr', 'track', 'u', 'ul', 'var', 'video', 'wbr'];
 
-
 /**
  * Recursively walks AST and extracts ES5 React component names, child components, props and state
  * @param {ast} ast
@@ -34,7 +33,7 @@ function getES5ReactComponents(ast) {
     ObjectExpression: function (node) {
       const getInitialStateProp = node.properties.filter(prop => prop.key.name === "getInitialState")[0];
       if (getInitialStateProp) {
-        output.state = getES5ReactStates(getInitialStateProp);
+        output.state = getReactStates(getInitialStateProp.value.body.body[0].argument);
       }
       this.visitChildren(node);
     },
@@ -46,8 +45,8 @@ function getES5ReactComponents(ast) {
   return output;
 }
 
-function getES5ReactStates (node) {
-  const stateStr = escodegen.generate(node.value.body.body[0].argument);
+function getReactStates (node) {
+  const stateStr = escodegen.generate(node);
   let states;
   eval('states = ' + stateStr);
 
@@ -117,10 +116,15 @@ function getES6ReactComponents(ast) {
         this.visitChildren(node);
       }
     },
+    ObjectExpression: function (node) {
+      output.state = getReactStates(node);
+    },
     JSXElement: function (node) {
       output.children = getChildJSXElements(node);
+      output.props = getReactProps(node);
     },
   });
+  
   return output;
 }
 
