@@ -57,6 +57,7 @@ function getReactStates (node) {
       value: states[state]
     });
   }
+  
   return output;
 }
 

@@ -83,11 +83,11 @@ describe('ESTree AST Parser Tests', function() {
     const getES6ReactComponents = require('../reactParser.js').getES6ReactComponents;
     const es6ParserFixtures = require('./fixtures/es6ReactComponentFixtures.js');
 
-    it('should return object with name of top-level components in js file using es6', function() {
+    xit('should return object with name of top-level components in js file using es6', function() {
       expect(getES6ReactComponents(jsToAst(es6ParserFixtures.singleMainApp))).to.deep.equal({ name: 'Main' });
     });
 
-    it('should return object with \'Main\' as top-level component with nested children components', function() {
+    xit('should return object with \'Main\' as top-level component with nested children components', function() {
       expect(getES6ReactComponents(jsToAst(es6ParserFixtures.nestedComponents))).to.deep.equal({ 
         name: 'Main',
         props: [],
@@ -113,7 +113,7 @@ describe('ESTree AST Parser Tests', function() {
       });
     });
 
-    it('should return object with props property', function() {
+    xit('should return object with props property', function() {
       expect(getES6ReactComponents(jsToAst(es6ParserFixtures.componentWithProps))).to.deep.equal({
         name: 'Main',
         props: [],

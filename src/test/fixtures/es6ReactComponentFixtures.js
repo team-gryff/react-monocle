@@ -18,9 +18,9 @@ module.exports = {
     class Main extends Component {
       render () {
         return <div>
-          <SearchBar 
+          <SearchBar
             onChange={this.handleTextChange}
-            onSubmit={this.handleSubmit} >
+            onSubmit={this.handleSubmit}
           </SearchBar>
         </div>
       }
