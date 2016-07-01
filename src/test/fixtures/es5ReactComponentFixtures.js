@@ -103,7 +103,7 @@ module.exports = {
     ],
     children: [],
   },
-  componentWithUserMethods: `
+  componentWithMethods: `
     var Main = React.createClass({
       // React Component Lifecycle Methods
       componentDidMount: function() {  },
@@ -122,7 +122,7 @@ module.exports = {
       }
     });
   `,
-  componentWithUserMethodsOutput: {
+  componentWithMethodsOutput: {
     name: 'Main',
     props: [],
     children: [],

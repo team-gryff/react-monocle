@@ -13,6 +13,6 @@ module.exports = {
     'render', 'getInitialState', 'getDefaultProps', 'propTypes', 'mixins', 'statics',
     'displayName', 'componentWillMount', 'componentDidMount', 'componentWillReceiveProps',
     'shouldComponentUpdate', 'componentWillUpdate', 'componentDidUpdate',
-    'componentWillUnmount'
+    'componentWillUnmount', 'constructor'
   ]
 }
