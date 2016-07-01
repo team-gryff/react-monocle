@@ -18,28 +18,33 @@ module.exports = {
     name: 'Main',
     props: [],
     state: [],
+    methods: [],
     children: [
       { 
         name: 'SearchBar', 
         props: [],
         state: [],
+        methods: [],
         children: [], 
       }, 
       { 
         name: 'SearchResults',
         props: [],
         state: [],
+        methods: [],
         children: [
           { 
             name: 'Result', 
             props: [],
             state: [],
+            methods: [],
             children: [], 
           }, 
           { 
             name: 'Result', 
             props: [],
             state: [],
+            methods: [],
             children: [],
           },
         ],
@@ -62,10 +67,12 @@ module.exports = {
     name: 'Main',
     props: [],
     state: [],
+    methods: [],
     children: [
       { name: 'SearchBar' ,
         children: [],
         state: [],
+        methods: [],
         props: [
           { name: 'onChange' },
           { name: 'onSubmit' }
@@ -94,6 +101,7 @@ module.exports = {
   componentWithStateOutput: {
     name: 'Main',
     props: [],
+    methods: [],
     state: [
       { name: 'search', value: '' },
       { name: 'ajaxData', value: [] },
@@ -115,7 +123,11 @@ module.exports = {
       componentWillUnmount: function() {  },
       
       // Custom Component-Level Methods
-      handleSubmit: function(e) {  },
+      handleSubmit: function(e) { 
+        this.setState({
+
+        });
+      },
       handleReceiveData: function(e) {  },
       render: function() {
         return <div>Test</div>

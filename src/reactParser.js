@@ -17,6 +17,7 @@ function getES5ReactComponents(ast) {
     name: '',
     state: [],
     props: [],
+    methods: [],
     children: [],
   }, 
   topJsxComponent;
@@ -29,12 +30,22 @@ function getES5ReactComponents(ast) {
       if (node.property && node.property.name === "createClass") {
         output.name = topJsxComponent;
       }
+      this.visitChildren(node);
     },
     ObjectExpression: function (node) {
-      const getInitialStateProp = node.properties.filter(prop => prop.key.name === "getInitialState")[0];
-      if (getInitialStateProp) {
-        output.state = getReactStates(getInitialStateProp.value.body.body[0].argument);
-      }
+      node.properties.forEach(prop => {
+        switch (prop.key.name) {
+          case "getInitialState":
+            output.state = getReactStates(prop.value.body.body[0].argument);
+            break;
+          default:
+            if (reactMethods.indexOf(prop.key.name) < 0
+                && prop.value.type === 'FunctionExpression') {
+              output.methods.push(prop.key.name);
+            }
+            break;
+        }
+      });
       this.visitChildren(node);
     },
     JSXElement: function (node) {
@@ -43,10 +54,6 @@ function getES5ReactComponents(ast) {
     },
   });
   return output;
-}
-
-function getReactMethods (node) {
-
 }
 
 function getReactStates (node) {
