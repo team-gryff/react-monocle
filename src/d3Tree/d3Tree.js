@@ -6,9 +6,8 @@ w = 1480 - m[1] - m[3],
 h = 800 - m[0] - m[2],
 i = 0,
 duration = 500,
-rectW = 150,
-rectH = 80,
-wrapLength = 120;
+rectW = 200,
+rectH = 100;
 
 function create(element, treeData) {
   tree = d3.layout.tree().size([w, h]);
@@ -30,15 +29,17 @@ function create(element, treeData) {
   return tree;
 }
 
+//Update nodes
 function update(source) {
   let root = source;
   root.x0 = 0;
-  root.y0 = h / 2;
+  root.y0 = 0;
   let nodes = tree.nodes(root).reverse();
   let links = tree.links(nodes);
 
+  //Set depth of nodes
   nodes.forEach(function (d) {
-    d.y = d.depth * 180;
+    d.y = d.depth * h/3;
   });
 
   let node = svg.selectAll("g.node")
@@ -48,36 +49,37 @@ function update(source) {
 
   // Enter any new nodes at the parent's previous position.
   let nodeEnter = node.enter().append("g")
-  .attr("class", "node")
-  .attr("transform", function (d) {
-    console.log('node positioning', source)
-    return "translate(" + source.x0 + "," + source.y0 + ")";
-  });
+  .attr("class", "node");
 
-  nodeEnter.append("svg:rect")
+  nodeEnter.append("rect")
   .attr("width", rectW)
-  .attr("height", function(d) {
-    return 19;
-  })
-  .attr("y", -11)
+  .attr("height", rectH)
+  .attr("y", -10)
   .attr("rx", 2)
   .attr("ry", 2)
   .attr("stroke", "black")
+  .attr("stroke-width", 0.9)
   .style("fill", function (d) {
-    return d._children ? "lightsteelblue" : "#fff";
+    return d.children ? "white" : "lightsteelblue";
   });
 
   nodeEnter.append("text")
-  .attr("x", function(d) {
-    return d._children ? -8 : 8;
-  })
-  .attr("y", 3)
-  .attr("dy", "0em")
+  .attr("x", 4)
+  .attr("y", 10)
+  .attr("dy", ".5em")
   .text(function (d) {
+    return ([`Component: ${d.name}`]);
+  })
+
+  nodeEnter.append("text")
+  .attr("x", 4)
+  .attr("y", 28)
+  .attr("dy", ".5em")
+  .text(function(d) {
     let stateArr = [];
     let propsArr = [];
     let status;
-    if (d.state && d.props) {
+    if (d.state.length > 0 && d.props.length > 0) {
       stateArr = d.state.map(i => {
         return i.name;
       });
@@ -87,63 +89,47 @@ function update(source) {
       stateArr = stateArr.join(', ');
       propsArr = propsArr.join(', ');
       status = `State: ${stateArr}, Props: ${propsArr}`;
-    } else if (d.state) {
+    } else if (d.state.length > 0) {
       stateArr = d.state.map(i => {
         return i.name;
       });
       stateArr = stateArr.join(', ');
-      status = `State: ${d.stateArr}`;
-    } else if (d.props) {
+      status = `State: ${stateArr}`;
+    } else if (d.props.length > 0) {
         propsArr = d.props.map(i => {
           return i.name;
         });
       propsArr = propsArr.join(', ');
       status = `Props: ${propsArr}`;
     }
-    return (`Component: ${d.name}, ${status} Methods: ${d.methods}`);
-  });
+    return (status);
+  })
 
-  wrap(d3.selectAll("text"), wrapLength);
+  nodeEnter.append("text")
+  .attr("x", 4)
+  .attr("y", 46)
+  .attr("dy", ".5em")
+  .text(function(d) {
+    if (d.methods.length > 0) return ([`Methods: ${d.methods}`]);
+  })
 
-  // Transition nodes to their new position.
+  // Transition nodes to their positions.
   nodeEnter.transition()
     .duration(duration)
     .attr("transform", function(d) {
       return "translate(" + d.x + "," + d.y + ")";
     })
-    .style("opacity", 1)
-    .select("rect")
 
-  .style("fill", "lightsteelblue");
-
-  node.transition()
-    .duration(duration)
-    .attr("transform", function(d) {
-      return "translate(" + d.x + "," + d.y + ")";
-    })
-    .style("opacity", 1);
-
-
-  node.exit().transition()
-    .duration(duration)
-    .attr("transform", function(d) {
-      console.log('node exit transition ', source);
-      return "translate(" + source.x + "," + source.y + ")";
-    })
-    .style("opacity", 1e-6)
-    .remove();
-
-  // Update the links…
+  // Position links.
   let link = svg.selectAll("path.link")
     .data(tree.links(nodes), function(d) {
       return d.target.id;
     });
 
-  // Enter any new links at the parent's previous position.
+  // Enter new links at the parent's previous position.
   link.enter().insert("svg:path", "g")
     .attr("class", "link")
     .attr("d", function(d) {
-      console.log('enter insert node position ', source)
       let o = {
         x: source.x0,
         y: source.y0
@@ -156,58 +142,6 @@ function update(source) {
     .transition()
     .duration(duration)
     .attr("d", diagonal);
-
-  // Transition links to their new position.
-  link.transition()
-    .duration(duration)
-    .attr("d", diagonal);
-
-  // Transition exiting nodes to the parent's new position.
-  link.exit().transition()
-    .duration(duration)
-    .attr("d", function(d) {
-      let o = {
-        x: source.x,
-        y: source.y
-      };
-      return diagonal({
-        source: o,
-        target: o
-      });
-    })
-    .remove();
-
-  // Stash the old positions for transition.
-  nodes.forEach(function(d) {
-    d.x0 = d.x;
-    d.y0 = d.y;
-  });
-}
-
-function wrap(text, width) {
-  text.each(function() {
-    let text = d3.select(this),
-      words = text.text().split(/\s+/).reverse(),
-      word,
-      line = [],
-      lineNumber = 0,
-      lineHeight = 1.1, // ems
-      y = text.attr("y"),
-      dy = parseFloat(text.attr("dy")),
-      tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
-    while (word = words.pop()) {
-      line.push(word);
-      tspan.text(line.join(" "));
-      if (tspan.node().getComputedTextLength() > width) {
-        line.pop();
-        tspan.text(line.join(" "));
-        line = [word];
-        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-      }
-    }
-    d3.select(this.parentNode.children[0]).attr('height', 19 * (lineNumber+1));
-
-  });
 }
 
 create(document.body, d3Obj);
