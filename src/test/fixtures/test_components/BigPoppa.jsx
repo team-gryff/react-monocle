@@ -14,7 +14,9 @@ class BigPoppa extends React.Component {
   }
 
   handeClick() {
-    // do clicky stuff here
+    return this.setState({
+      baz: 'im bazzing'
+    })
   }
 
   render() {

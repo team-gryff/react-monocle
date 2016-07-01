@@ -19,7 +19,12 @@ const htmlElements = ['a', 'article', 'audio', 'b', 'body', 'br', 'button', 'can
  * @returns {Object} Nested object containing name, children, props and state properties of components
  */
 function getES5ReactComponents(ast) {
-  let output = {}, topJsxComponent;
+    let output = {
+    name: '',
+    state: [],
+    props: [],
+    children: []
+  }, topJsxComponent;
   esrecurse.visit(ast, {
     VariableDeclarator: function (node) {
       topJsxComponent = node.id.name;
@@ -108,7 +113,12 @@ function isES6ReactComponent (node) {
  * @returns {Object} Nested object containing name, children, props and state properties of components
  */
 function getES6ReactComponents(ast) {
-  let output = {};
+  let output = {
+    name: '',
+    state: [],
+    props: [],
+    children: []
+  };
   esrecurse.visit(ast, {
     ClassDeclaration: function (node) {
       if (isES6ReactComponent(node)) {
@@ -116,8 +126,10 @@ function getES6ReactComponents(ast) {
         this.visitChildren(node);
       }
     },
-    ObjectExpression: function (node) {
-      output.state = getReactStates(node);
+    ExpressionStatement: function(node) {
+      if  (node.expression.left && node.expression.left.property && node.expression.left.property.name === 'state') {
+        output.state = getReactStates(node.expression.right)
+      }
     },
     JSXElement: function (node) {
       output.children = getChildJSXElements(node);
