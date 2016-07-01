@@ -1,6 +1,6 @@
 const fs = require('fs');
 const appRoot = require('app-root-path');
-const DEV_MODE = true;
+const DEV_MODE = true; //testing purposes
 
 
 function renderHtml(d3Obj) {
@@ -16,7 +16,7 @@ function renderHtml(d3Obj) {
   const insert = `${treeHtml} \n <script type="text/javascript"> \n ${d3lib} \n </script>`
   + `<script type="text/javascript"> \n var d3Obj = ${JSON.stringify(d3Obj)} \n ${treeLogic} \n </script> \n ${endHtml}`;
   fs.writeFile(appRoot + '/react-monocle.html', insert, err => {
-    console.log(appRoot);
+    if (err) console.log(err);
   });
 }
 

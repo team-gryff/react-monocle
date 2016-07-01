@@ -2,9 +2,16 @@
 const fs = require('fs')
 const acorn = require('acorn-jsx/inject')(require('acorn'));
 
-
+/**
+ * Takes in directory name and generates an AST based on the File.
+ * If it is a React Component an object is returned with the corresponding key/value pair
+ * ComponentName: AST
+ * @param {directory} file directory
+ * @returns {Object} Object with Component name and AST
+ */
 
 function astGenerator(directory) {
+  // TODO: support for stateless functional components
   // using directory of component to turn into string for acorn
   const stringed = fs.readFileSync(directory, {encoding:'utf-8'});
   let result = {}, name;
@@ -17,8 +24,8 @@ function astGenerator(directory) {
 
 //  starting backwards because export statements are likely to be at the end of a file
   for (let i = ast.body.length - 1; i >= 0; i--) {
-    if (ast.body[i].type === 'ExportDefaultDeclaration') {
       //finding ES6 export default
+    if (ast.body[i].type === 'ExportDefaultDeclaration') {
       name = ast.body[i].declaration.name || ast.body[i].declaration.id.name;
       result[name] = ast;
       return result;
