@@ -97,26 +97,6 @@ module.exports = {
         children: [],
         state: [],
         methods: [],
-      },
-      {
-        name: 'ListItem',
-        props: [
-          { name: 'onChange' },
-          { name: 'onSubmit' }
-        ],
-        children: [],
-        state: [],
-        methods: [],
-      },
-      {
-        name: 'ListItem',
-        props: [
-          { name: 'onChange' },
-          { name: 'onSubmit' }
-        ],
-        children: [],
-        state: [],
-        methods: [],
       }
     ],
     state: [],
