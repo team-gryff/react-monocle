@@ -1,13 +1,13 @@
 'use strict';
 
-const acorn = require('acorn-jsx');  
-const esrecurse = require('esrecurse');  
+const acorn = require('acorn-jsx');
+const esrecurse = require('esrecurse');
 const escodegen = require('escodegen');
 
 const htmlElements = require('./constants.js').htmlElements;
 const reactMethods = require('./constants.js').reactMethods;
 
-function getReactStates (node) {
+function getReactStates(node) {
   const stateStr = escodegen.generate(node);
   let states;
   eval('states = ' + stateStr);
@@ -16,10 +16,10 @@ function getReactStates (node) {
   for (let state in states) {
     output.push({
       name: state,
-      value: states[state]
+      value: states[state],
     });
   }
-  
+
   return output;
 }
 
@@ -28,7 +28,7 @@ function getReactStates (node) {
  * @param {Node} node
  * @returns {Array} Array of all JSX props on React component
  */
-function getReactProps (node) {
+function getReactProps(node) {
   if (node.openingElement.attributes.length === 0) return [];
   return node.openingElement.attributes
     .map(attribute => { return { name: attribute.name.name }; });
@@ -39,11 +39,11 @@ function getReactProps (node) {
  * @param {Node} node
  * @returns {Array} Array of (nested) children of React component passed in
  */
-function getChildJSXElements (node) {
+function getChildJSXElements(node) {
   if (node.children.length === 0) return [];
   var childJsxComponentsArr = node
     .children
-    .filter(jsx => jsx.type === "JSXElement" 
+    .filter(jsx => jsx.type === 'JSXElement'
     && htmlElements.indexOf(jsx.openingElement.name.name) < 0);
   return childJsxComponentsArr
     .map(child => {
@@ -60,11 +60,11 @@ function getChildJSXElements (node) {
 /**
  * Returns if AST node is an ES6 React component
  * @param {Node} node
- * @return {Boolean} Determines if AST node is a React component node 
+ * @return {Boolean} Determines if AST node is a React component node
  */
-function isES6ReactComponent (node) {
-  return (node.superClass.property && node.superClass.property.name === "Component")
-    || node.superClass.name === "Component";
+function isES6ReactComponent(node) {
+  return (node.superClass.property && node.superClass.property.name === 'Component')
+    || node.superClass.name === 'Component';
 }
 
 /**
@@ -74,21 +74,21 @@ function isES6ReactComponent (node) {
  */
 function getES5ReactComponents(ast) {
   let output = {
-    name: '',
-    state: [],
-    props: [],
-    methods: [],
-    children: [],
-  },
-  topJsxComponent,
-  outside;
+      name: '',
+      state: [],
+      props: [],
+      methods: [],
+      children: [],
+    },
+    topJsxComponent,
+    outside;
   esrecurse.visit(ast, {
     VariableDeclarator: function (node) {
       topJsxComponent = node.id.name;
       this.visitChildren(node);
     },
     MemberExpression: function (node) {
-      if (node.property && node.property.name === "createClass") {
+      if (node.property && node.property.name === 'createClass') {
         output.name = topJsxComponent;
       }
       this.visitChildren(node);
@@ -96,7 +96,7 @@ function getES5ReactComponents(ast) {
     ObjectExpression: function (node) {
       node.properties.forEach(prop => {
         switch (prop.key.name) {
-          case "getInitialState":
+          case 'getInitialState':
             output.state = getReactStates(prop.value.body.body[0].argument);
             break;
           default:
@@ -119,12 +119,12 @@ function getES5ReactComponents(ast) {
           props: getReactProps(node),
           state: [],
           methods: [],
-        }
+        };
       }
     },
   });
 
-  if (outside) output.children.push(outside)
+  if (outside) output.children.push(outside);
   return output;
 }
 
@@ -135,13 +135,13 @@ function getES5ReactComponents(ast) {
  */
 function getES6ReactComponents(ast) {
   let output = {
-    name: '',
-    props: [],
-    state: [],
-    methods: [],
-    children: [],
-  },
-  outside;
+      name: '',
+      props: [],
+      state: [],
+      methods: [],
+      children: [],
+    },
+    outside;
   esrecurse.visit(ast, {
     ClassDeclaration: function (node) {
       if (isES6ReactComponent(node)) {
@@ -155,7 +155,7 @@ function getES6ReactComponents(ast) {
       this.visitChildren(node);
     },
     ExpressionStatement: function (node) {
-      if  (node.expression.left && node.expression.left.property && node.expression.left.property.name === 'state') {
+      if (node.expression.left && node.expression.left.property && node.expression.left.property.name === 'state') {
         output.state = getReactStates(node.expression.right);
       }
       this.visitChildren(node);
@@ -170,12 +170,12 @@ function getES6ReactComponents(ast) {
           props: getReactProps(node),
           state: [],
           methods: [],
-        }
+        };
       }
     },
   });
 
-  if (outside) output.children.push(outside)
+  if (outside) output.children.push(outside);
   return output;
 }
 
@@ -212,8 +212,8 @@ function getStatelessFunctionalComponents(ast) {
  * @param js
  */
 function jsToAst(js) {
-  const ast = acorn.parse(js, { 
-    plugins: { jsx: true }
+  const ast = acorn.parse(js, {
+    plugins: { jsx: true },
   });
   if (ast.body.length === 0) throw new Error('Empty AST input');
   return ast;
@@ -227,10 +227,10 @@ function componentChecker(ast) {
   return false;
 }
 
-module.exports = { 
-  jsToAst, 
+module.exports = {
+  jsToAst,
   componentChecker,
-  getES5ReactComponents, 
+  getES5ReactComponents,
   getES6ReactComponents,
-  getStatelessFunctionalComponents
+  getStatelessFunctionalComponents,
 };

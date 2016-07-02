@@ -4,7 +4,9 @@
   "description": "A developer tool to visualize a React application's component hierarchy.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./src/test/test.js || true",
+    "lint": "eslint src",
+    "unit-tests": "mocha ./src/test/test.js",
+    "test": "npm run lint || true && npm run unit-tests || true",
     "bundle-d3tree": "webpack --watch -d ./src/d3Tree/index.js ./src/d3Tree/bundle.js"
   },
   "repository": {
@@ -43,6 +45,11 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "eslint": "^2.9.0",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-plugin-import": "^1.10.0",
+    "eslint-plugin-jsx-a11y": "^1.5.3",
+    "eslint-plugin-react": "^5.2.2",
     "jsdom": "^9.2.1",
     "mocha": "^2.5.3",
     "webpack": "^1.13.1"
