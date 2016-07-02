@@ -19,9 +19,8 @@ program.name = 'monocle';
 
 (function() {
   let entry = null, directory = process.cwd();
-  if (program.entry) entry = `${process.cwd()}/${program.entry}` || null;
+  if (program.entry) entry = `${process.cwd()}/${program.entry}`;
   if (program.directory) directory = `${process.cwd()}/${program.directory}`;
-  // const directory = `${process.cwd()}/${program.directory}` || process.cwd();
   const ext = program.extension || 'jsx';
   // globs to match any jsx in directory called
   glob(`**/*.${ext}`, {cwd: directory, nosort:true, ignore: 'node_modules/**'}, (err, files) => {
