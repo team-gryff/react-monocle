@@ -15,12 +15,12 @@ program
   .option('-j, --extension <extension>', 'extension of React files (jsx or js). Defaults to .jsx (only use when specifying/in directory which has your React files!)')
   .parse(process.argv);
 
+program.name = 'monocle';
 
 (function() {
-  const entry = `${process.cwd()}/${program.entry}` || null;
-  let directory;
+  let entry = null, directory = process.cwd();
+  if (program.entry) entry = `${process.cwd()}/${program.entry}` || null;
   if (program.directory) directory = `${process.cwd()}/${program.directory}`;
-  else directory = process.cwd();
   // const directory = `${process.cwd()}/${program.directory}` || process.cwd();
   const ext = program.extension || 'jsx';
   // globs to match any jsx in directory called
