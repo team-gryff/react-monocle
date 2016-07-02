@@ -79,8 +79,9 @@ function getES5ReactComponents(ast) {
     props: [],
     methods: [],
     children: [],
-  }, 
-  topJsxComponent;
+  },
+  topJsxComponent,
+  outside;
   esrecurse.visit(ast, {
     VariableDeclarator: function (node) {
       topJsxComponent = node.id.name;
@@ -111,8 +112,19 @@ function getES5ReactComponents(ast) {
     JSXElement: function (node) {
       output.children = getChildJSXElements(node);
       output.props = getReactProps(node);
+      if (htmlElements.indexOf(node.openingElement.name.name) < 0) {
+        outside = {
+          name: node.openingElement.name.name,
+          children: getChildJSXElements(node),
+          props: getReactProps(node),
+          state: [],
+          methods: [],
+        }
+      }
     },
   });
+
+  if (outside) output.children.push(outside)
   return output;
 }
 
@@ -128,7 +140,8 @@ function getES6ReactComponents(ast) {
     state: [],
     methods: [],
     children: [],
-  };
+  },
+  outside;
   esrecurse.visit(ast, {
     ClassDeclaration: function (node) {
       if (isES6ReactComponent(node)) {
@@ -150,9 +163,19 @@ function getES6ReactComponents(ast) {
     JSXElement: function (node) {
       output.children = getChildJSXElements(node);
       output.props = getReactProps(node);
+      if (htmlElements.indexOf(node.openingElement.name.name) < 0) {
+        outside = {
+          name: node.openingElement.name.name,
+          children: getChildJSXElements(node),
+          props: getReactProps(node),
+          state: [],
+          methods: [],
+        }
+      }
     },
   });
 
+  if (outside) output.children.push(outside)
   return output;
 }
 
