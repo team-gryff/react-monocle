@@ -7,12 +7,12 @@ module.exports = {
     'object', 'ol', 'option', 'p', 'param', 'pre', 'progress', 'q', 'rb', 'rt',
     'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span',
     'strong', 'style', 'sub', 'summary', 'table', 'tbody', 'td', 'thead', 'title',
-    'tr', 'track', 'u', 'ul', 'var', 'video', 'wbr'
+    'tr', 'track', 'u', 'ul', 'var', 'video', 'wbr',
   ],
   reactMethods: [
     'render', 'getInitialState', 'getDefaultProps', 'propTypes', 'mixins', 'statics',
     'displayName', 'componentWillMount', 'componentDidMount', 'componentWillReceiveProps',
     'shouldComponentUpdate', 'componentWillUpdate', 'componentDidUpdate',
-    'componentWillUnmount', 'constructor'
-  ]
-}
+    'componentWillUnmount', 'constructor',
+  ],
+};
