@@ -17,13 +17,17 @@ program
 
 
 (function() {
-  const entry = program.entry || null;
-  const directory = program.directory || process.cwd();
+  const entry = `${process.cwd()}/${program.entry}` || null;
+  let directory;
+  if (program.directory) directory = `${process.cwd()}/${program.directory}`;
+  else directory = process.cwd();
+  // const directory = `${process.cwd()}/${program.directory}` || process.cwd();
   const ext = program.extension || 'jsx';
   // globs to match any jsx in directory called
   glob(`**/*.${ext}`, {cwd: directory, nosort:true, ignore: 'node_modules/**'}, (err, files) => {
     if (files.length === 0) throw new Error('No files found (try specifying file path and extension)')
-
+    if (directory !== process.cwd()) files = files.map(ele => `${process.cwd()}/${program.directory}/${ele}`)
+    
     // converting file paths to abstract syntax trees (output is an array with {ComponentName: AST} objects)
     const astz = files.map(ele => {return astGenerator(ele)})
     let componentObject = assign.apply(null, astz); // combining into one file
