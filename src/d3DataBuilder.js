@@ -20,13 +20,14 @@ function d3DataBuilder(obj) {
     if (reactParser.componentChecker(obj[key])) formatted[key] = reactParser.getES6ReactComponents(obj[key]) 
     else {
       let es5obj = reactParser.getES5ReactComponents(obj[key]);
-      if (es5obj.name !== '') formatted[key] = es5obj; //if the name is defined, it is an es5 component
-      else formatted[key] = reactParser.getStatelessFunctionalComponents(obj[key]); //else it is a stateless functional component
+      formatted[key] = es5obj; //if the name is defined, it is an es5 component
+      formatted[key].name = key;
+      // else formatted[key] = reactParser.getStatelessFunctionalComponents(obj[key]); //else it is a stateless functional component
     }
   }
 
   let result = cloneDeep(formatted[ENTRY]);
-
+  
 // recursive function to concat and build the d3 object
   function treeAddition(node) {
     if (!node.children) throw new Error('Invalid Node! Something went wrong with the parsing (no children array)')
