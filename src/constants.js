@@ -2,7 +2,7 @@ module.exports = {
   htmlElements: [
     'a', 'article', 'audio', 'b', 'body', 'br', 'button', 'canvas', 'caption',
     'code', 'dialog', 'div', 'dl', 'dt', 'em', 'embed', 'font', 'footer', 'form',
-    'frame', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'html', 'i', 'iframe', 'img',
+    'frame', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'html', 'hr', 'i', 'iframe', 'img',
     'input', 'kbd', 'label', 'legend', 'li', 'link', 'main', 'map', 'noscript',
     'object', 'ol', 'option', 'p', 'param', 'pre', 'progress', 'q', 'rb', 'rt',
     'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span',
