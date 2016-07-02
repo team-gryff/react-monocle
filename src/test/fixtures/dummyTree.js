@@ -1,6 +1,6 @@
 module.exports = {
   "name":"BigPoppa",
-  "methods": [ 'handeClick' ],
+  "methods": [ 'handleClick' ],
   "state":[
     {
       "name":"foo",
