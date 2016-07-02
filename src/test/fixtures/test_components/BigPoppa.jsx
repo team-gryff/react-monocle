@@ -13,7 +13,7 @@ class BigPoppa extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
-  handeClick() {
+  handleClick() {
     return this.setState({
       baz: 'im bazzing'
     })
@@ -25,7 +25,7 @@ class BigPoppa extends React.Component {
       <Notorious 
         foo={this.state.foo}
         bar={this.state.bar}
-        click={this.handeClick}
+        click={this.handleClick}
       />
       <Biggie 
         bar={this.state.bar}

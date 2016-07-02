@@ -13,9 +13,9 @@ function renderHtml(d3Obj, start) {
         d3lib = fs.readFileSync(appRoot + d3libPath, {encoding:'utf-8'}),
         treeLogic = fs.readFileSync(appRoot + treeLogicPath, {encoding:'utf-8'}),
         endHtml = fs.readFileSync(appRoot + endHtmlPath, {encoding:'utf-8'}),
-        insert = `${treeHtml} \n <script type="text/javascript"> \n ${d3lib} \n </script>`
-  + `<script type="text/javascript"> \n var d3Obj = ${JSON.stringify(d3Obj)} \n ${treeLogic} \n </script> \n ${endHtml}`;
-  fs.writeFile(process.cwd() + '/react-monocle.html', insert, err => {
+        insert = `${treeHtml} \n <script type="text/javascript"> \n ${d3lib} \n </script>
+        <script type="text/javascript"> \n var d3Obj = ${JSON.stringify(d3Obj)} \n ${treeLogic} \n </script> \n ${endHtml}`;
+  fs.writeFile(`${process.cwd()}/react-monocle.html`, insert, err => {
     if (err) throw new Error(err);
     exec(`open ${process.cwd()}/react-monocle.html`, function(error, stdout, stderr) {
       if (error !== null) throw new Error(error);
