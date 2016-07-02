@@ -14,43 +14,6 @@ module.exports = {
       }
     });
   `,
-  nestedComponentsOutput: { 
-    name: 'Main',
-    props: [],
-    state: [],
-    methods: [],
-    children: [
-      { 
-        name: 'SearchBar', 
-        props: [],
-        state: [],
-        methods: [],
-        children: [], 
-      }, 
-      { 
-        name: 'SearchResults',
-        props: [],
-        state: [],
-        methods: [],
-        children: [
-          { 
-            name: 'Result', 
-            props: [],
-            state: [],
-            methods: [],
-            children: [], 
-          }, 
-          { 
-            name: 'Result', 
-            props: [],
-            state: [],
-            methods: [],
-            children: [],
-          },
-        ],
-      }
-    ],
-  },
   componentWithProps: `
     var Main = React.createClass({ 
       render: function () {
@@ -63,34 +26,19 @@ module.exports = {
       }
     });
   `,
-  componentWithPropsOutput: {
-    name: 'Main',
-    props: [],
-    state: [],
-    methods: [],
-    children: [
-      { name: 'SearchBar' ,
-        children: [],
-        state: [],
-        methods: [],
-        props: [
-          { name: 'onChange' },
-          { name: 'onSubmit' }
-        ]
-      }
-    ],
-  },
   componentWithState: `
     var Main = React.createClass({
       getInitialState: function () {
         return {
-          search: '',
-          ajaxData: [],
-          number: 0,
+          number: 2,
+          string: 'hello',
           boolean: true,
+          array: [1, 'hello', true],
           object: {
-            address: '',
-          },
+            name: 'hello again',
+            age: 27,
+            engineer: true
+          }
         };
       },
       render: function () {
@@ -98,19 +46,6 @@ module.exports = {
       }
     });
   `,
-  componentWithStateOutput: {
-    name: 'Main',
-    props: [],
-    methods: [],
-    state: [
-      { name: 'search', value: '' },
-      { name: 'ajaxData', value: [] },
-      { name: 'number', value: 0 },
-      { name: 'boolean', value: true },
-      { name: 'object', value: { address: ''} },
-    ],
-    children: [],
-  },
   componentWithMethods: `
     var Main = React.createClass({
       // React Component Lifecycle Methods
@@ -134,11 +69,4 @@ module.exports = {
       }
     });
   `,
-  componentWithMethodsOutput: {
-    name: 'Main',
-    props: [],
-    children: [],
-    state: [],
-    methods: ['handleSubmit', 'handleReceiveData'],
-  }
 }
