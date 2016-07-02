@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint src",
-    "test": "npm run lint && mocha ./src/test/test.js",
+    "unit-tests": "mocha ./src/test/test.js",
+    "test": "npm run lint || true && npm run unit-tests || true",
     "bundle-d3tree": "webpack --watch -d ./src/d3Tree/index.js ./src/d3Tree/bundle.js"
   },
   "repository": {
