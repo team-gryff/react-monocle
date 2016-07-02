@@ -4,7 +4,7 @@
   "description": "A developer tool to visualize a React application's component hierarchy.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./src/test/test.js || true",
+    "test": "mocha ./src/test/test.js",
     "bundle-d3tree": "webpack --watch -d ./src/d3Tree/index.js ./src/d3Tree/bundle.js"
   },
   "repository": {
