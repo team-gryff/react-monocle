@@ -74,6 +74,23 @@ describe('ESTree AST Parser Tests', function() {
   });
 
   describe('ES6 Stateless Functional Component Parsing Tests', function() {
-    
+    const getStatelessFunctionalComponents = require('../reactParser').getStatelessFunctionalComponents;
+    const statelessFuncFixtures = require('./fixtures/es6StatelessFunctionalComponentFixtures');
+
+    it('should be a function', function() {
+      expect(getStatelessFunctionalComponents).to.be.a.function;
+    })
+
+    it('should return an object with correct name property', function() {
+      expect(getStatelessFunctionalComponents(jsToAst(statelessFuncFixtures.statelessNested)).name).to.equal('Foo');
+    })
+
+    it('should account for nested children components', function() {
+      expect(getStatelessFunctionalComponents(jsToAst(statelessFuncFixtures.statelessNested)).children[0].name).to.equal('Bar');
+    })
+
+    it('should return an object with correct props', function(){
+      expect(getStatelessFunctionalComponents(jsToAst(statelessFuncFixtures.statelessNested)).children[0].props.length).to.equal(1);
+    })
   })
 });
