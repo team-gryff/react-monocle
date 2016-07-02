@@ -30,7 +30,6 @@ function getES5ReactComponents(ast) {
       if (node.property && node.property.name === "createClass") {
         output.name = topJsxComponent;
       }
-      this.visitChildren(node);
     },
     ObjectExpression: function (node) {
       node.properties.forEach(prop => {
@@ -145,6 +144,7 @@ function getES6ReactComponents(ast) {
       if  (node.expression.left && node.expression.left.property && node.expression.left.property.name === 'state') {
         output.state = getReactStates(node.expression.right)
       }
+      this.visitChildren(node);
     },
     JSXElement: function (node) {
       output.children = getChildJSXElements(node);
@@ -152,6 +152,35 @@ function getES6ReactComponents(ast) {
     },
   });
 
+  return output;
+}
+
+/**
+ * Recursively walks AST extracts name, child component, and props for a stateless functional component
+ * Still a WIP - no way to tell if it is actually a component or just a function
+ * @param {ast} ast
+ * @returns {Object} Nested object containing name, children, and props properties of components
+ */
+function getStatelessFunctionalComponents(ast) {
+  let output = {
+    name: '',
+    props: [],
+    state: [],
+    methods: [],
+    children: [],
+  },
+  topJsxComponent;
+  esrecurse.visit(ast, {
+    VariableDeclarator: function (node) {
+      if (output.name === '') output.name = topJsxComponent = node.id.name;
+      this.visitChildren(node);
+    },
+
+    JSXElement: function (node) {
+      output.children = getChildJSXElements(node);
+      output.props = getReactProps(node);
+    },
+  })
   return output;
 }
 
@@ -169,7 +198,8 @@ function jsToAst(js) {
 
 function componentChecker(ast) {
   for (let i = 0; i < ast.body.length; i++) {
-    if (ast.body[i].type === 'ClassDeclaration' || ast.body[i].type === 'ExportDefaultDeclaration') return true;
+    if (ast.body[i].type === 'ClassDeclaration') return true;
+    if (ast.body[i].type === 'ExportDefaultDeclaration' && ast.body[i].declaration.type === 'ClassDeclaration') return true;
   }
   return false;
 }
@@ -179,4 +209,5 @@ module.exports = {
   componentChecker,
   getES5ReactComponents, 
   getES6ReactComponents,
+  getStatelessFunctionalComponents
 };
