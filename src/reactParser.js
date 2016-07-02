@@ -199,7 +199,7 @@ function jsToAst(js) {
 function componentChecker(ast) {
   for (let i = 0; i < ast.body.length; i++) {
     if (ast.body[i].type === 'ClassDeclaration') return true;
-    if (ast.body[i].type === 'ExportDefaultDeclaration' && ast.body[i].declaration.type === 'AssignmentExpression') return true;
+    if (ast.body[i].type === 'ExportDefaultDeclaration' && ast.body[i].declaration.type === 'ClassDeclaration') return true;
   }
   return false;
 }
