@@ -23,6 +23,7 @@ function getES5ReactComponents(ast) {
   topJsxComponent;
   esrecurse.visit(ast, {
     VariableDeclarator: function (node) {
+      topJsxComponent = node.id.name;
       this.visitChildren(node);
     },
     MemberExpression: function (node) {
@@ -51,7 +52,6 @@ function getES5ReactComponents(ast) {
       output.props = getReactProps(node);
     },
   });
-  console.log(output.name);
   return output;
 }
 
@@ -155,6 +155,12 @@ function getES6ReactComponents(ast) {
   return output;
 }
 
+/**
+ * Recursively walks AST extracts name, child component, and props for a stateless functional component
+ * Still a WIP - no way to tell if it is actually a component or just a function
+ * @param {ast} ast
+ * @returns {Object} Nested object containing name, children, and props properties of components
+ */
 function getStatelessFunctionalComponents(ast) {
   let output = {
     name: '',
@@ -175,7 +181,6 @@ function getStatelessFunctionalComponents(ast) {
       output.props = getReactProps(node);
     },
   })
-  console.log(output);
   return output;
 }
 
