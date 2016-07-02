@@ -54,7 +54,7 @@ function getChildJSXElements (node) {
         state: [],
         methods: [],
       };
-    })
+    });
 }
 
 /**
@@ -64,26 +64,7 @@ function getChildJSXElements (node) {
  */
 function isES6ReactComponent (node) {
   return (node.superClass.property && node.superClass.property.name === "Component")
-    || node.superClass.name === "Component"
-}
-
-/**
- * Helper function to convert Javascript stringified code to an AST using acorn-jsx library
- * @param js
- */
-function jsToAst(js) {
-  const ast = acorn.parse(js, { 
-    plugins: { jsx: true }
-  });
-  if (ast.body.length === 0) throw new Error('Empty AST input');
-  return ast;
-}
-
-function componentChecker(ast) {
-  for (let i = 0; i < ast.body.length; i++) {
-    if (ast.body[i].type === 'ClassDeclaration' || ast.body[i].type === 'ExportDefaultDeclaration') return true;
-  }
-  return false;
+    || node.superClass.name === "Component";
 }
 
 /**
@@ -162,7 +143,7 @@ function getES6ReactComponents(ast) {
     },
     ExpressionStatement: function (node) {
       if  (node.expression.left && node.expression.left.property && node.expression.left.property.name === 'state') {
-        output.state = getReactStates(node.expression.right)
+        output.state = getReactStates(node.expression.right);
       }
       this.visitChildren(node);
     },
@@ -188,11 +169,10 @@ function getStatelessFunctionalComponents(ast) {
     state: [],
     methods: [],
     children: [],
-  },
-  topJsxComponent;
+  };
   esrecurse.visit(ast, {
     VariableDeclarator: function (node) {
-      if (output.name === '') output.name = topJsxComponent = node.id.name;
+      if (output.name === '') output.name = node.id.name;
       this.visitChildren(node);
     },
 
@@ -200,7 +180,7 @@ function getStatelessFunctionalComponents(ast) {
       output.children = getChildJSXElements(node);
       output.props = getReactProps(node);
     },
-  })
+  });
   return output;
 }
 
