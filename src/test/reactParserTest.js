@@ -4,6 +4,7 @@ const expect = require('chai').expect;
 
 describe('ESTree AST Parser Tests', function() {
   const jsToAst = require('../reactParser.js').jsToAst;
+  let reactParserOutputFixtures = require('./fixtures/reactParserOutputFixtures.js');
 
   it('jsToAst should be a function', function() {
     expect(jsToAst).to.be.a.function;
@@ -23,22 +24,22 @@ describe('ESTree AST Parser Tests', function() {
 
     it('should return object with \'Main\' as top-level component with child property containing array with single object with name property equal \'SearchBar\'', function() {
       expect(getES5ReactComponents(jsToAst(es5ParserFixtures.nestedComponents)))
-        .to.deep.equal(es5ParserFixtures.nestedComponentsOutput);
+        .to.deep.equal(reactParserOutputFixtures.nestedComponentsOutput);
     });
 
     it('should return object with props property', function() {
       expect(getES5ReactComponents(jsToAst(es5ParserFixtures.componentWithProps)))
-        .to.deep.equal(es5ParserFixtures.componentWithPropsOutput);
+        .to.deep.equal(reactParserOutputFixtures.componentWithPropsOutput);
     });
 
     it('should return object with state property', function() {
       expect(getES5ReactComponents(jsToAst(es5ParserFixtures.componentWithState)))
-        .to.deep.equal(es5ParserFixtures.componentWithStateOutput);
+        .to.deep.equal(reactParserOutputFixtures.componentWithStateOutput);
     });
 
     it('should return object with methods property', function() {
       expect(getES5ReactComponents(jsToAst(es5ParserFixtures.componentWithMethods)))
-        .to.deep.equal(es5ParserFixtures.componentWithMethodsOutput);
+        .to.deep.equal(reactParserOutputFixtures.componentWithMethodsOutput);
     });
   });
 
@@ -48,27 +49,27 @@ describe('ESTree AST Parser Tests', function() {
 
     it('should return object with name of top-level components in js file using es6', function() {
       expect(getES6ReactComponents(jsToAst(es6ParserFixtures.singleMainApp)))
-        .to.deep.equal(es6ParserFixtures.singleMainAppOutput);
+        .to.deep.equal(reactParserOutputFixtures.singleMainAppOutput);
     });
 
     it('should return object with \'Main\' as top-level component with nested children components', function() {
      expect(getES6ReactComponents(jsToAst(es6ParserFixtures.nestedComponents)))
-      .to.deep.equal(es6ParserFixtures.nestedComponentsOutput);
+      .to.deep.equal(reactParserOutputFixtures.nestedComponentsOutput);
     });
 
     it('should return object with props property', function() {
       expect(getES6ReactComponents(jsToAst(es6ParserFixtures.componentWithProps)))
-        .to.deep.equal(es6ParserFixtures.componentWithPropsOutput);
+        .to.deep.equal(reactParserOutputFixtures.componentWithPropsOutput);
     });
 
     it('should return object with state property', function() {
       expect(getES6ReactComponents(jsToAst(es6ParserFixtures.componentWithState)))
-        .to.deep.equal(es6ParserFixtures.componentWithStateOutput);
+        .to.deep.equal(reactParserOutputFixtures.componentWithStateOutput);
     });
 
     it('should return object with methods property', function() {
       expect(getES6ReactComponents(jsToAst(es6ParserFixtures.componentWithMethods)))
-        .to.deep.equal(es6ParserFixtures.componentWithMethodsOutput);
+        .to.deep.equal(reactParserOutputFixtures.componentWithMethodsOutput);
     });
   });
 

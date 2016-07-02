@@ -116,6 +116,74 @@ function isES6ReactComponent (node) {
 }
 
 /**
+ * Helper function to convert Javascript stringified code to an AST using acorn-jsx library
+ * @param js
+ */
+function jsToAst(js) {
+  const ast = acorn.parse(js, { 
+    plugins: { jsx: true }
+  });
+  if (ast.body.length === 0) throw new Error('Empty AST input');
+  return ast;
+}
+
+function componentChecker(ast) {
+  for (let i = 0; i < ast.body.length; i++) {
+    if (ast.body[i].type === 'ClassDeclaration' || ast.body[i].type === 'ExportDefaultDeclaration') return true;
+  }
+  return false;
+}
+
+/**
+ * Recursively walks AST and extracts ES5 React component names, child components, props and state
+ * @param {ast} ast
+ * @returns {Object} Nested object containing name, children, props and state properties of components
+ */
+function getES5ReactComponents(ast) {
+  let output = {
+    name: '',
+    state: [],
+    props: [],
+    methods: [],
+    children: [],
+  }, 
+  topJsxComponent;
+  esrecurse.visit(ast, {
+    VariableDeclarator: function (node) {
+      topJsxComponent = node.id.name;
+      this.visitChildren(node);
+    },
+    MemberExpression: function (node) {
+      if (node.property && node.property.name === "createClass") {
+        output.name = topJsxComponent;
+      }
+      this.visitChildren(node);
+    },
+    ObjectExpression: function (node) {
+      node.properties.forEach(prop => {
+        switch (prop.key.name) {
+          case "getInitialState":
+            output.state = getReactStates(prop.value.body.body[0].argument);
+            break;
+          default:
+            if (reactMethods.indexOf(prop.key.name) < 0
+                && prop.value.type === 'FunctionExpression') {
+              output.methods.push(prop.key.name);
+            }
+            break;
+        }
+      });
+      this.visitChildren(node);
+    },
+    JSXElement: function (node) {
+      output.children = getChildJSXElements(node);
+      output.props = getReactProps(node);
+    },
+  });
+  return output;
+}
+
+/**
  * Recursively walks AST and extracts ES6 React component names, child components, props and state
  * @param {ast} ast
  * @returns {Object} Nested object containing name, children, props and state properties of components
