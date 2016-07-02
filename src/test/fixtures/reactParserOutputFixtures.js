@@ -83,5 +83,43 @@ module.exports = {
     children: [],
     state: [],
     methods: ['handleSubmit', 'handleReceiveData'],
+  },
+  nestedComponentCompositionOutput: {
+    name: 'Main',
+    props: [],
+    children: [
+      {
+        name: 'ListItem',
+        props: [
+          { name: 'onChange' },
+          { name: 'onSubmit' }
+        ],
+        children: [],
+        state: [],
+        methods: [],
+      },
+      {
+        name: 'ListItem',
+        props: [
+          { name: 'onChange' },
+          { name: 'onSubmit' }
+        ],
+        children: [],
+        state: [],
+        methods: [],
+      },
+      {
+        name: 'ListItem',
+        props: [
+          { name: 'onChange' },
+          { name: 'onSubmit' }
+        ],
+        children: [],
+        state: [],
+        methods: [],
+      }
+    ],
+    state: [],
+    methods: [],
   }
 }

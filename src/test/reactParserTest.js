@@ -93,4 +93,26 @@ describe('ESTree AST Parser Tests', function() {
       expect(getStatelessFunctionalComponents(jsToAst(statelessFuncFixtures.statelessNested)).children[0].props.length).to.equal(1);
     })
   })
+
+  describe('React JSX Component Composition Tests', function() {
+    const getES5ReactComponents = require('../reactParser').getES5ReactComponents;
+    const commonComponentFixtures = require('./fixtures/commonReactComponentFixtures.js');
+    const reactParserOutputFixtures = require('./fixtures/reactParserOutputFixtures.js');
+
+    it('should have getES5ReactComponents return as a valid function', function() {
+      expect(getES5ReactComponents).to.be.a('function');
+    });
+
+    it('should have for loop construct in render return nested components', function() {
+      const forLoopComponentFixture = commonComponentFixtures.forLoopComponentFixture;
+      expect(getES5ReactComponents(forLoopComponentFixture))
+        .to.deep.equal(reactParserOutputFixtures.nestedComponentCompositionOutput);
+    });
+
+    it('should have MAP construct in render return nested components', function() {
+      const mapComponentFixture = commonComponentFixtures.mapComponentFixture;
+      expect(getES5ReactComponents(mapComponentFixture))
+        .to.deep.equal(reactParserOutputFixtures.nestedComponentCompositionOutput);
+    });
+  });
 });

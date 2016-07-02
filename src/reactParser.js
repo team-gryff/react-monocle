@@ -7,54 +7,6 @@ const escodegen = require('escodegen');
 const htmlElements = require('./constants.js').htmlElements;
 const reactMethods = require('./constants.js').reactMethods;
 
-/**
- * Recursively walks AST and extracts ES5 React component names, child components, props and state
- * @param {ast} ast
- * @returns {Object} Nested object containing name, children, props and state properties of components
- */
-function getES5ReactComponents(ast) {
-  let output = {
-    name: '',
-    state: [],
-    props: [],
-    methods: [],
-    children: [],
-  }, 
-  topJsxComponent;
-  esrecurse.visit(ast, {
-    VariableDeclarator: function (node) {
-      topJsxComponent = node.id.name;
-      this.visitChildren(node);
-    },
-    MemberExpression: function (node) {
-      if (node.property && node.property.name === "createClass") {
-        output.name = topJsxComponent;
-      }
-    },
-    ObjectExpression: function (node) {
-      node.properties.forEach(prop => {
-        switch (prop.key.name) {
-          case "getInitialState":
-            output.state = getReactStates(prop.value.body.body[0].argument);
-            break;
-          default:
-            if (reactMethods.indexOf(prop.key.name) < 0
-                && prop.value.type === 'FunctionExpression') {
-              output.methods.push(prop.key.name);
-            }
-            break;
-        }
-      });
-      this.visitChildren(node);
-    },
-    JSXElement: function (node) {
-      output.children = getChildJSXElements(node);
-      output.props = getReactProps(node);
-    },
-  });
-  return output;
-}
-
 function getReactStates (node) {
   const stateStr = escodegen.generate(node);
   let states;
@@ -102,7 +54,7 @@ function getChildJSXElements (node) {
         state: [],
         methods: [],
       };
-    })
+    });
 }
 
 /**
@@ -112,26 +64,7 @@ function getChildJSXElements (node) {
  */
 function isES6ReactComponent (node) {
   return (node.superClass.property && node.superClass.property.name === "Component")
-    || node.superClass.name === "Component"
-}
-
-/**
- * Helper function to convert Javascript stringified code to an AST using acorn-jsx library
- * @param js
- */
-function jsToAst(js) {
-  const ast = acorn.parse(js, { 
-    plugins: { jsx: true }
-  });
-  if (ast.body.length === 0) throw new Error('Empty AST input');
-  return ast;
-}
-
-function componentChecker(ast) {
-  for (let i = 0; i < ast.body.length; i++) {
-    if (ast.body[i].type === 'ClassDeclaration' || ast.body[i].type === 'ExportDefaultDeclaration') return true;
-  }
-  return false;
+    || node.superClass.name === "Component";
 }
 
 /**
@@ -210,7 +143,7 @@ function getES6ReactComponents(ast) {
     },
     ExpressionStatement: function (node) {
       if  (node.expression.left && node.expression.left.property && node.expression.left.property.name === 'state') {
-        output.state = getReactStates(node.expression.right)
+        output.state = getReactStates(node.expression.right);
       }
       this.visitChildren(node);
     },
@@ -236,11 +169,10 @@ function getStatelessFunctionalComponents(ast) {
     state: [],
     methods: [],
     children: [],
-  },
-  topJsxComponent;
+  };
   esrecurse.visit(ast, {
     VariableDeclarator: function (node) {
-      if (output.name === '') output.name = topJsxComponent = node.id.name;
+      if (output.name === '') output.name = node.id.name;
       this.visitChildren(node);
     },
 
@@ -248,7 +180,7 @@ function getStatelessFunctionalComponents(ast) {
       output.children = getChildJSXElements(node);
       output.props = getReactProps(node);
     },
-  })
+  });
   return output;
 }
 
