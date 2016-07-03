@@ -10,10 +10,10 @@ const reactMethods = require('./constants.js').reactMethods;
 function getReactStates(node) {
   const stateStr = escodegen.generate(node);
   let states;
-  eval('states = ' + stateStr);
+  eval(`states = ${stateStr}`);
 
-  let output = [];
-  for (let state in states) {
+  const output = [];
+  for (const state in states) {
     output.push({
       name: state,
       value: states[state],
@@ -41,7 +41,7 @@ function getReactProps(node) {
  */
 function getChildJSXElements(node) {
   if (node.children.length === 0) return [];
-  var childJsxComponentsArr = node
+  const childJsxComponentsArr = node
     .children
     .filter(jsx => jsx.type === 'JSXElement'
     && htmlElements.indexOf(jsx.openingElement.name.name) < 0);
@@ -73,27 +73,27 @@ function isES6ReactComponent(node) {
  * @returns {Object} Nested object containing name, children, props and state properties of components
  */
 function getES5ReactComponents(ast) {
-  let output = {
-      name: '',
-      state: [],
-      props: [],
-      methods: [],
-      children: [],
-    },
-    topJsxComponent,
-    outside;
+  const output = {
+    name: '',
+    state: [],
+    props: [],
+    methods: [],
+    children: [],
+  };
+  let topJsxComponent;
+  let outside;
   esrecurse.visit(ast, {
-    VariableDeclarator: function (node) {
+    VariableDeclarator(node) {
       topJsxComponent = node.id.name;
       this.visitChildren(node);
     },
-    MemberExpression: function (node) {
+    MemberExpression(node) {
       if (node.property && node.property.name === 'createClass') {
         output.name = topJsxComponent;
       }
       this.visitChildren(node);
     },
-    ObjectExpression: function (node) {
+    ObjectExpression(node) {
       node.properties.forEach(prop => {
         switch (prop.key.name) {
           case 'getInitialState':
@@ -109,7 +109,7 @@ function getES5ReactComponents(ast) {
       });
       this.visitChildren(node);
     },
-    JSXElement: function (node) {
+    JSXElement(node) {
       output.children = getChildJSXElements(node);
       output.props = getReactProps(node);
       if (htmlElements.indexOf(node.openingElement.name.name) < 0) {
@@ -134,33 +134,32 @@ function getES5ReactComponents(ast) {
  * @returns {Object} Nested object containing name, children, props and state properties of components
  */
 function getES6ReactComponents(ast) {
-  let output = {
-      name: '',
-      props: [],
-      state: [],
-      methods: [],
-      children: [],
-    },
-    outside;
+  const output = {
+    name: '',
+    props: [],
+    state: [],
+    methods: [],
+    children: [],
+  };
+  let outside;
   esrecurse.visit(ast, {
-    ClassDeclaration: function (node) {
+    ClassDeclaration(node) {
       if (isES6ReactComponent(node)) {
         output.name = node.id.name;
         this.visitChildren(node);
       }
     },
-    MethodDefinition: function (node) {
-      if (reactMethods.indexOf(node.key.name) < 0)
-        output.methods.push(node.key.name);
+    MethodDefinition(node) {
+      if (reactMethods.indexOf(node.key.name) < 0) output.methods.push(node.key.name);
       this.visitChildren(node);
     },
-    ExpressionStatement: function (node) {
+    ExpressionStatement(node) {
       if (node.expression.left && node.expression.left.property && node.expression.left.property.name === 'state') {
         output.state = getReactStates(node.expression.right);
       }
       this.visitChildren(node);
     },
-    JSXElement: function (node) {
+    JSXElement(node) {
       output.children = getChildJSXElements(node);
       output.props = getReactProps(node);
       if (htmlElements.indexOf(node.openingElement.name.name) < 0) {
@@ -186,7 +185,7 @@ function getES6ReactComponents(ast) {
  * @returns {Object} Nested object containing name, children, and props properties of components
  */
 function getStatelessFunctionalComponents(ast) {
-  let output = {
+  const output = {
     name: '',
     props: [],
     state: [],
@@ -194,12 +193,12 @@ function getStatelessFunctionalComponents(ast) {
     children: [],
   };
   esrecurse.visit(ast, {
-    VariableDeclarator: function (node) {
+    VariableDeclarator(node) {
       if (output.name === '') output.name = node.id.name;
       this.visitChildren(node);
     },
 
-    JSXElement: function (node) {
+    JSXElement(node) {
       output.children = getChildJSXElements(node);
       output.props = getReactProps(node);
     },

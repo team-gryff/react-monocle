@@ -13,13 +13,14 @@ const acorn = require('acorn-jsx/inject')(require('acorn'));
 function astGenerator(directory) {
   // TODO: support for stateless functional components
   // using directory of component to turn into string for acorn
-  const stringed = fs.readFileSync(directory, { encoding:'utf-8' });
-  let result = {}, name;
+  const stringed = fs.readFileSync(directory, { encoding: 'utf-8' });
+  const result = {};
+  let name;
 
   // ast generation
-  let ast = acorn.parse(stringed, {
+  const ast = acorn.parse(stringed, {
     sourceType: 'module',
-    plugins: { jsx:true },
+    plugins: { jsx: true },
   });
 
 //  starting backwards because export statements are likely to be at the end of a file
