@@ -148,16 +148,16 @@ function update(source) {
     .attr("d", diagonal);
 }
 
-function updateHeight() {
+function updateDimensions() {
   setTimeout(() => {
     const graphz = document.getElementById('graphz');
     graphz.style.height = graphz.getBBox().y + graphz.getBBox().height;
-    console.log(graphz.style.height);
-    if (Date.now() - renderStart <= duration) updateHeight();
+    graphz.style.width = graphz.getBBox().x + graphz.getBBox().width + 110;
+    if (Date.now() - renderStart <= duration) updateDimensions();
   }, 33)
 }
 
 create(graphDOM, d3Obj);
 
-updateHeight();
+updateDimensions();
 
