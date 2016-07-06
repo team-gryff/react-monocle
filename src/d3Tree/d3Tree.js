@@ -1,9 +1,12 @@
 'use strict';
-
+const renderStart = Date.now();
+const graphDOM = document.getElementById('graph');
+const domW = window.getComputedStyle(graphDOM, null).width;
+const domH = window.getComputedStyle(graphDOM, null).height;
 let tree, svg, diagonal,
 m = [20, 120, 20, 120],
-w = 1480 - m[1] - m[3],
-h = 800 - m[0] - m[2],
+w = 1480 - m[1] - m[3], //original: 1480
+h = 800 - m[0] - m[2], // original: 800
 i = 0,
 duration = 500,
 rectW = 200,
@@ -19,8 +22,9 @@ function create(element, treeData) {
 
   svg = d3.select(element)
   .append("svg")
-  .attr("width", w)
-  .attr("height", h)
+  .attr("width", w) // .attr("width", `100%`)
+  .attr("height", h) // .attr("height", `100%`)
+  .attr('id', 'graphz')
   .append("svg:g")
   .attr("transform", "translate(0,40)");
 
@@ -122,7 +126,7 @@ function update(source) {
 
   // Position links.
   let link = svg.selectAll("path.link")
-    .data(tree.links(nodes), function(d) {
+    .data(links, function(d) {
       return d.target.id;
     });
 
@@ -144,4 +148,16 @@ function update(source) {
     .attr("d", diagonal);
 }
 
-create(document.body, d3Obj);
+function updateDimensions() {
+  setTimeout(() => {
+    const graphz = document.getElementById('graphz');
+    graphz.style.height = graphz.getBBox().y + graphz.getBBox().height;
+    graphz.style.width = graphz.getBBox().x + graphz.getBBox().width + 110;
+    if (Date.now() - renderStart <= duration) updateDimensions();
+  }, 33)
+}
+
+create(graphDOM, d3Obj);
+
+updateDimensions();
+

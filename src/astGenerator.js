@@ -10,7 +10,7 @@ const acorn = require('acorn-jsx/inject')(require('acorn'));
  * @returns {Object} Object with Component name and AST
  */
 
-function astGenerator(directory) {
+function astGenerator(directory, entry) {
   // TODO: support for stateless functional components
   // using directory of component to turn into string for acorn
   const stringed = fs.readFileSync(directory, { encoding: 'utf-8' });
@@ -29,12 +29,14 @@ function astGenerator(directory) {
     if (ast.body[i].type === 'ExportDefaultDeclaration') {
       name = ast.body[i].declaration.name || ast.body[i].declaration.id.name;
       result[name] = ast;
+      if (entry) return { ENTRY: name };
       return result;
     } else if (ast.body[i].type === 'ExpressionStatement') {
       // finding CJS module.exports
       if (ast.body[i].expression.left && ast.body[i].expression.left.object.name === 'module') {
         name = ast.body[i].expression.right.name;
         result[name] = ast;
+        if (entry) return { ENTRY: name };
         return result;
         // finding entry point
       } else if (ast.body[i].expression.callee && ast.body[i].expression.callee.object.name === 'ReactDOM' && ast.body[i].expression.callee.property.name === 'render') {

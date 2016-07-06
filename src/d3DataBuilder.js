@@ -45,5 +45,4 @@ function d3DataBuilder(obj) {
 }
 
 
-
 module.exports = d3DataBuilder;
