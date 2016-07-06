@@ -24,20 +24,11 @@ function create(element, treeData) {
   .append("svg")
   .attr("width", w) // .attr("width", `100%`)
   .attr("height", h) // .attr("height", `100%`)
-  // .attr('viewBox','0 0 '+Math.min(w,h) +' '+Math.min(w,h) )
-  // .attr('preserveAspectRatio','xMinYMin')
   .attr('id', 'graphz')
   .append("svg:g")
   .attr("transform", "translate(0,40)");
 
   update(treeData);
-
-  // console.log(graphDOM.getBBox);
-  // const bb = graphDOM.getBBox();
-  // graphDOM.style.height = bb.y + bb.height;
-  // console.log(document.getElementById('graphz').getBBox().height, 'height');
-  //   console.log(document.getElementById('graphz').getBBox().y, 'y');
-  // document.getElementById('graphz').style.height = document.getElementById('graphz').getBBox().y + document.getElementById('graphz').getBBox().height;
 
   return tree;
 }
