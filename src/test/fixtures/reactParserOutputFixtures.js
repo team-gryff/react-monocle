@@ -54,8 +54,16 @@ module.exports = {
         state: [],
         methods: [],
         props: [
-          { name: 'onChange' },
-          { name: 'onSubmit' }
+          { 
+            name: 'onChange',
+            parent: "Main",
+            value: "handleTextChange" 
+          },
+          { 
+            name: 'onSubmit',
+            parent: "Main",
+            value: "handleSubmit" 
+          }
         ]
       }
     ],
@@ -91,8 +99,16 @@ module.exports = {
       {
         name: 'ListItem',
         props: [
-          { name: 'onChange' },
-          { name: 'onSubmit' }
+          { 
+            name: 'onChange', 
+            parent: 'Main',
+            value: 'handleChange' 
+          },
+          { 
+            name: 'onSubmit',
+            parent: 'Main',
+            value: 'handleSubmit' 
+          }
         ],
         children: [],
         state: [],

@@ -28,10 +28,21 @@ function getReactStates(node) {
  * @param {Node} node
  * @returns {Array} Array of all JSX props on React component
  */
-function getReactProps(node) {
+function getReactProps(node, parent) {
   if (node.openingElement.attributes.length === 0) return [];
   return node.openingElement.attributes
-    .map(attribute => { return { name: attribute.name.name }; });
+    .map(attribute => {
+      let valueType;
+      const valueName = attribute.value.expression.property.name;
+      if (attribute.value.expression.object.property) {
+        valueType = attribute.value.expression.object.property.name;
+      }
+      return {
+        name: attribute.name.name,
+        value: valueType ? `${valueType}.${valueName}` : valueName,
+        parent: parent,
+      };
+    });
 }
 
 /**
@@ -39,7 +50,7 @@ function getReactProps(node) {
  * @param {Node} node
  * @returns {Array} Array of (nested) children of React component passed in
  */
-function getChildJSXElements(node) {
+function getChildJSXElements(node, parent) {
   if (node.children.length === 0) return [];
   const childJsxComponentsArr = node
     .children
@@ -49,8 +60,8 @@ function getChildJSXElements(node) {
     .map(child => {
       return {
         name: child.openingElement.name.name,
-        children: getChildJSXElements(child),
-        props: getReactProps(child),
+        children: getChildJSXElements(child, parent),
+        props: getReactProps(child, parent),
         state: [],
         methods: [],
       };
@@ -110,13 +121,13 @@ function getES5ReactComponents(ast) {
       this.visitChildren(node);
     },
     JSXElement(node) {
-      output.children = getChildJSXElements(node);
-      output.props = getReactProps(node);
+      output.children = getChildJSXElements(node, output.name);
+      output.props = getReactProps(node, output.name);
       if (htmlElements.indexOf(node.openingElement.name.name) < 0) {
         outside = {
           name: node.openingElement.name.name,
-          children: getChildJSXElements(node),
-          props: getReactProps(node),
+          children: getChildJSXElements(node, output.name),
+          props: getReactProps(node, output.name),
           state: [],
           methods: [],
         };
@@ -160,13 +171,13 @@ function getES6ReactComponents(ast) {
       this.visitChildren(node);
     },
     JSXElement(node) {
-      output.children = getChildJSXElements(node);
-      output.props = getReactProps(node);
+      output.children = getChildJSXElements(node, output.name);
+      output.props = getReactProps(node, output.name);
       if (htmlElements.indexOf(node.openingElement.name.name) < 0) {
         outside = {
           name: node.openingElement.name.name,
-          children: getChildJSXElements(node),
-          props: getReactProps(node),
+          children: getChildJSXElements(node, output.name),
+          props: getReactProps(node, output.name),
           state: [],
           methods: [],
         };
@@ -200,7 +211,7 @@ function getStatelessFunctionalComponents(ast) {
 
     JSXElement(node) {
       output.children = getChildJSXElements(node);
-      output.props = getReactProps(node);
+      output.props = getReactProps(node, output.name);
     },
   });
   return output;

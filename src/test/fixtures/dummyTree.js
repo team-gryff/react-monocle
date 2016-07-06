@@ -23,15 +23,35 @@ module.exports = {
           "state":[],
           "methods":[],
           "props": [
-            {"name":"foo"},
-            {"name":"click"}
+            {
+              "name":"foo", 
+              "parent": "Notorious", 
+              "value": "props.foo"
+            },
+            {
+              "name":"click", 
+              "parent": "Notorious", 
+              "value": "props.click"
+            }
           ]
         }
       ],
       "props": [
-        {"name":"foo"},
-        {"name":"bar"},
-        {"name":"click"}
+        {
+          "name":"foo", 
+          "parent": "BigPoppa", 
+          "value": "state.foo"
+        },
+        {
+          "name":"bar",  
+          "parent": "BigPoppa", 
+          "value": "state.bar"
+        },
+        {
+          "name":"click",  
+          "parent": "BigPoppa", 
+          "value": "handleClick"
+        }
       ]
     },
     {
@@ -41,7 +61,9 @@ module.exports = {
       "methods":[],
       "props": [
         {
-          "name":"bar"
+          "name":"bar", 
+          "parent": "BigPoppa",
+          "value": "state.bar"
         }
       ]
     }
