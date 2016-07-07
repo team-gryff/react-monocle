@@ -29,12 +29,16 @@ function getReactStates(node) {
  * @returns {Array} Array of all JSX props on React component
  */
 function getReactProps(node, parent) {
-  if (node.openingElement.attributes.length === 0) return [];
+  if (!parent) console.log('yo');
+  if (node.openingElement.attributes.length === 0 || node.openingElement.name.name === 'div') return [];
   return node.openingElement.attributes
-    .map(attribute => {
-      let valueType;
-      const valueName = attribute.value.expression.property.name;
-      if (attribute.value.expression.object.property) {
+    .map((attribute, i) => {
+      let valueType, valueName;
+      if (attribute.value.type === 'Literal') valueName = attribute.value.value;
+      else if (attribute.value.expression.type === 'Identifier') valueName = attribute.value.expression.name;
+      else if (attribute.value.expression.type === 'CallExpression') valueName = attribute.value.expression.callee.object.property;
+      else valueName = attribute.value.expression.property.name;
+      if (attribute.value.expresion && attribute.value.expression.object && attribute.value.expression.object.property) {
         valueType = attribute.value.expression.object.property.name;
       }
       return {
