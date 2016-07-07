@@ -29,7 +29,8 @@ function getReactStates(node) {
  * @returns {Array} Array of all JSX props on React component
  */
 function getReactProps(node, parent) {
-  if (node.openingElement.attributes.length === 0 || node.openingElement.name.name === 'div') return [];
+  // HOW IS A DIV STILL GETTING IN
+  if (node.openingElement.attributes.length === 0 || htmlElements.indexOf(node.openingElement.name.name) < 0) return [];
   return node.openingElement.attributes
     .map((attribute, i) => {
       let valueType, valueName;
