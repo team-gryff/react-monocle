@@ -25,7 +25,7 @@ program.name = 'monocle';
   const ext = program.extension || 'jsx';
   // globs to match any jsx in directory called
   // `**/*.js*` for both js and jsx
-  glob(`**/*.${ext}`, { cwd: directory, nosort: true, ignore: 'node_modules/**' }, (err, files) => {
+  glob(`**/*.${ext}`, { cwd: directory, nosort: true, ignore: ['node_modules/**', 'react/**'] }, (err, files) => { // TODO: CHANGE BACK
     if (files.length === 0) throw new Error('No files found (try specifying file path and extension)');
     if (directory !== process.cwd()) files = files.map(ele => `${process.cwd()}/${program.directory}/${ele}`);
 
