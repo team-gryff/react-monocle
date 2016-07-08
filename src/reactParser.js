@@ -30,7 +30,7 @@ function getReactStates(node) {
  */
 function getReactProps(node, parent) {
   // HOW IS A DIV STILL GETTING IN
-  if (node.openingElement.attributes.length === 0 || htmlElements.indexOf(node.openingElement.name.name) < 0) return [];
+  if (node.openingElement.attributes.length === 0 || htmlElements.indexOf(node.openingElement.name.name) > 0) return [];
   return node.openingElement.attributes
     .map((attribute, i) => {
       let valueType, valueName;
@@ -38,7 +38,7 @@ function getReactProps(node, parent) {
       else if (attribute.value.expression.type === 'Identifier') valueName = attribute.value.expression.name;
       else if (attribute.value.expression.type === 'CallExpression') valueName = attribute.value.expression.callee.object.property;
       else valueName = attribute.value.expression.property.name;
-      if (attribute.value.expresion && attribute.value.expression.object && attribute.value.expression.object.property) {
+      if (attribute.value.expression && attribute.value.expression.object && attribute.value.expression.object.property) {
         valueType = attribute.value.expression.object.property.name;
       }
       return {
