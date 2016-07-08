@@ -9,15 +9,18 @@ class Graph extends React.Component {
   constructor() {
     super();
     this.state = {
-      tree: d3.layout.tree().size([1340, 1000]),
-      width: 1340,
-      height: 1000,
+      tree: d3.layout.tree().size([1300, 900]),
+      width: 1300,
+      height: 900,
       nodeW: 200,
       nodeH: 100,
       nodes: [],
     };
-    this.click = this.click.bind(this);
+    this.highlight = this.highlight.bind(this);
+    this.lowlight = this.lowlight.bind(this);
     this.resizeGraph = this.resizeGraph.bind(this);
+    this.updateLinks = this.updateLinks.bind(this);
+    this.highlightRecursion = this.highlightRecursion.bind(this);
   }
 
   componentWillMount() {
@@ -26,12 +29,14 @@ class Graph extends React.Component {
     const nodes = this.state.tree.nodes(root).reverse();
     nodes.forEach((d, i) => {
       d.y = d.depth * this.state.height / 3;
+      d.id = d.id || i;
       renderArr.push(<Node
         xtranslate={d.x}
         ytranslate={d.y}
         id={i}
         key={i}
-        click={this.click}
+        highlight={this.highlight.bind(this, i)}
+        lowlight={this.lowlight}
         name={d.name}
         props={d.props}
         state={d.state}
@@ -40,41 +45,63 @@ class Graph extends React.Component {
         height={this.state.nodeH}
       />);
     });
-    this.setState({ nodes: renderArr });
+    this.setState({
+      nodes: renderArr,
+      d3nodes: nodes,
+    });
   }
 
   componentDidMount() {
+    this.updateLinks();
+  }
+
+  updateLinks() {
     const svg = d3.select(document.getElementById('graphz'));
-    const root = cloneDeep(this.props.treeData);
-    const nodes = this.state.tree.nodes(root).reverse();
-    nodes.forEach((d, i) => {
-      d.id = d.id || i;
-    });
-    const links = this.state.tree.links(nodes);
+    const links = this.state.tree.links(this.state.d3nodes);
     const link = svg.selectAll('path.link')
-      .data(links, d => {
-        return d.target.id;
-      });
+      .data(links, d => { return d.target.id; });
     const diagonal = d3.svg.diagonal()
-      .projection(d => {
-        return [d.x + this.state.nodeW / 2, Math.floor(d.y / 1.5)];
-      });
+      .projection(d => { return [d.x + this.state.nodeW / 2, d.y]; });
     link.enter().insert('svg:path', 'foreignObject')
     .attr('class', 'link')
     .attr('d', diagonal);
     this.resizeGraph();
   }
 
-  click(e) {
+  highlightRecursion(d) {
+    if (!d.parent) return d;
+    d3.select(document.getElementById('graphz'))
+    .selectAll('path.link').filter(ele => {
+      if (ele.source.id === d.parent.id && ele.target.id === d.id) return ele;
+      return false;
+    })
+    .classed('highlight', true);
+    return this.highlightRecursion(d.parent);
+  }
+
+  highlight(i, e) {
     e.preventDefault();
-    // do something
+    this.state.d3nodes.forEach(ele => {
+      if (ele.id === i) this.highlightRecursion(ele);
+    });
+    return true;
+  }
+
+  lowlight() {
+    return d3.select(document.getElementById('graphz'))
+           .selectAll('path.link')
+           .classed('highlight', false);
   }
 
   resizeGraph() {
     const graphz = document.getElementById('graphz');
+    console.log({
+      width: graphz.getBBox().x + graphz.getBBox().width + 110,
+      height: graphz.getBBox().y + graphz.getBBox().height + 100,
+    });
     this.setState({
-      nodeW: graphz.getBBox().x + graphz.getBBox().width + 110,
-      nodeH: graphz.getBBox().y + graphz.getBBox().height + 100,
+      width: graphz.getBBox().x + graphz.getBBox().width + 110,
+      height: graphz.getBBox().y + graphz.getBBox().height + 100,
     });
   }
 

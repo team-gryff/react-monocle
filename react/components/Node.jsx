@@ -6,26 +6,32 @@ const Node = (props) => {
     transform: `translate(${props.xtranslate}px,${props.ytranslate}px)`,
     width: props.width,
     height: props.height,
+    cursor: 'pointer',
     backgroundColor: '#FAFAFA',
+    borderRadius: '5px',
+    boxShadow: '0 0 1em #90A4AE',
+    fontSize: '14px',
   };
   const header = {
     width: '100%',
-    height: Math.floor(props.height / 5),
-    backgroundColor: 'steelblue',
+    height: Math.floor(props.height / 4),
+    backgroundColor: '#01579B',
+    color: 'white',
+    // fontSize: '20px',
   };
   let stateArr = [];
   let propsArr = [];
   let methodsArr = [];
-  if (props.state.length !== 0) stateArr = props.state.map(ele => {return ele.name});
-  if (props.props.length !== 0) propsArr = props.props.map(ele => {return ele.name});
+  if (props.state.length !== 0) stateArr = props.state.map(ele => { return ele.name; });
+  if (props.props.length !== 0) propsArr = props.props.map(ele => { return ele.name; });
   if (props.methods.length !== 0) methodsArr = props.methods;
   return (
-    <foreignObject><div
+    <foreignObject onMouseEnter={props.highlight} onMouseLeave={props.lowlight}><div
       className="node"
       style={style}
     >
       <div style={header}>
-          {props.name.toUpperCase()}
+          <h4>{props.name.toUpperCase()}</h4>
       </div>
       State: {stateArr.join(', ')} <br />
       Props: {propsArr.join(', ')} <br />
@@ -43,6 +49,8 @@ Node.propTypes = {
   methods: React.PropTypes.array,
   width: React.PropTypes.number,
   height: React.PropTypes.number,
+  highlight: React.PropTypes.func,
+  lowlight: React.PropTypes.func,
 };
 
 Node.defaultProps = {

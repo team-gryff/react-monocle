@@ -15,7 +15,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Graph treeData={this.state.treeData}/>
+        <Graph treeData={this.state.treeData} />
       </div>
     );
   }
