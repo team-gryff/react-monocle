@@ -8,7 +8,6 @@ class Graph extends React.Component {
   constructor() {
     super();
     this.state = {
-      tree: tree().size([1300, 900]),
       width: 1300,
       height: 900,
       nodeW: 200,
@@ -26,7 +25,7 @@ class Graph extends React.Component {
     let i = 0;
     const renderArr = [];
     const root = cloneDeep(this.props.treeData);
-    const nodes = this.state.tree(hierarchy(root));
+    const nodes = tree().size([this.state.width, this.state.height])(hierarchy(root));
     nodes.each(d => {
       d.y = d.depth * this.state.height / 3;
       d.id = d.id || ++i;

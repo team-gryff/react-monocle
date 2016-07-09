@@ -17,12 +17,14 @@ class Node extends React.Component {
   }
 
   render() {
+    let bgColor = '#FAFAFA';
+    if (this.props.state.length !== 0) bgColor = '#B3E5FC';
     const style = {
       transform: `translate(${this.props.xtranslate}px,${this.props.ytranslate}px)`,
       width: this.props.width,
       height: this.props.height,
       cursor: 'pointer',
-      backgroundColor: '#FAFAFA',
+      backgroundColor: bgColor,
       borderRadius: '5px',
       boxShadow: '0 0 1em #90A4AE',
       fontSize: '14px',

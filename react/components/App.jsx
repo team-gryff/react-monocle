@@ -1,6 +1,6 @@
 import React from 'react';
 // import d3Obj from '../dummyTree';
-import d3Obj from '../gameTree';
+// import d3Obj from '../gameTree';
 import Graph from './Graph.jsx';
 
 // if (!process.env.NODE_ENV) {
@@ -11,8 +11,12 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      treeData: d3Obj,
+      treeData: {},
     };
+  }
+
+  componentWillMount() {
+    return this.setState({ treeData: d3Obj });
   }
 
   render() {

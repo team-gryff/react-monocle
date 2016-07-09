@@ -15,10 +15,10 @@ function NodeUp(props) {
     borderRadius: '10px',
   };
   const stateData = props.state.reduce((a, b) => {
-    return a.concat([[b.name, JSON.stringify(b.value)]]);
+    return a.concat([[b.name, JSON.stringify(b.value, null, 2)]]);
   }, []);
   const propsData = props.props.reduce((a, b) => {
-    return a.concat([[b.name, b.parent, JSON.stringify(b.value)]]);
+    return a.concat([[b.name, b.parent, JSON.stringify(b.value, null, 2)]]);
   }, []);
   return (
     <div style={style}>
