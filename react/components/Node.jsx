@@ -28,13 +28,6 @@ class Node extends React.Component {
       fontSize: '14px',
       textDecoration: 'none',
     };
-    // const header = {
-    //   width: '100%',
-    //   height: Math.floor(this.props.height / 4),
-    //   backgroundColor: '#01579B',
-    //   color: 'white',
-    //   // fontSize: '20px',
-    // };
     let propsArr = [];
     let methodsArr = [];
     if (this.props.props.length !== 0) propsArr = this.props.props.map(ele => { return ele.name; });
