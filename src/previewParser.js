@@ -1,28 +1,30 @@
 'use strict';
+const fs = require('fs');
 
-let bundled = `(0, _reactDom.render)(_react2.default.createElement(
-	  Frame,
-	  null,
-	  _react2.default.createElement(App, null)
-		), document.getElementById('app'));`
-
-function injectWrapper(bundlejs) {
-  if (bundlejs.length === 0) throw new Error('Empty AST input');
-  const searchStr = /this.setState/g;
+function modifyBundleFile(bundlejs) {
+  let bundle = fs.readFileSync(bundlejs, { encoding: 'utf-8' });
+  if (bundle.length == 0) throw new Error('Empty AST input');
+  const searchState = /this.setState/g;
   const wrappedFunc = 'wrapper(this.setState)';
-  return bundlejs.replace(searchStr, wrappedFunc);
-}
-
-function updateMount(bundlejs) {
-  if (bundlejs.length === 0) throw new Error('Empty AST input');
-  const searchStr = /(getElementById\([\'\"])\w+[\'\"]/g;
+  const searchElem = /(getElementById\([\'\"])\w+[\'\"]/;
   const newMount = 'getElementById("preview"';
-  return bundlejs.replace(searchStr, newMount);
+  let replacedState = bundle.replace(searchState, wrappedFunc);
+  return replacedState.replace(searchElem, newMount);
 }
 
-updateMount(bundled);
+function modifyTestBundleFile(bundle) {
+  if (bundle.length == 0) throw new Error('Empty AST input');
+  const searchState = /this.setState/g;
+  const wrappedFunc = 'wrapper(this.setState)';
+  const searchElem = /(getElementById\([\'\"])\w+[\'\"]/;
+  const newMount = 'getElementById("preview"';
+  let replacedState = bundle.replace(searchState, wrappedFunc);
+  return replacedState.replace(searchElem, newMount);
+}
+
 
 module.exports = {
-  injectWrapper,
-  updateMount,
+  modifyBundleFile,
+  modifyTestBundleFile,
 };
+
