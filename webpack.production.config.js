@@ -2,12 +2,10 @@ const webpack = require('webpack');
 
 
 module.exports = {
-  devtool: 'source-map',
   entry: './react/index.jsx',
   output: {
-    path: __dirname + '/client/',
+    path: __dirname + '/src/d3Tree/',
     filename: 'app.js',
-    publicPath: 'http://localhost:9090/client/',
   },
   resolve: {
     extensions: ['', '.js', '.jsx'],
