@@ -70,6 +70,7 @@ class Graph extends React.Component {
   nodeRender(nodes) {
     let i = 0;
     const renderArr = [];
+
     nodes.each(d => {
       d.y = d.depth * this.state.initialHeight / 3;
       d.id = d.id || ++i;
@@ -90,12 +91,15 @@ class Graph extends React.Component {
         height={this.state.nodeH}
       />);
     });
+
+    // setting state so information can be used in render + other methods
     this.setState({
       nodes: renderArr,
       d3nodes: nodes,
     });
     return nodes;
   }
+
 
   linkRender(nodes) {
     const links = nodes.links();
