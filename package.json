@@ -55,7 +55,9 @@
     "lodash.clonedeep": "^4.3.2",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
-    "react-popover": "^0.4.4"
+    "react-popover": "^0.4.4",
+    "react-redux": "^4.4.5",
+    "redux": "^3.5.2"
   },
   "devDependencies": {
     "babel-cli": "^6.9.0",
@@ -69,6 +71,7 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-1": "^6.5.0",
     "babel-register": "^6.9.0",
+    "babel-runtime": "^6.9.2",
     "chai": "^3.5.0",
     "eslint": "^2.9.0",
     "eslint-config-airbnb": "^9.0.1",
