@@ -4,8 +4,10 @@ import { Table, Heading, Text } from 'rebass';
 
 
 function NodeUp(props) {
+  // booleans to determine what needs to be dipslayed
   const propsBool = props.props.length > 0;
   const stateBool = props.state.length > 0;
+  // headings for the respective tables
   const propsHeadings = ['prop', 'parent', 'value'];
   const stateHeadings = ['state', 'value'];
   const style = {
@@ -14,11 +16,13 @@ function NodeUp(props) {
     border: '1px solid #78909C',
     borderRadius: '10px',
   };
+
+  // formatting the data for table usage
   const stateData = props.state.reduce((a, b) => {
-    return a.concat([[b.name, JSON.stringify(b.value)]]);
+    return a.concat([[b.name, JSON.stringify(b.value, null, 2)]]);
   }, []);
   const propsData = props.props.reduce((a, b) => {
-    return a.concat([[b.name, b.parent, JSON.stringify(b.value)]]);
+    return a.concat([[b.name, b.parent, JSON.stringify(b.value, null, 2)]]);
   }, []);
   return (
     <div style={style}>

@@ -1,10 +1,10 @@
 {
   "name": "react-monocle",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "A developer tool to visualize a React application's component hierarchy.",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --progress --colors --config webpack.production.config.js",
+    "build": "webpack --progress --colors --config  webpack.production.config.js --watch",
     "lint": "eslint src",
     "unit-tests": "mocha ./src/test/test.js",
     "start": "nodemon server/server.js",
