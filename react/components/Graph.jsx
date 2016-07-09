@@ -25,10 +25,13 @@ class Graph extends React.Component {
     let i = 0;
     const renderArr = [];
     const root = cloneDeep(this.props.treeData);
+
+    // initial d3 tree declaration
     const nodes = tree().size([this.state.width, this.state.height])(hierarchy(root));
     nodes.each(d => {
       d.y = d.depth * this.state.height / 3;
       d.id = d.id || ++i;
+      // using the information provided by d3 Node components are rendered
       renderArr.push(<Node
         xtranslate={d.x}
         ytranslate={d.y}
@@ -44,6 +47,8 @@ class Graph extends React.Component {
         height={this.state.nodeH}
       />);
     });
+
+    // setting state so information can be used in render + other methods
     this.setState({
       nodes: renderArr,
       d3nodes: nodes,
@@ -55,12 +60,15 @@ class Graph extends React.Component {
   }
 
   updateLinks() {
+    // links are not rendered by react, as d3 has to control the links for highlighting purposes later
     const svg = select(document.getElementById('graphz'));
     const links = this.state.d3nodes.links();
     svg.selectAll('path.link').data(links, d => { return d.target.id; })
     .enter().insert('svg:path', 'foreignObject')
     .attr('class', 'link')
     .attr('d', (node) => {
+      // creating a cubic bezier curve for the link
+      // equiv to d3.svg.diagonal before 4.0
       const oldX = node.source.x;
       const oldY = node.source.y;
       const newX = node.target.x;
@@ -75,6 +83,8 @@ class Graph extends React.Component {
   }
 
   highlightRecursion(d) {
+    // finds out which links to highlight
+    // recurses up to where there is no parent (top most node)
     if (!d.parent) return d;
     select(document.getElementById('graphz'))
     .selectAll('path.link').filter(ele => {
@@ -86,6 +96,7 @@ class Graph extends React.Component {
   }
 
   highlight(i, e) {
+    // highlight links on hover over
     e.preventDefault();
     this.state.d3nodes.each(ele => {
       if (ele.id === i) this.highlightRecursion(ele);
@@ -94,12 +105,14 @@ class Graph extends React.Component {
   }
 
   lowlight() {
+    // unhighlight on cursor exit
     return select(document.getElementById('graphz'))
            .selectAll('path.link')
            .classed('highlight', false);
   }
 
   resizeGraph() {
+    // makes sure graph is the right size after rendering the graph
     const graphz = document.getElementById('graphz');
     this.setState({
       width: graphz.getBBox().x + graphz.getBBox().width + 110,

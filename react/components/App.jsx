@@ -16,6 +16,7 @@ class App extends React.Component {
   }
 
   componentWillMount() {
+    // d3obj will be found from parse logic
     return this.setState({ treeData: d3Obj });
   }
 
