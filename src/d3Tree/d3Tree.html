@@ -26,12 +26,21 @@
 			width: 100%;
 			height: 100%;
 		}
+
+		.fill-height-or-more {
+			display: flex;
+			flex-wrap: wrap;
+		}
+
+		.fill-height-or-more #content #preview {
+			flex: 1;
+		}
+
   </style>
 </head>
 
 <body>
-
-		<div id="content">
-		</div>
-		<div id="preview">
-		</div>
+	<div class="fill-height-or-more">
+		<div id="content"></div>
+		<div id="preview"></div>
+	</div>
