@@ -46,7 +46,7 @@
     "acorn-jsx": "^3.0.1",
     "app-root-path": "^1.2.1",
     "commander": "^2.9.0",
-    "d3": "^3.5.17",
+    "d3": "^4.1.0",
     "escodegen": "^1.8.0",
     "esrecurse": "^4.1.0",
     "glob": "^7.0.5",
