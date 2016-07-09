@@ -1,15 +1,14 @@
 import React from 'react';
-import d3 from 'd3';
+import { tree, hierarchy, select, path } from 'd3';
 import Node from './Node.jsx';
 const cloneDeep = require('lodash.clonedeep');
-
 
 
 class Graph extends React.Component {
   constructor() {
     super();
     this.state = {
-      tree: d3.layout.tree().size([1300, 900]),
+      tree: tree().size([1300, 900]),
       width: 1300,
       height: 900,
       nodeW: 200,
@@ -24,12 +23,13 @@ class Graph extends React.Component {
   }
 
   componentWillMount() {
+    let i = 0;
     const renderArr = [];
     const root = cloneDeep(this.props.treeData);
-    const nodes = this.state.tree.nodes(root).reverse();
-    nodes.forEach((d, i) => {
+    const nodes = this.state.tree(hierarchy(root));
+    nodes.each(d => {
       d.y = d.depth * this.state.height / 3;
-      d.id = d.id || i;
+      d.id = d.id || ++i;
       renderArr.push(<Node
         xtranslate={d.x}
         ytranslate={d.y}
@@ -37,10 +37,10 @@ class Graph extends React.Component {
         key={i}
         highlight={this.highlight.bind(this, i)}
         lowlight={this.lowlight}
-        name={d.name}
-        props={d.props}
-        state={d.state}
-        methods={d.methods}
+        name={d.data.name}
+        props={d.data.props}
+        state={d.data.state}
+        methods={d.data.methods}
         width={this.state.nodeW}
         height={this.state.nodeH}
       />);
@@ -56,21 +56,28 @@ class Graph extends React.Component {
   }
 
   updateLinks() {
-    const svg = d3.select(document.getElementById('graphz'));
-    const links = this.state.tree.links(this.state.d3nodes);
-    const link = svg.selectAll('path.link')
-      .data(links, d => { return d.target.id; });
-    const diagonal = d3.svg.diagonal()
-      .projection(d => { return [d.x + this.state.nodeW / 2, d.y]; });
-    link.enter().insert('svg:path', 'foreignObject')
+    const svg = select(document.getElementById('graphz'));
+    const links = this.state.d3nodes.links();
+    svg.selectAll('path.link').data(links, d => { return d.target.id; })
+    .enter().insert('svg:path', 'foreignObject')
     .attr('class', 'link')
-    .attr('d', diagonal);
+    .attr('d', (node) => {
+      const oldX = node.source.x;
+      const oldY = node.source.y;
+      const newX = node.target.x;
+      const newY = node.target.y;
+      const pathing = path();
+      pathing.moveTo(oldX + this.state.nodeW / 2, oldY);
+      pathing.bezierCurveTo(oldX + this.state.nodeW / 2, (oldY + newY) / 2, newX + this.state.nodeW / 2, (oldY + newY) / 2, newX + this.state.nodeW / 2, newY);
+      return pathing;
+      // return `M${oldX + this.state.nodeW / 2},${oldY}C${oldX + this.state.nodeW / 2},${(oldY + newY) / 2} ${newX + this.state.nodeW / 2},${(oldY + newY) / 2} ${newX + this.state.nodeW / 2},${newY}`;
+    });
     this.resizeGraph();
   }
 
   highlightRecursion(d) {
     if (!d.parent) return d;
-    d3.select(document.getElementById('graphz'))
+    select(document.getElementById('graphz'))
     .selectAll('path.link').filter(ele => {
       if (ele.source.id === d.parent.id && ele.target.id === d.id) return ele;
       return false;
@@ -81,24 +88,20 @@ class Graph extends React.Component {
 
   highlight(i, e) {
     e.preventDefault();
-    this.state.d3nodes.forEach(ele => {
+    this.state.d3nodes.each(ele => {
       if (ele.id === i) this.highlightRecursion(ele);
     });
     return true;
   }
 
   lowlight() {
-    return d3.select(document.getElementById('graphz'))
+    return select(document.getElementById('graphz'))
            .selectAll('path.link')
            .classed('highlight', false);
   }
 
   resizeGraph() {
     const graphz = document.getElementById('graphz');
-    console.log({
-      width: graphz.getBBox().x + graphz.getBBox().width + 110,
-      height: graphz.getBBox().y + graphz.getBBox().height + 100,
-    });
     this.setState({
       width: graphz.getBBox().x + graphz.getBBox().width + 110,
       height: graphz.getBBox().y + graphz.getBBox().height + 100,
