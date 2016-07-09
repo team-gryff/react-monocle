@@ -1,5 +1,6 @@
 import React from 'react';
-import d3Obj from '../dummyTree';
+// import d3Obj from '../dummyTree';
+import d3Obj from '../gameTree';
 import Graph from './Graph.jsx';
 
 

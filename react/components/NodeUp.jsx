@@ -15,26 +15,26 @@ function NodeUp(props) {
     borderRadius: '10px',
   };
   const stateData = props.state.reduce((a, b) => {
-    return a.concat([[b.name, b.value]]);
+    return a.concat([[b.name, JSON.stringify(b.value)]]);
   }, []);
   const propsData = props.props.reduce((a, b) => {
-    return a.concat([[b.name, b.parent, b.value]]);
+    return a.concat([[b.name, b.parent, JSON.stringify(b.value)]]);
   }, []);
   return (
     <div style={style}>
-     {propsBool ? (<div><Heading>PROPS</Heading>
-       <Table
-         data={propsData}
-         headings={propsHeadings}
-       /></div>)
-      : null
-    }
     {
       stateBool ? (<div><Heading>STATE</Heading>
         <Table
           data={stateData}
           headings={stateHeadings}
         /></div>)
+      : null
+    }
+     {propsBool ? (<div><Heading>PROPS</Heading>
+       <Table
+         data={propsData}
+         headings={propsHeadings}
+       /></div>)
       : null
     }
     {
