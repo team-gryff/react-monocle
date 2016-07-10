@@ -32,19 +32,37 @@ function getReactProps(node, parent) {
   // HOW IS A DIV STILL GETTING IN
   if (node.openingElement.attributes.length === 0 || htmlElements.indexOf(node.openingElement.name.name) > 0) return [];
   return node.openingElement.attributes
-    .map((attribute, i) => {
-      let valueType, valueName;
-      if (attribute.value.type === 'Literal') valueName = attribute.value.value;
+    .map(attribute => {
+      const name = attribute.name.name;
+      let valueType;
+      let valueName;
+      let isComponent = false;
+      if (attribute.value === null) valueName = undefined;
+      else if (attribute.value.type === 'Literal') valueName = attribute.value.value;
+      else if (attribute.value.expression.type === 'Literal') valueName = attribute.value.expression.value;
       else if (attribute.value.expression.type === 'Identifier') valueName = attribute.value.expression.name;
-      else if (attribute.value.expression.type === 'CallExpression') valueName = attribute.value.expression.callee.object.property;
-      else valueName = attribute.value.expression.property.name;
-      if (attribute.value.expression && attribute.value.expression.object && attribute.value.expression.object.property) {
+      else if (attribute.value.expression.type === 'CallExpression') valueName = attribute.value.expression.callee.object.property.name;
+      else if (attribute.value.expression.type === 'LogicalExpression') {
+        valueName = attribute.value.expression.left.property.name;
+        valueType = attribute.value.expression.left.object.name;
+      } else if (attribute.value.expression.type === 'JSXElement') {
+        const node = attribute.value.expression;
+        const output = {
+          name: node.openingElement.name.name,
+          children: getChildJSXElements(node, parent),
+          props: getReactProps(node, parent),
+          state: [],
+          methods: [],
+        };
+        valueName = output;
+      } else  valueName = attribute.value.expression.property.name;
+      if (attribute.value && attribute.value.expression && attribute.value.expression.object && attribute.value.expression.object.property) {
         valueType = attribute.value.expression.object.property.name;
       }
       return {
-        name: attribute.name.name,
+        name,
         value: valueType ? `${valueType}.${valueName}` : valueName,
-        parent: parent,
+        parent,
       };
     });
 }

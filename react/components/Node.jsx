@@ -7,22 +7,32 @@ import NodeUp from './NodeUp.jsx';
 class Node extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { isOpen: false };
+    this.state = { isOpen: false }; //stateful component for popover boolean
     this.toggle = this.toggle.bind(this);
+    this.close = this.close.bind(this);
   }
 
   toggle() {
+    // simple toggle function for a popover
     const bool = !this.state.isOpen;
     return this.setState({ isOpen: bool });
   }
 
+  close() {
+    return this.setState({ isOpen: false });
+  }
+
   render() {
+    // setting background color depending on state
+    let bgColor = '#FAFAFA';
+    if (this.props.state.length !== 0) bgColor = '#B3E5FC';
+    // inline styling, as well as using translate coordinates found by d3
     const style = {
       transform: `translate(${this.props.xtranslate}px,${this.props.ytranslate}px)`,
       width: this.props.width,
       height: this.props.height,
       cursor: 'pointer',
-      backgroundColor: '#FAFAFA',
+      backgroundColor: bgColor,
       borderRadius: '5px',
       boxShadow: '0 0 1em #90A4AE',
       fontSize: '14px',
@@ -35,7 +45,7 @@ class Node extends React.Component {
 
     return (
       <foreignObject onMouseEnter={this.props.highlight} onMouseLeave={this.props.lowlight} onClick={this.toggle}>
-      <Popover isOpen={this.state.isOpen} preferPlace="right" body={<NodeUp state={this.props.state} props={this.props.props} />}>
+      <Popover isOpen={this.state.isOpen} preferPlace="row" onOuterAction={this.close} body={<NodeUp state={this.props.state} props={this.props.props} />}>
         <Panel
           className="node"
           style={style}
