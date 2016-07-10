@@ -9,12 +9,17 @@ class Node extends React.Component {
     super(props);
     this.state = { isOpen: false }; //stateful component for popover boolean
     this.toggle = this.toggle.bind(this);
+    this.close = this.close.bind(this);
   }
 
   toggle() {
     // simple toggle function for a popover
     const bool = !this.state.isOpen;
     return this.setState({ isOpen: bool });
+  }
+
+  close() {
+    return this.setState({ isOpen: false });
   }
 
   render() {
@@ -40,7 +45,7 @@ class Node extends React.Component {
 
     return (
       <foreignObject onMouseEnter={this.props.highlight} onMouseLeave={this.props.lowlight} onClick={this.toggle}>
-      <Popover isOpen={this.state.isOpen} preferPlace="right" body={<NodeUp state={this.props.state} props={this.props.props} />}>
+      <Popover isOpen={this.state.isOpen} preferPlace="row" onOuterAction={this.close} body={<NodeUp state={this.props.state} props={this.props.props} />}>
         <Panel
           className="node"
           style={style}
