@@ -41,8 +41,11 @@ function getReactProps(node, parent) {
       else if (attribute.value.type === 'Literal') valueName = attribute.value.value;
       else if (attribute.value.expression.type === 'Literal') valueName = attribute.value.expression.value;
       else if (attribute.value.expression.type === 'Identifier') valueName = attribute.value.expression.name;
-      else if (attribute.value.expression.type === 'CallExpression') valueName = attribute.value.expression.callee.object.property;
-      else if (attribute.value.expression.type === 'JSXElement') {
+      else if (attribute.value.expression.type === 'CallExpression') valueName = attribute.value.expression.callee.object.property.name;
+      else if (attribute.value.expression.type === 'LogicalExpression') {
+        valueName = attribute.value.expression.left.property.name;
+        valueType = attribute.value.expression.left.object.name;
+      } else if (attribute.value.expression.type === 'JSXElement') {
         const node = attribute.value.expression;
         const output = {
           name: node.openingElement.name.name,
@@ -52,7 +55,7 @@ function getReactProps(node, parent) {
           methods: [],
         };
         valueName = output;
-      } else valueName = attribute.value.expression.property.name;
+      } else  valueName = attribute.value.expression.property.name;
       if (attribute.value && attribute.value.expression && attribute.value.expression.object && attribute.value.expression.object.property) {
         valueType = attribute.value.expression.object.property.name;
       }

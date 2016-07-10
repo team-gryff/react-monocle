@@ -8,8 +8,9 @@ class Graph extends React.Component {
   constructor() {
     super();
     this.state = {
-      width: 1300,
+      width: 1000,
       height: 900,
+      initialHeight: 900,
       nodeW: 200,
       nodeH: 100,
       nodes: [],
@@ -17,69 +18,24 @@ class Graph extends React.Component {
     this.highlight = this.highlight.bind(this);
     this.lowlight = this.lowlight.bind(this);
     this.resizeGraph = this.resizeGraph.bind(this);
-    this.updateLinks = this.updateLinks.bind(this);
     this.highlightRecursion = this.highlightRecursion.bind(this);
+    this.nodeRender = this.nodeRender.bind(this);
+    this.linkRender = this.linkRender.bind(this);
+    this.resizeGraph = this.resizeGraph.bind(this);
   }
 
   componentWillMount() {
-    let i = 0;
-    const renderArr = [];
+    const graphz = document.getElementById('graphz');
     const root = cloneDeep(this.props.treeData);
-
-    // initial d3 tree declaration
-    const nodes = tree().size([this.state.width, this.state.height])(hierarchy(root));
-    nodes.each(d => {
-      d.y = d.depth * this.state.height / 3;
-      d.id = d.id || ++i;
-      // using the information provided by d3 Node components are rendered
-      renderArr.push(<Node
-        xtranslate={d.x}
-        ytranslate={d.y}
-        id={i}
-        key={i}
-        highlight={this.highlight.bind(this, i)}
-        lowlight={this.lowlight}
-        name={d.data.name}
-        props={d.data.props}
-        state={d.data.state}
-        methods={d.data.methods}
-        width={this.state.nodeW}
-        height={this.state.nodeH}
-      />);
-    });
-
-    // setting state so information can be used in render + other methods
-    this.setState({
-      nodes: renderArr,
-      d3nodes: nodes,
-    });
+    const nodes = tree().size([window.innerWidth, this.state.height])(hierarchy(root));
+    this.nodeRender(nodes);
+    return this.setState({ width: window.innerWidth });
   }
 
   componentDidMount() {
-    this.updateLinks();
-  }
-
-  updateLinks() {
-    // links are not rendered by react, as d3 has to control the links for highlighting purposes later
-    const svg = select(document.getElementById('graphz'));
-    const links = this.state.d3nodes.links();
-    svg.selectAll('path.link').data(links, d => { return d.target.id; })
-    .enter().insert('svg:path', 'foreignObject')
-    .attr('class', 'link')
-    .attr('d', (node) => {
-      // creating a cubic bezier curve for the link
-      // equiv to d3.svg.diagonal before 4.0
-      const oldX = node.source.x;
-      const oldY = node.source.y;
-      const newX = node.target.x;
-      const newY = node.target.y;
-      const pathing = path();
-      pathing.moveTo(oldX + this.state.nodeW / 2, oldY);
-      pathing.bezierCurveTo(oldX + this.state.nodeW / 2, (oldY + newY) / 2, newX + this.state.nodeW / 2, (oldY + newY) / 2, newX + this.state.nodeW / 2, newY);
-      return pathing;
-      // return `M${oldX + this.state.nodeW / 2},${oldY}C${oldX + this.state.nodeW / 2},${(oldY + newY) / 2} ${newX + this.state.nodeW / 2},${(oldY + newY) / 2} ${newX + this.state.nodeW / 2},${newY}`;
-    });
-    this.resizeGraph();
+    window.addEventListener('resize', this.resizeGraph);
+    this.linkRender(this.state.d3nodes);
+    return this.setState({ height: graphz.getBBox().y + graphz.getBBox().height + 100 });
   }
 
   highlightRecursion(d) {
@@ -111,12 +67,70 @@ class Graph extends React.Component {
            .classed('highlight', false);
   }
 
+  nodeRender(nodes) {
+    let i = 0;
+    const renderArr = [];
+
+    nodes.each(d => {
+      d.y = d.depth * this.state.initialHeight / 3;
+      d.id = d.id || ++i;
+      // using the information provided by d3
+      // to render Node components
+      renderArr.push(<Node
+        xtranslate={d.x}
+        ytranslate={d.y}
+        id={i}
+        key={i}
+        highlight={this.highlight.bind(this, i)}
+        lowlight={this.lowlight}
+        name={d.data.name}
+        props={d.data.props}
+        state={d.data.state}
+        methods={d.data.methods}
+        width={this.state.nodeW}
+        height={this.state.nodeH}
+      />);
+    });
+
+    // setting state so information can be used in render + other methods
+    this.setState({
+      nodes: renderArr,
+      d3nodes: nodes,
+    });
+    return nodes;
+  }
+
+
+  linkRender(nodes) {
+    const links = nodes.links();
+    select(document.getElementById('graphz'))
+    .selectAll('path.link').data(links, d => { return d.target.id; })
+    .enter().insert('svg:path', 'foreignObject')
+    .attr('class', 'link')
+    .attr('d', (node) => {
+      // creating a cubic bezier curve for the link
+      // equiv to d3.svg.diagonal before 4.0
+      const oldX = node.source.x;
+      const oldY = node.source.y;
+      const newX = node.target.x;
+      const newY = node.target.y;
+      const pathing = path();
+      pathing.moveTo(oldX + this.state.nodeW / 2, oldY);
+      pathing.bezierCurveTo(oldX + this.state.nodeW / 2, (oldY + newY) / 2, newX + this.state.nodeW / 2, (oldY + newY) / 2, newX + this.state.nodeW / 2, newY);
+      return pathing;
+      // return `M${oldX + this.state.nodeW / 2},${oldY}C${oldX + this.state.nodeW / 2},${(oldY + newY) / 2} ${newX + this.state.nodeW / 2},${(oldY + newY) / 2} ${newX + this.state.nodeW / 2},${newY}`;
+    });
+  }
+
   resizeGraph() {
+    select('path.link').remove();
     // makes sure graph is the right size after rendering the graph
     const graphz = document.getElementById('graphz');
+    const root = cloneDeep(this.props.treeData);
+    const nodes = tree().size([this.state.width, this.state.initialHeight])(hierarchy(root));
+    this.linkRender(this.nodeRender(nodes));
     this.setState({
-      width: graphz.getBBox().x + graphz.getBBox().width + 110,
-      height: graphz.getBBox().y + graphz.getBBox().height + 100,
+      width: window.innerWidth,
     });
   }
 
