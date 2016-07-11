@@ -24,17 +24,22 @@ class Graph extends React.Component {
     this.resizeGraph = this.resizeGraph.bind(this);
   }
 
+  /**
+   * Clone tree data, pass to tree() to create nodes objects, setting state to render nodes,
+   */
   componentWillMount() {
-    const graphz = document.getElementById('graphz');
     const root = cloneDeep(this.props.treeData);
     const nodes = tree().size([window.innerWidth, this.state.height])(hierarchy(root));
-    this.nodeRender(nodes);
+    this.nodeRender(nodes); // react render
     return this.setState({ width: window.innerWidth });
   }
 
+  /**
+   * add resize event listener to resize graph, render links
+   */
   componentDidMount() {
     window.addEventListener('resize', this.resizeGraph);
-    this.linkRender(this.state.d3nodes);
+    this.linkRender(this.state.d3nodes);  // d3 dom injection
     return this.setState({ height: graphz.getBBox().y + graphz.getBBox().height + 100 });
   }
 
