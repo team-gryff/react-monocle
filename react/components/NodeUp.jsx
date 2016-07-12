@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Heading, Text } from 'rebass';
+import { Table, Heading, Space } from 'rebass';
 
 
 
@@ -7,6 +7,7 @@ function NodeUp(props) {
   // booleans to determine what needs to be dipslayed
   const propsBool = props.props.length > 0;
   const stateBool = props.state.length > 0;
+  const methodsBool = props.methods.length > 0;
   // headings for the respective tables
   const propsHeadings = ['prop', 'parent', 'value'];
   const stateHeadings = ['state', 'value'];
@@ -24,8 +25,13 @@ function NodeUp(props) {
   const propsData = props.props.reduce((a, b) => {
     return a.concat([[b.name, b.parent, JSON.stringify(b.value, null, 2)]]);
   }, []);
+  const methodsData = props.methods.map((ele, i) => {
+    return (<li key={i}>{ele}</li>);
+  })
   return (
     <div style={style}>
+    <Heading size={1} style={{ color: '#0088F0' }}>{props.name}</Heading>
+      <Space x={4} />
     {
       stateBool ? (<div><Heading>STATE</Heading>
         <Table
@@ -41,12 +47,17 @@ function NodeUp(props) {
        /></div>)
       : null
     }
+    {methodsBool ? (<div><Heading>METHODS</Heading>
+      <ul>
+        {methodsData}
+      </ul>
+    </div>)
+    : null
+    }
     {
       (!propsBool && !stateBool) ? <Heading>nothing to see here!</Heading>
       : null
     }
-      <Heading>EVENTS</Heading>
-      <Text>coming soon(ish)</Text>
     </div>
   );
 }
@@ -54,11 +65,13 @@ function NodeUp(props) {
 NodeUp.propTypes = {
   props: React.PropTypes.array,
   state: React.PropTypes.array,
+  methods: React.PropTypes.array,
 };
 
 NodeUp.defaultProps = {
   props: [],
   state: [],
+  methods: [],
 };
 
 

@@ -11,8 +11,8 @@ class Graph extends React.Component {
       width: 1000,
       height: 900,
       initialHeight: 900,
-      nodeW: 200,
-      nodeH: 100,
+      nodeW: 150,
+      nodeH: 80,
       nodes: [],
     };
     this.highlight = this.highlight.bind(this);

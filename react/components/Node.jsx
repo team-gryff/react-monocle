@@ -7,7 +7,7 @@ import NodeUp from './NodeUp.jsx';
 class Node extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { isOpen: false }; //stateful component for popover boolean
+    this.state = { isOpen: false }; // stateful component for popover boolean
     this.toggle = this.toggle.bind(this);
     this.close = this.close.bind(this);
   }
@@ -35,17 +35,25 @@ class Node extends React.Component {
       backgroundColor: bgColor,
       borderRadius: '5px',
       boxShadow: '0 0 1em #90A4AE',
-      fontSize: '14px',
+      // fontSize: '10px',
       textDecoration: 'none',
     };
     let propsArr = [];
     let methodsArr = [];
     if (this.props.props.length !== 0) propsArr = this.props.props.map(ele => { return ele.name; });
-    if (this.props.methods.length !== 0) methodsArr = this.props.methods;
 
     return (
       <foreignObject onMouseEnter={this.props.highlight} onMouseLeave={this.props.lowlight} onClick={this.toggle}>
-      <Popover isOpen={this.state.isOpen} preferPlace="row" onOuterAction={this.close} body={<NodeUp state={this.props.state} props={this.props.props} />}>
+      <Popover isOpen={this.state.isOpen}
+        preferPlace="row"
+        onOuterAction={this.close}
+        body={<NodeUp 
+          name={this.props.name}
+          state={this.props.state}
+          props={this.props.props}
+          methods={this.props.methods}
+        />}
+      >
         <Panel
           className="node"
           style={style}
@@ -61,18 +69,13 @@ class Node extends React.Component {
             py={0}
             my={0}
           >
-            <Heading size={3}>
+            <Heading size={4}>
             {this.props.name.toUpperCase()}
             </Heading>
           </Block>
-          <Text px={1}>
-            Props: <br />
+          <Text style={{ fontSize: '14px', color: '#546E7A' }}>Props: </Text>
+          <Text px={1} style={{ fontSize: '12px' }}>
            {propsArr.join(' | ')} <br />
-          </Text>
-          <br />
-          <Text small px={1}>
-           Methods:
-           {methodsArr.join('| ')}
           </Text>
         </Panel></Popover></foreignObject>
     );
