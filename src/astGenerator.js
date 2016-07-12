@@ -29,30 +29,7 @@ function astGenerator(directory, entry) {
     if ((node.superClass.type === 'MemberExpression' && node.superClass.object.name === 'React' && node.superClass.property.name === 'Component')
      || (node.superClass.type === 'Identifier' && node.superClass.name === 'Component')) return node.id.name;
   }
-
-//  starting backwards because export statements are likely to be at the end of a file
-  // for (let i = ast.body.length - 1; i >= 0; i--) {
-  //     // finding ES6 export default
-  //   if (ast.body[i].type === 'ExportDefaultDeclaration') {
-  //     name = ast.body[i].declaration.name || ast.body[i].declaration.id.name;
-  //     if (entry) result.ENTRY = name;
-  //     else result[name] = ast;
-  //   } else if (ast.body[i].type === 'ExpressionStatement') {
-  //     // finding CJS module.exports
-  //     if (ast.body[i].expression.left && ast.body[i].expression.left.object.name === 'module') {
-  //       name = ast.body[i].expression.right.name;
-  //       if (entry) result.ENTRY = name;
-  //       else result[name] = ast;
-  //       // finding entry point
-  //     } else if (ast.body[i].expression.callee && ast.body[i].expression.callee.object.name === 'ReactDOM' && ast.body[i].expression.callee.property.name === 'render') {
-  //       console.log('splicing');
-  //       splicing = i;
-  //       name = ast.body[i].expression.arguments[0].openingElement.name.name;
-  //       result.ENTRY = name;
-  //       result[name] = ast;
-  //     }
-  //   }
-  // }
+  
   ast.body.forEach((node, i) => {
     if (node.type === 'ClassDeclaration' && node.superClass) {
       name = nameFinder(node);
