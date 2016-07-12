@@ -44,40 +44,42 @@ class Node extends React.Component {
 
     return (
       <foreignObject onMouseEnter={this.props.highlight} onMouseLeave={this.props.lowlight} onClick={this.toggle}>
-      <Popover isOpen={this.state.isOpen}
-        preferPlace="row"
-        onOuterAction={this.close}
-        body={<NodeUp 
-          name={this.props.name}
-          state={this.props.state}
-          props={this.props.props}
-          methods={this.props.methods}
-        />}
-      >
-        <Panel
-          className="node"
-          style={style}
-          theme="secondary"
-          p={0}
-          my={0}
+        <Popover
+          isOpen={this.state.isOpen}
+          preferPlace="row"
+          onOuterAction={this.close}
+          body={<NodeUp
+            name={this.props.name}
+            state={this.props.state}
+            props={this.props.props}
+            methods={this.props.methods}
+          />}
         >
-          <Block borderLeft
-            borderColor="#263238"
-            backgroundColor="#1976D2"
-            color="#FAFAFA"
-            px={2}
-            py={0}
+          <Panel
+            className="node"
+            style={style}
+            theme="secondary"
+            p={0}
             my={0}
           >
-            <Heading size={4}>
-            {this.props.name.toUpperCase()}
-            </Heading>
-          </Block>
-          <Text style={{ fontSize: '14px', color: '#546E7A' }}>Props: </Text>
-          <Text px={1} style={{ fontSize: '12px' }}>
-           {propsArr.join(' | ')} <br />
-          </Text>
-        </Panel></Popover></foreignObject>
+            <Block
+              borderLeft
+              borderColor="#263238"
+              backgroundColor="#1976D2"
+              color="#FAFAFA"
+              px={2}
+              py={0}
+              my={0}
+            >
+              <Heading size={4}>
+                {this.props.name.toUpperCase()}
+              </Heading>
+            </Block>
+            <Text style={{ fontSize: '14px', color: '#546E7A' }}>Props: </Text>
+            <Text px={1} style={{ fontSize: '12px' }}>
+              {propsArr.join(' | ')} <br />
+            </Text>
+          </Panel></Popover></foreignObject>
     );
   }
 }

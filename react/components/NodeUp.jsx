@@ -30,45 +30,47 @@ function NodeUp(props) {
   })
   return (
     <div style={style}>
-    <Heading size={1} style={{ color: '#0088F0' }}>{props.name}</Heading>
+      <Heading size={1} style={{ color: '#0088F0' }}>{props.name}</Heading>
       <Space x={4} />
-    {
-      stateBool ? (<div><Heading>STATE</Heading>
+      {
+        stateBool ? (<div><Heading>STATE</Heading>
+          <Table
+            data={stateData}
+            headings={stateHeadings}
+            /></div>)
+          : null
+      }
+      {propsBool ? (<div><Heading>PROPS</Heading>
         <Table
-          data={stateData}
-          headings={stateHeadings}
-        /></div>)
-      : null
-    }
-     {propsBool ? (<div><Heading>PROPS</Heading>
-       <Table
-         data={propsData}
-         headings={propsHeadings}
-       /></div>)
-      : null
-    }
-    {methodsBool ? (<div><Heading>METHODS</Heading>
-      <ul>
-        {methodsData}
-      </ul>
-    </div>)
-    : null
-    }
-    {
-      (!propsBool && !stateBool) ? <Heading>nothing to see here!</Heading>
-      : null
-    }
+          data={propsData}
+          headings={propsHeadings}
+          /></div>)
+        : null
+      }
+      {methodsBool ? (<div><Heading>METHODS</Heading>
+        <ul>
+          {methodsData}
+        </ul>
+      </div>)
+        : null
+      }
+      {
+        (!propsBool && !stateBool) ? <Heading>nothing to see here!</Heading>
+          : null
+      }
     </div>
   );
 }
 
 NodeUp.propTypes = {
+  name: React.PropTypes.string,
   props: React.PropTypes.array,
   state: React.PropTypes.array,
   methods: React.PropTypes.array,
 };
 
 NodeUp.defaultProps = {
+  name: 'Component',
   props: [],
   state: [],
   methods: [],
