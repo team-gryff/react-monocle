@@ -1,4 +1,6 @@
-const monocleApp = function(state = {}, action) {
+const initialState = {};
+const monocleApp = function(state, action) {
+  if (state === undefined) state = initialState;
   switch(action.type) {
     case 'UPDATE_STATE':
       const updatedState = Object.assign({}, state);
@@ -14,4 +16,4 @@ const monocleApp = function(state = {}, action) {
   }
 }
 
-export default monocleApp;
+module.exports = monocleApp;
