@@ -1,6 +1,7 @@
 'use strict';
 const fs = require('fs');
 const regexLastIndexOf = require('./stringRegexHelper').regexLastIndexOf;
+const strip = require('strip-comments');
 
 function modifyBundleFile(bundlejs) {
   let bundle = fs.readFileSync(bundlejs, { encoding: 'utf-8' });
@@ -29,6 +30,7 @@ function getComponentName(bundle, startingIndex) {
   bundleSearchIndicesMap[regexLastIndexOf(bundle, /var \w+ = \(\d+, _react.createClass\)/, startingIndex)] = 'GULP';
   // let's try web pack...
   bundleSearchIndicesMap[regexLastIndexOf(bundle, /var \w+ = function \(_React\$Component\)/, startingIndex)] = 'WEBPACK';
+
   
   const targetIndex = Object.keys(bundleSearchIndicesMap)
   	.filter(index => index >= 0)
@@ -52,6 +54,39 @@ function getComponentName(bundle, startingIndex) {
     	break;
   }
   return componentMatch[0].split(' ')[1];
+}
+
+function modifySetStateStrings(bundleFilePath) {
+  let bundle = fs.readFileSync(bundleFilePath, { encoding: 'utf-8' });
+  if (bundle.length == 0) throw new Error('Bundle string is empty, provide valid bundle string input');
+  
+  console.log('Starting to strip comments from bundle file...');
+  const start = Date.now();
+  let modifiedBundle = strip(bundle.slice());
+  console.log(`Took ${(Date.now() - start) / 1000} seconds to strip comments input bundle file`);
+
+  let index = modifiedBundle.indexOf('this.setState', 0);
+  while (index !== -1) {
+    let openBraceIdx = modifiedBundle.indexOf('{', index);
+    let currentIdx = openBraceIdx + 1;
+    const parensStack = ['{'];
+    while (parensStack.length !== 0) {
+      if (modifiedBundle[currentIdx] === '{') parensStack.push(modifiedBundle[currentIdx]);
+      if (modifiedBundle[currentIdx] === '}') parensStack.pop();
+      currentIdx++;
+    }
+
+    const injection = `wrapper(this.setState)(${ modifiedBundle.slice(openBraceIdx, currentIdx) }, '${getComponentName(modifiedBundle, index)}')`;
+    modifiedBundle = modifiedBundle.slice(0, index) + injection + modifiedBundle.slice(currentIdx + 1);
+    
+    // need to take into account that length of bundle now changes since injected wrapper string length can be different than original
+    const oldLength = currentIdx - index;
+    const newLength = injection.length;
+    
+    index = modifiedBundle.indexOf('this.setState', index+1+newLength-oldLength);
+  }
+
+  return modifiedBundle;
 }
 
 module.exports = {
