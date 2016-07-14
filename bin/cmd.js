@@ -31,7 +31,8 @@ program.name = 'monocle';
   if (program.entry) entry = `${process.cwd()}/${program.entry}`;
   if (program.directory) directory = `${process.cwd()}/${program.directory}`;
   const ext = program.extension || 'jsx';
-  bundle = previewParser.modifyBundleFile(bundle);
+  // bundle = previewParser.modifyBundleFile(bundle);
+  const modifiedBundle = previewParser.modifySetStateStrings(bundle);
   // globs to match any jsx in directory called
   // `**/*.js*` for both js and jsx
   glob(`**/*.${ext}`, { cwd: directory, nosort: true, ignore: ['node_modules/**', 'react/**'] }, (err, files) => { // TODO: CHANGE BACK
@@ -43,6 +44,6 @@ program.name = 'monocle';
     let componentObject = assign.apply(null, astz); // combining into one file
     if (entry) componentObject = assign(componentObject, astGenerator(entry, true));
     const formatedD3Object = d3DataBuilder(componentObject); // building the tree
-    renderHtml(formatedD3Object, bundle, start); // sending the completed tree to be built and rendered
+    renderHtml(formatedD3Object, modifiedBundle, start); // sending the completed tree to be built and rendered
   });
 })();
