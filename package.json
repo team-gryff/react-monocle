@@ -49,6 +49,7 @@
     "commander": "^2.9.0",
     "d3": "^4.1.0",
     "escodegen": "^1.8.0",
+    "esquery": "^0.4.0",
     "esrecurse": "^4.1.0",
     "glob": "^7.0.5",
     "lodash.assign": "^4.0.9",
