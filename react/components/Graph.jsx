@@ -11,8 +11,8 @@ class Graph extends React.Component {
       width: 1000,
       height: 900,
       initialHeight: 900,
-      nodeW: 200,
-      nodeH: 100,
+      nodeW: 150,
+      nodeH: 80,
       nodes: [],
     };
     this.highlight = this.highlight.bind(this);
@@ -38,6 +38,7 @@ class Graph extends React.Component {
    * add resize event listener to resize graph, render links
    */
   componentDidMount() {
+    const graphz = document.getElementById('graphz');
     window.addEventListener('resize', this.resizeGraph);
     this.linkRender(this.state.d3nodes);  // d3 dom injection
     return this.setState({ height: graphz.getBBox().y + graphz.getBBox().height + 100 });
@@ -130,7 +131,6 @@ class Graph extends React.Component {
   resizeGraph() {
     select('path.link').remove();
     // makes sure graph is the right size after rendering the graph
-    const graphz = document.getElementById('graphz');
     const root = cloneDeep(this.props.treeData);
     const nodes = tree().size([this.state.width, this.state.initialHeight])(hierarchy(root));
     this.linkRender(this.nodeRender(nodes));
