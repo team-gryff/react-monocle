@@ -5,7 +5,7 @@ module.exports = {
   entry: './react/index.jsx',
   output: {
     path: __dirname + '/src/d3Tree/',
-    filename: 'app.js',
+    filename: 'app.min.js',
   },
   resolve: {
     extensions: ['', '.js', '.jsx'],
