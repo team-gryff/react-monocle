@@ -1,4 +1,4 @@
-import { createStore } from 'redux';
-import monocleApp from '../reducers/monocleApp';
+const createStore = require('redux').createStore;
+const monocleApp = require('../reducers/monocleApp');
 
-export default createStore(monocleApp);
+module.exports = createStore(monocleApp);

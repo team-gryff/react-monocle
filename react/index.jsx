@@ -15,3 +15,11 @@ render();
 
 // run render function whenever monocleStore updates
 monocleStore.subscribe(render);
+
+// initialize wrapper function so it's accessible on the window or global object during run-time
+const DEVELOPMENT = false;
+if (DEVELOPMENT) {
+  global.window = global;
+}
+
+window.wrapper = require('../src/reactInterceptor.js');
