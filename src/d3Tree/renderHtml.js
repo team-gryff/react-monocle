@@ -5,7 +5,7 @@ const exec = require('child_process').exec;
 
 function renderHtml(d3Obj, bundle, start) {
   const treeHtmlPath = '/src/d3Tree/d3Tree.html',
-    treeLogicPath = '/src/d3Tree/app.js',
+    treeLogicPath = '/src/d3Tree/app.min.js',
     endHtmlPath = '/src/d3Tree/end.html',
     treeHtml = fs.readFileSync(appRoot + treeHtmlPath, { encoding: 'utf-8' }),
     treeLogic = fs.readFileSync(appRoot + treeLogicPath, { encoding: 'utf-8' }),
