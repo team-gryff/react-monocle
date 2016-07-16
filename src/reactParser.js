@@ -3,6 +3,8 @@
 const acorn = require('acorn-jsx');
 const esrecurse = require('esrecurse');
 const escodegen = require('escodegen');
+const esquery = require('../esquery/esquery');
+const bfs = require('acorn-bfs');
 
 const htmlElements = require('./constants.js').htmlElements;
 const reactMethods = require('./constants.js').reactMethods;
@@ -36,29 +38,40 @@ function getReactProps(node, parent) {
       const name = attribute.name.name;
       let valueType;
       let valueName;
-      let isComponent = false;
       if (attribute.value === null) valueName = undefined;
       else if (attribute.value.type === 'Literal') valueName = attribute.value.value;
       else if (attribute.value.expression.type === 'Literal') valueName = attribute.value.expression.value;
       else if (attribute.value.expression.type === 'Identifier') valueName = attribute.value.expression.name;
       else if (attribute.value.expression.type === 'CallExpression') valueName = attribute.value.expression.callee.object.property.name;
-      else if (attribute.value.expression.type === 'LogicalExpression') {
+      else if (attribute.value.expression.type === 'MemberExpression') {
+        let current = attribute.value.expression;
+        while (current && current.property) {
+          //  && !current.property.name.match(/(state|props)/)
+          valueName = `.${current.property.name}${valueName || ''}`;
+          current = current.object;
+          if (current.type === 'Identifier') {
+            valueName = `.${current.name}${valueName || ''}`;
+            break;
+          }
+        }
+        valueName = valueName.replace('.', '');
+      } else if (attribute.value.expression.type === 'LogicalExpression') {
         valueName = attribute.value.expression.left.property.name;
         valueType = attribute.value.expression.left.object.name;
       } else if (attribute.value.expression.type === 'JSXElement') {
-        const node = attribute.value.expression;
+        const nodez = attribute.value.expression;
         const output = {
-          name: node.openingElement.name.name,
-          children: getChildJSXElements(node, parent),
-          props: getReactProps(node, parent),
+          name: nodez.openingElement.name.name,
+          children: getChildJSXElements(nodez, parent),
+          props: getReactProps(nodez, parent),
           state: [],
           methods: [],
         };
         valueName = output;
-      } else  valueName = attribute.value.expression.property.name;
-      if (attribute.value && attribute.value.expression && attribute.value.expression.object && attribute.value.expression.object.property) {
-        valueType = attribute.value.expression.object.property.name;
-      }
+      } else valueName = attribute.value.expression.property.name;
+      // if (attribute.value && attribute.value.expression && attribute.value.expression.object && attribute.value.expression.object.property) {
+      //   valueType = attribute.value.expression.object.property.name;
+      // }
       return {
         name,
         value: valueType ? `${valueType}.${valueName}` : valueName,
@@ -77,7 +90,7 @@ function getChildJSXElements(node, parent) {
   const childJsxComponentsArr = node
     .children
     .filter(jsx => jsx.type === 'JSXElement'
-    && htmlElements.indexOf(jsx.openingElement.name.name) < 0);
+      && htmlElements.indexOf(jsx.openingElement.name.name) < 0);
   return childJsxComponentsArr
     .map(child => {
       return {
@@ -86,8 +99,153 @@ function getChildJSXElements(node, parent) {
         props: getReactProps(child, parent),
         state: [],
         methods: [],
+        iterated: true,
       };
     });
+}
+
+function forInFinder(arr, name) {
+  const result = arr.map(ele => {
+    const jsxnode = esquery(ele, 'JSXElement')[0];
+    const obj = {};
+    obj.variables = {};
+    esquery(ele, 'VariableDeclarator').forEach(vars => {
+      if (vars.id.name !== 'i' && vars.init) {
+        obj.variables[vars.id.name] = escodegen.generate(vars.init).replace('this.', '');
+      }
+    });
+    if (ele.left.declarations) obj.variables[ele.left.declarations[0].id.name] = '[key]';
+    else if (ele.left.type === 'Identifier') obj.variables[ele.left.name] = '[key]';
+
+    if (jsxnode && htmlElements.indexOf(jsxnode.openingElement.name.name)) {
+      let current = ele.right;
+      let found;
+      while (current && current.property) {
+        found = `.${current.property.name}${found || ''}`;
+        current = current.object;
+        if (current.type === 'Identifier') {
+          found = `.${current.name}${found || ''}`;
+          break;
+        }
+      }
+
+      obj.source = found.replace('.', '');
+      obj.jsx = {
+        name: jsxnode.openingElement.name.name,
+        children: getChildJSXElements(jsxnode, name),
+        props: getReactProps(jsxnode, name),
+        state: [],
+        methods: [],
+        iterated: true,
+      };
+
+      const propsArr = obj.jsx.props;
+      for (let i = 0; i < propsArr.length; i++) {
+        for (const key in obj.variables) {
+          if (propsArr[i].value.includes(key)) {
+            propsArr[i].value = propsArr[i].value.replace(key, obj.variables[key]);
+          }
+        }
+      }
+    }
+    return obj;
+  });
+  return result;
+}
+
+
+function forLoopFinder(arr, name) {
+  const result = arr.map(ele => {
+    const jsxnode = esquery(ele, 'JSXElement')[0];
+    const obj = {};
+    obj.variables = {};
+    esquery(ele, 'VariableDeclarator').forEach(vars => {
+      if (vars.id.name !== 'i' && vars.init) {
+        obj.variables[vars.id.name] = escodegen.generate(vars.init).replace('this.', '').replace('.length', '');
+      }
+    });
+    if (ele.init.declarations) obj.variables[ele.init.declarations[0].id.name] = 'i';
+    else if (ele.init.type === 'AssignmentExpression') obj.variables[ele.init.left.name] = 'i';
+    if (jsxnode && htmlElements.indexOf(jsxnode.openingElement.name.name)) {
+      let current = ele.test.right;
+      let found;
+      while (current && current.property) {
+        found = `.${current.property.name}${found || ''}`;
+        current = current.object;
+        if (current.type === 'Identifier') {
+          found = `.${current.name}${found || ''}`;
+          break;
+        }
+      }
+
+      obj.source = found.replace('.', '').replace('.length', '');
+      obj.jsx = {
+        name: jsxnode.openingElement.name.name,
+        children: getChildJSXElements(jsxnode, name),
+        props: getReactProps(jsxnode, name),
+        state: [],
+        methods: [],
+        iterated: true,
+      };
+
+      const propsArr = obj.jsx.props;
+      for (let i = 0; i < propsArr.length; i++) {
+        for (const key in obj.variables) {
+          if (propsArr[i].value.includes(key)) {
+            propsArr[i].value = propsArr[i].value.replace(key, obj.variables[key]);
+          }
+        }
+      }
+    }
+    return obj;
+  });
+  return result;
+}
+
+function higherOrderFunctionFinder(arr, name) {
+  const result = arr.map(ele => {
+    const param = ele.arguments[0].params[0].name;
+    const jsxnode = esquery(ele, 'JSXElement')[0];
+    const obj = {};
+    obj.variables = {};
+    esquery(ele, 'VariableDeclarator').forEach(vars => {
+      obj.variables[vars.id.name] = escodegen.generate(vars.init);
+    });
+
+    if (jsxnode && htmlElements.indexOf(jsxnode.openingElement.name.name)) {
+      let current = ele.callee.object;
+      let found;
+      while (current && current.property) {
+        found = `.${current.property.name}${found || ''}`;
+        current = current.object;
+        if (current.type === 'Identifier') {
+          found = `.${current.name}${found || ''}`;
+          break;
+        }
+      }
+
+      obj.source = found.replace('.', '');
+      obj.jsx = {
+        name: jsxnode.openingElement.name.name,
+        children: getChildJSXElements(jsxnode, name),
+        props: getReactProps(jsxnode, name),
+        state: [],
+        methods: [],
+      };
+
+      const propsArr = obj.jsx.props;
+      for (let i = 0; i < propsArr.length; i++) {
+        propsArr[i].value = propsArr[i].value.replace(param, obj.source);
+        for (const key in obj.variables) {
+          if (propsArr[i].value.includes(key)) {
+          propsArr[i].value = propsArr[i].value.replace(key, obj.variables[key]);
+          }
+        }
+      }
+    }
+    return obj;
+  });
+  return result;
 }
 
 /**
@@ -113,8 +271,10 @@ function getES5ReactComponents(ast) {
     methods: [],
     children: [],
   };
+  let iter = [];
   let topJsxComponent;
   let outside;
+  const checker = {};
   esrecurse.visit(ast, {
     VariableDeclarator(node) {
       topJsxComponent = node.id.name;
@@ -134,7 +294,7 @@ function getES5ReactComponents(ast) {
             break;
           default:
             if (reactMethods.indexOf(prop.key.name) < 0
-                && prop.value.type === 'FunctionExpression') {
+              && prop.value.type === 'FunctionExpression') {
               output.methods.push(prop.key.name);
             }
             break;
@@ -157,7 +317,46 @@ function getES5ReactComponents(ast) {
     },
   });
 
+  const forIn = esquery(ast, 'ForInStatement').filter(ele => {
+    const searched = bfs(ele).filter(n => {
+      return n.type === 'JSXElement';
+    });
+    return searched.length > 0;
+  });
+  if (forIn.length > 0) iter = iter.concat(forInFinder(forIn, output.name));
+
+  const forLoop = esquery(ast, 'ForStatement').filter(ele => {
+    const searched = bfs(ele).filter(n => {
+      return n.type === 'JSXElement';
+    });
+    return searched.length > 0;
+  });
+  if (forLoop.length > 0) iter = iter.concat(forLoopFinder(forLoop, output.name));
+
+  const higherOrderFunc = esquery(ast, 'CallExpression').filter(ele => {
+    let higherOrderChecker = false;
+    const searched = bfs(ele).filter(n => {
+      return n.type === 'JSXElement';
+    });
+    if (ele.callee.property && ele.callee.property.name.match(/(map|forEach|filter|reduce)/)) {
+      higherOrderChecker = ele.callee.property.name.match(/(map|forEach|filter|reduce)/);
+    }
+    return searched.length > 0 && higherOrderChecker;
+  });
+  if (higherOrderFunc.length > 0) iter = iter.concat(higherOrderFunctionFinder(higherOrderFunc, output.name));
+
   if (outside) output.children.push(outside);
+  output.children.forEach((ele, i)=> {
+    checker[ele.name] = i;
+  });
+
+  for (let i = 0; i < iter.length; i++) {
+    if (checker.hasOwnProperty(iter[i].jsx.name)) {
+      output.children[checker[iter[i].jsx.name]] = iter[i].jsx;
+    }
+  }
+
+
   return output;
 }
 
@@ -174,7 +373,9 @@ function getES6ReactComponents(ast) {
     methods: [],
     children: [],
   };
+  let iter = [];
   let outside;
+  const checker = {};
   esrecurse.visit(ast, {
     ClassDeclaration(node) {
       if (isES6ReactComponent(node)) {
@@ -193,6 +394,7 @@ function getES6ReactComponents(ast) {
       this.visitChildren(node);
     },
     JSXElement(node) {
+      // TODO: DO STUFF WITH JSX AFTER FINDING STUFF BOI
       output.children = getChildJSXElements(node, output.name);
       output.props = getReactProps(node, output.name);
       if (htmlElements.indexOf(node.openingElement.name.name) < 0) {
@@ -204,10 +406,46 @@ function getES6ReactComponents(ast) {
           methods: [],
         };
       }
+      const forIn = esquery(ast, 'ForInStatement').filter(ele => {
+        const searched = bfs(ele).filter(n => {
+          return n.type === 'JSXElement';
+        });
+        return searched.length > 0;
+      });
+      if (forIn.length > 0) iter = iter.concat(forInFinder(forIn, output.name));
+
+      const forLoop = esquery(ast, 'ForStatement').filter(ele => {
+        const searched = bfs(ele).filter(n => {
+          return n.type === 'JSXElement';
+        });
+        return searched.length > 0;
+      });
+      if (forLoop.length > 0) iter = iter.concat(forLoopFinder(forLoop, output.name));
+
+      const higherOrderFunc = esquery(ast, 'CallExpression').filter(ele => {
+        let higherOrderChecker = false;
+        const searched = bfs(ele).filter(n => {
+          return n.type === 'JSXElement';
+        });
+        if (ele.callee.property && ele.callee.property.name.match(/(map|forEach|filter|reduce)/)) {
+          higherOrderChecker = ele.callee.property.name.match(/(map|forEach|filter|reduce)/);
+        }
+        return searched.length > 0 && higherOrderChecker;
+      });
+      if (higherOrderFunc.length > 0) iter = iter.concat(higherOrderFunctionFinder(higherOrderFunc, output.name));
     },
   });
 
   if (outside) output.children.push(outside);
+  output.children.forEach((ele, i)=> {
+    checker[ele.name] = i;
+  });
+
+  for (let i = 0; i < iter.length; i++) {
+    if (checker.hasOwnProperty(iter[i].jsx.name)) {
+      output.children[checker[iter[i].jsx.name]] = iter[i].jsx;
+    }
+  }
   return output;
 }
 
@@ -265,4 +503,7 @@ module.exports = {
   getES5ReactComponents,
   getES6ReactComponents,
   getStatelessFunctionalComponents,
+  forLoopFinder,
+  forInFinder,
+  higherOrderFunctionFinder,
 };

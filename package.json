@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "acorn": "^3.2.0",
+    "acorn-bfs": "^0.1.0",
     "acorn-jsx": "^3.0.1",
     "app-root-path": "^1.2.1",
     "commander": "^2.9.0",

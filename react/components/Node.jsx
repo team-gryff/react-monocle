@@ -39,7 +39,6 @@ class Node extends React.Component {
       textDecoration: 'none',
     };
     let propsArr = [];
-    let methodsArr = [];
     if (this.props.props.length !== 0) propsArr = this.props.props.map(ele => { return ele.name; });
 
     return (

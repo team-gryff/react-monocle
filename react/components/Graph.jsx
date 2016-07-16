@@ -148,7 +148,6 @@ class Graph extends React.Component {
         <g style={gStyle} id="graphz">
           {this.state.nodes}
         </g>
-        <div className="testing"></div>
       </svg>
     );
   }
