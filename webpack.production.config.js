@@ -23,13 +23,13 @@ module.exports = {
   },
   plugins: [
     // new ExtractTextPlugin('style.css', { allChunks: true })
-    // new webpack.DefinePlugin({
-    //   NODE_ENV: 'production',
-    // }),
-    // new webpack.optimize.DedupePlugin(),
-    // new webpack.NoErrorsPlugin(),
+    new webpack.DefinePlugin({
+      NODE_ENV: 'production',
+    }),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.NoErrorsPlugin(),
     new webpack.optimize.UglifyJsPlugin({
-      mangle: false,
+      mangle: true,
     }),
   ],
 };
