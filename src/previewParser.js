@@ -149,9 +149,8 @@ function getComponentName(bundle, startingIndex) {
   // get index of component declaration
   bundleSearchIndicesMap[regexLastIndexOf(bundle, /var \w+ = \(\d+, _react.createClass\)/, startingIndex)] = 'GULP';
   // let's try web pack...
-  bundleSearchIndicesMap[regexLastIndexOf(bundle, /var \w+ = function \(_React\$Component\)/, startingIndex)] = 'WEBPACK';
+  bundleSearchIndicesMap[regexLastIndexOf(bundle, /(var )?\w+\s*=\s*function\s*\(_React\$Component\)/, startingIndex)] = 'WEBPACK';
 
-  
   const targetIndex = Object.keys(bundleSearchIndicesMap)
   	.filter(index => index >= 0)
   	.reduce((prev, curr) => {
@@ -168,12 +167,17 @@ function getComponentName(bundle, startingIndex) {
   	  break;
     case 'WEBPACK':
    	  componentMatch = bundle.slice(targetIndex)
-  	    .match(/var \w+ = function \(_React\$Component\)/)
+  	    .match(/(var )?\w+\s*=\s*function\s*\(_React\$Component\)/)
    	  break;
     default:
-    	break;
+    	throw new Error('Unable to find component from bundle file');
   }
-  return componentMatch[0].split(' ')[1];
+  
+  // need to normalize component name (remove declarator ex. var, const)
+  return componentMatch[0]
+    .replace(/var |const /, '')
+    .replace(/ /g, '')
+    .split('=')[0];
 }
 
 
@@ -197,7 +201,8 @@ function modifySetStateStrings(bundleFilePath) {
       currentIdx++;
     }
 
-    const injection = `wrapper(this.setState)(${ modifiedBundle.slice(openBraceIdx, currentIdx) }, '${getComponentName(modifiedBundle, index)}')`;
+    const componentName = getComponentName(modifiedBundle, index);
+    const injection = `wrapper(this.setState)(${ modifiedBundle.slice(openBraceIdx, currentIdx) }, '${componentName}')`;
     modifiedBundle = modifiedBundle.slice(0, index) + injection + modifiedBundle.slice(currentIdx + 1);
     
     // need to take into account that length of bundle now changes since injected wrapper string length can be different than original
@@ -217,6 +222,7 @@ module.exports = {
   queryES6Ast,
   modifyBundleFile,
   modifyTestBundleFile,
+  modifySetStateStrings,
   getComponentName,
 };
 
