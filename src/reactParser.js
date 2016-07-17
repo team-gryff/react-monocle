@@ -31,7 +31,6 @@ function getReactStates(node) {
  * @returns {Array} Array of all JSX props on React component
  */
 function getReactProps(node, parent) {
-  // HOW IS A DIV STILL GETTING IN
   if (node.openingElement.attributes.length === 0 || htmlElements.indexOf(node.openingElement.name.name) > 0) return [];
   return node.openingElement.attributes
     .map(attribute => {
@@ -43,6 +42,7 @@ function getReactProps(node, parent) {
       else if (attribute.value.expression.type === 'Literal') valueName = attribute.value.expression.value;
       else if (attribute.value.expression.type === 'Identifier') valueName = attribute.value.expression.name;
       else if (attribute.value.expression.type === 'CallExpression') valueName = attribute.value.expression.callee.object.property.name;
+      else if (attribute.value.expression.type === 'BinaryExpression') valueName = attribute.value.expression.left.name + attribute.value.expression.operator + attribute.value.expression.right.name;
       else if (attribute.value.expression.type === 'MemberExpression') {
         let current = attribute.value.expression;
         while (current && current.property) {
