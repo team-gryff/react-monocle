@@ -64,7 +64,7 @@ function getReactProps(node, parent) {
           name: nodez.openingElement.name.name,
           children: getChildJSXElements(nodez, parent),
           props: getReactProps(nodez, parent),
-          state: [],
+          state: {},
           methods: [],
         };
         valueName = output;
@@ -97,9 +97,8 @@ function getChildJSXElements(node, parent) {
         name: child.openingElement.name.name,
         children: getChildJSXElements(child, parent),
         props: getReactProps(child, parent),
-        state: [],
+        state: {},
         methods: [],
-        iterated: true,
       };
     });
 }
@@ -129,21 +128,21 @@ function forInFinder(arr, name) {
         }
       }
 
-      obj.source = found.replace('.', '');
       obj.jsx = {
         name: jsxnode.openingElement.name.name,
         children: getChildJSXElements(jsxnode, name),
         props: getReactProps(jsxnode, name),
-        state: [],
+        state: {},
         methods: [],
-        iterated: true,
+        iterated: 'forIn',
+        source: found.replace('.', ''),
       };
-
       const propsArr = obj.jsx.props;
       for (let i = 0; i < propsArr.length; i++) {
         for (const key in obj.variables) {
           if (propsArr[i].value.includes(key)) {
-            propsArr[i].value = propsArr[i].value.replace(key, obj.variables[key]);
+            if (obj.variables[key] === '[key]') propsArr[i].value = propsArr[i].value.replace(`.${key}`, obj.variables[key]);
+            else propsArr[i].value = propsArr[i].value.replace(key, obj.variables[key]);
           }
         }
       }
@@ -159,13 +158,19 @@ function forLoopFinder(arr, name) {
     const jsxnode = esquery(ele, 'JSXElement')[0];
     const obj = {};
     obj.variables = {};
+
+    // finding variables in case information was reassigned
     esquery(ele, 'VariableDeclarator').forEach(vars => {
       if (vars.id.name !== 'i' && vars.init) {
         obj.variables[vars.id.name] = escodegen.generate(vars.init).replace('this.', '').replace('.length', '');
       }
     });
-    if (ele.init.declarations) obj.variables[ele.init.declarations[0].id.name] = 'i';
-    else if (ele.init.type === 'AssignmentExpression') obj.variables[ele.init.left.name] = 'i';
+
+    // defaulting each iteration to be represented by 'i'
+    if (ele.init.declarations) obj.variables[ele.init.declarations[0].id.name] = '[i]';
+    else if (ele.init.type === 'AssignmentExpression') obj.variables[ele.init.left.name] = '[i]';
+
+    // building the object name
     if (jsxnode && htmlElements.indexOf(jsxnode.openingElement.name.name)) {
       let current = ele.test.right;
       let found;
@@ -178,21 +183,23 @@ function forLoopFinder(arr, name) {
         }
       }
 
-      obj.source = found.replace('.', '').replace('.length', '');
       obj.jsx = {
         name: jsxnode.openingElement.name.name,
         children: getChildJSXElements(jsxnode, name),
         props: getReactProps(jsxnode, name),
-        state: [],
+        state: {},
         methods: [],
-        iterated: true,
+        iterated: 'forLoop',
+        source: found.replace('.', '').replace('.length', ''),
       };
 
+      // replacing variables with their properties
       const propsArr = obj.jsx.props;
       for (let i = 0; i < propsArr.length; i++) {
         for (const key in obj.variables) {
           if (propsArr[i].value.includes(key)) {
-            propsArr[i].value = propsArr[i].value.replace(key, obj.variables[key]);
+            if (obj.variables[key] === '[i]') propsArr[i].value = propsArr[i].value.replace(`.${key}`, obj.variables[key]);
+            else propsArr[i].value = propsArr[i].value.replace(key, obj.variables[key]);
           }
         }
       }
@@ -204,6 +211,8 @@ function forLoopFinder(arr, name) {
 
 function higherOrderFunctionFinder(arr, name) {
   const result = arr.map(ele => {
+    // since every higher order function will have some parameter
+    // will be used to replace with what it actually is
     const param = ele.arguments[0].params[0].name;
     const jsxnode = esquery(ele, 'JSXElement')[0];
     const obj = {};
@@ -224,21 +233,22 @@ function higherOrderFunctionFinder(arr, name) {
         }
       }
 
-      obj.source = found.replace('.', '');
       obj.jsx = {
         name: jsxnode.openingElement.name.name,
         children: getChildJSXElements(jsxnode, name),
         props: getReactProps(jsxnode, name),
-        state: [],
+        state: {},
         methods: [],
+        iterated: 'higherOrder',
+        source: found.replace('.', ''),
       };
 
       const propsArr = obj.jsx.props;
       for (let i = 0; i < propsArr.length; i++) {
-        propsArr[i].value = propsArr[i].value.replace(param, obj.source);
+        propsArr[i].value = propsArr[i].value.replace(param, `${obj.jsx.source}[i]`);
         for (const key in obj.variables) {
           if (propsArr[i].value.includes(key)) {
-          propsArr[i].value = propsArr[i].value.replace(key, obj.variables[key]);
+            propsArr[i].value = propsArr[i].value.replace(key, obj.variables[key]);
           }
         }
       }
@@ -266,7 +276,7 @@ function isES6ReactComponent(node) {
 function getES5ReactComponents(ast) {
   const output = {
     name: '',
-    state: [],
+    state: {},
     props: [],
     methods: [],
     children: [],
@@ -286,22 +296,22 @@ function getES5ReactComponents(ast) {
       }
       this.visitChildren(node);
     },
-    ObjectExpression(node) {
-      node.properties.forEach(prop => {
-        switch (prop.key.name) {
-          case 'getInitialState':
-            output.state = getReactStates(prop.value.body.body[0].argument);
-            break;
-          default:
-            if (reactMethods.indexOf(prop.key.name) < 0
-              && prop.value.type === 'FunctionExpression') {
-              output.methods.push(prop.key.name);
-            }
-            break;
-        }
-      });
-      this.visitChildren(node);
-    },
+    // ObjectExpression(node) {
+    //   node.properties.forEach(prop => {
+    //     switch (prop.key.name) {
+    //       case 'getInitialState':
+    //         output.state = getReactStates(prop.value.body.body[0].argument);
+    //         break;
+    //       default:
+    //         if (reactMethods.indexOf(prop.key.name) < 0
+    //           && prop.value.type === 'FunctionExpression') {
+    //           output.methods.push(prop.key.name);
+    //         }
+    //         break;
+    //     }
+    //   });
+    //   this.visitChildren(node);
+    // },
     JSXElement(node) {
       output.children = getChildJSXElements(node, output.name);
       output.props = getReactProps(node, output.name);
@@ -310,7 +320,7 @@ function getES5ReactComponents(ast) {
           name: node.openingElement.name.name,
           children: getChildJSXElements(node, output.name),
           props: getReactProps(node, output.name),
-          state: [],
+          state: {},
           methods: [],
         };
       }
@@ -369,7 +379,7 @@ function getES6ReactComponents(ast) {
   const output = {
     name: '',
     props: [],
-    state: [],
+    state: {},
     methods: [],
     children: [],
   };
@@ -387,12 +397,12 @@ function getES6ReactComponents(ast) {
       if (reactMethods.indexOf(node.key.name) < 0) output.methods.push(node.key.name);
       this.visitChildren(node);
     },
-    ExpressionStatement(node) {
-      if (node.expression.left && node.expression.left.property && node.expression.left.property.name === 'state') {
-        output.state = getReactStates(node.expression.right);
-      }
-      this.visitChildren(node);
-    },
+    // ExpressionStatement(node) {
+    //   if (node.expression.left && node.expression.left.property && node.expression.left.property.name === 'state') {
+    //     output.state = getReactStates(node.expression.right);
+    //   }
+    //   this.visitChildren(node);
+    // },
     JSXElement(node) {
       // TODO: DO STUFF WITH JSX AFTER FINDING STUFF BOI
       output.children = getChildJSXElements(node, output.name);
@@ -402,7 +412,7 @@ function getES6ReactComponents(ast) {
           name: node.openingElement.name.name,
           children: getChildJSXElements(node, output.name),
           props: getReactProps(node, output.name),
-          state: [],
+          state: {},
           methods: [],
         };
       }
@@ -459,7 +469,7 @@ function getStatelessFunctionalComponents(ast) {
   const output = {
     name: '',
     props: [],
-    state: [],
+    state: {},
     methods: [],
     children: [],
   };
