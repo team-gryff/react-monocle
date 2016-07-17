@@ -172,9 +172,10 @@ function getComponentName(bundle, startingIndex) {
     default:
     	throw new Error('Unable to find component from bundle file');
   }
+
   // need to normalize component name (remove declarator ex. var, const)
   return componentMatch[0]
-    .replace('var |const ', '')
+    .replace(/var |const /, '')
     .replace(/ /g, '')
     .split('=')[0];
 }

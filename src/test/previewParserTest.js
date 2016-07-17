@@ -50,5 +50,26 @@ describe('ReactApp AST Parser Tests', function() {
     expect(queryES6Ast.bind(queryES6Ast, '')).to.throw(Error, /Empty bundle file input/); 
   });
 
+  describe('getComponentName Tests', function() {
+    const getComponentName = require('../previewParser.js').getComponentName;
 
+    it('should return a valid function', function() {
+      expect(getComponentName).to.be.a('function');
+    });
+
+    it('should return a component name for ES6 using Component', function() {
+      const bundle = 'App=function(_Component)';
+      expect(getComponentName(bundle, bundle.length)).to.equal('App');
+    });
+
+    it('should return a component name for ES6 using React.Component', function() {
+      const bundle = 'Base=function(_React$Component)';
+      expect(getComponentName(bundle, bundle.length)).to.equal('Base');
+    });
+
+    it('should return a component name for ES5 using React.createClass with spaces', function() {
+      const bundle = 'var Node = (324, _react.createClass)';
+      expect(getComponentName(bundle, bundle.length)).to.equal('Node');
+    });
+  })
 })
