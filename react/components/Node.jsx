@@ -25,7 +25,7 @@ class Node extends React.Component {
   render() {
     // setting background color depending on state
     let bgColor = '#FAFAFA';
-    if (this.props.state.length !== 0) bgColor = '#B3E5FC';
+    if (Object.keys(this.props.state).length !== 0) bgColor = '#B3E5FC';
     // inline styling, as well as using translate coordinates found by d3
     const style = {
       transform: `translate(${this.props.xtranslate}px,${this.props.ytranslate}px)`,
@@ -39,8 +39,10 @@ class Node extends React.Component {
       textDecoration: 'none',
     };
     let propsArr = [];
-    let methodsArr = [];
-    if (this.props.props.length !== 0) propsArr = this.props.props.map(ele => { return ele.name; });
+    for (const key in this.props.props) {
+      propsArr.push(key);
+    }
+    // if (this.props.props.length !== 0) propsArr = this.props.props.map(ele => { return ele.name; });
 
     return (
       <foreignObject onMouseEnter={this.props.highlight} onMouseLeave={this.props.lowlight} onClick={this.toggle}>
@@ -88,8 +90,8 @@ Node.propTypes = {
   xtranslate: React.PropTypes.number,
   ytranslate: React.PropTypes.number,
   name: React.PropTypes.string,
-  props: React.PropTypes.array,
-  state: React.PropTypes.array,
+  props: React.PropTypes.object,
+  state: React.PropTypes.object,
   methods: React.PropTypes.array,
   width: React.PropTypes.number,
   height: React.PropTypes.number,
@@ -101,8 +103,8 @@ Node.defaultProps = {
   xtranslate: 0,
   ytranslate: 0,
   name: 'something messed up',
-  props: [],
-  state: [],
+  props: {},
+  state: {},
   methods: [],
   width: 200,
   height: 100,

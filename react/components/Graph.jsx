@@ -2,6 +2,7 @@ import React from 'react';
 import { tree, hierarchy, select, path } from 'd3';
 import Node from './Node.jsx';
 const cloneDeep = require('lodash.clonedeep');
+const isEqual = require('lodash.isequal');
 
 
 class Graph extends React.Component {
@@ -12,7 +13,7 @@ class Graph extends React.Component {
       height: 900,
       initialHeight: 900,
       nodeW: 150,
-      nodeH: 80,
+      nodeH: 100,
       nodes: [],
     };
     this.highlight = this.highlight.bind(this);
@@ -30,8 +31,7 @@ class Graph extends React.Component {
   componentWillMount() {
     const root = cloneDeep(this.props.treeData);
     const nodes = tree().size([window.innerWidth, this.state.height])(hierarchy(root));
-    this.nodeRender(nodes); // react render
-    return this.setState({ width: window.innerWidth });
+    return this.nodeRender(nodes); // react render
   }
 
   /**
@@ -43,6 +43,23 @@ class Graph extends React.Component {
     this.linkRender(this.state.d3nodes);  // d3 dom injection
     return this.setState({ height: graphz.getBBox().y + graphz.getBBox().height + 100 });
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.width !== this.state.width) {
+      select('path.link').remove();
+      return this.linkRender(this.state.d3nodes);
+    }
+    return true;
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return !isEqual(nextProps, this.props)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.resizeGraph);
+  }
+
 
   highlightRecursion(d) {
     // finds out which links to highlight
@@ -102,6 +119,7 @@ class Graph extends React.Component {
     this.setState({
       nodes: renderArr,
       d3nodes: nodes,
+      width: window.innerWidth,
     });
     return nodes;
   }
@@ -129,27 +147,33 @@ class Graph extends React.Component {
   }
 
   resizeGraph() {
-    select('path.link').remove();
     // makes sure graph is the right size after rendering the graph
     const root = cloneDeep(this.props.treeData);
     const nodes = tree().size([this.state.width, this.state.initialHeight])(hierarchy(root));
-    this.linkRender(this.nodeRender(nodes));
-    this.setState({
-      width: window.innerWidth,
-    });
+    (this.nodeRender(nodes));
   }
 
   render() {
+    const divStyle = {
+      backgroundColor: '#FAFAFA',
+      paddingTop: '20px',
+      transform: 'translate(0px, -20px)'
+    }
     const gStyle = {
-      transform: 'translate(0px,40px)',
+      transform: `translate(0px,40px)`,
+      fill: '#FAFAFA',
     };
+    const svgStyle = {
+      transform: `translate(-${this.state.nodeW/2}px, 0px)`
+    }
     return (
-      <svg height={this.state.height} width={this.state.width}>
+      <div style={divStyle}>
+      <svg height={this.state.height} width={this.state.width} style={svgStyle} >
         <g style={gStyle} id="graphz">
           {this.state.nodes}
         </g>
-        <div className="testing"></div>
       </svg>
+      </div>
     );
   }
 }
