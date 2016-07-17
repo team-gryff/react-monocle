@@ -1,7 +1,7 @@
 import React from 'react';
 import Graph from './Graph.jsx';
 const cloneDeep = require('lodash.clonedeep');
-const formatted = require('../../formattedDataNoState');
+// const formatted = require('../../formattedDataNoState');
 
 
 
@@ -135,7 +135,7 @@ class App extends React.Component {
   }
 
   render() {
-    const builtObj = this.treebuilder(this.props.state);
+    const builtObj = this.treebuilder(this.props.store);
     return (
       <div>
         <Graph treeData={builtObj} />

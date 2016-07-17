@@ -41,20 +41,20 @@ function d3DataBuilder(obj) {
   const result = cloneDeep(formatted[ENTRY]);
 
 // recursive function to concat and build the d3 object
-  function treeAddition(node) {
-    if (!node.children) throw new Error('Invalid Node! Something went wrong with the parsing (no children array)');
-    if (node.children.length === 0) return; // base case
-    for (let i = 0; i < node.children.length; i++) {
-      if (formatted.hasOwnProperty(node.children[i].name)) {
-        node.children[i].children = cloneDeep(formatted[node.children[i].name].children);
-        // node.children[i].state = cloneDeep(formatted[node.children[i].name].state);
-      } 
-      // else throw new Error('Parse Error: Could not find needed component');
-      if (node.children[i].children.length > 0) treeAddition(node.children[i]); // if the component has nested components, recurse through
-    }
-  }
-  treeAddition(result);
-  return result;
+  // function treeAddition(node) {
+  //   if (!node.children) throw new Error('Invalid Node! Something went wrong with the parsing (no children array)');
+  //   if (node.children.length === 0) return; // base case
+  //   for (let i = 0; i < node.children.length; i++) {
+  //     if (formatted.hasOwnProperty(node.children[i].name)) {
+  //       node.children[i].children = cloneDeep(formatted[node.children[i].name].children);
+  //       // node.children[i].state = cloneDeep(formatted[node.children[i].name].state);
+  //     } 
+  //     // else throw new Error('Parse Error: Could not find needed component');
+  //     if (node.children[i].children.length > 0) treeAddition(node.children[i]); // if the component has nested components, recurse through
+  //   }
+  // }
+  // treeAddition(result);
+  return formatted;
 }
 
 
