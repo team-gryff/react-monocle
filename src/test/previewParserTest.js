@@ -1,6 +1,7 @@
 'use strict';
 
 const expect = require('chai').expect;
+const fs = require('fs');
 
 describe('ReactApp AST Parser Tests', function() {
   const modifyTestBundleFile = require('../previewParser.js').modifyTestBundleFile;
@@ -10,17 +11,19 @@ describe('ReactApp AST Parser Tests', function() {
   const queryES6Ast = require('../previewParser.js').queryES6Ast;
   const previewParserFixtures = require('./fixtures/bundleFileFixture.js');
   
+  const modifySetStateStrings = require('../previewParser.js').modifySetStateStrings;
+  let previewParserFixtures = require('./fixtures/previewParserFixtures/bundleFileFixture.js');
 
-  it('modifyTestBundleFile should be a function', function() {
-    expect(modifyTestBundleFile).to.be.a.function;
+  it('modifySetStateStrings should be a function', function() {
+    expect(modifySetStateStrings).to.be.a.function;
   });
 
-  it('modifyTestBundleFile should throw error when parser receives empty js code string', function() {
-    expect(modifyTestBundleFile.bind(modifyTestBundleFile,'')).to.throw(Error, /Empty AST input/); 
+  it('modifySetStateStrings should throw error when parser receives empty js code string', function() {
+    expect(modifySetStateStrings.bind(modifySetStateStrings,'')).to.throw(Error, /Bundle string is empty, provide valid bundle string input/); 
   });
 
-  it('modifyTestBundleFile should return a string', function() {
-      expect(modifyTestBundleFile(previewParserFixtures.bundledSetState))
+  it('modifySetStateStrings should return a string', function() {
+      expect(modifySetStateStrings(previewParserFixtures.bundledSetState))
         .to.equal(previewParserFixtures.modifiedBundle);
   });
 
