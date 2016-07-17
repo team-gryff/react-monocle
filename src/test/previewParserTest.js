@@ -12,7 +12,6 @@ describe('ReactApp AST Parser Tests', function() {
   const previewParserFixtures = require('./fixtures/bundleFileFixture.js');
   
   const modifySetStateStrings = require('../previewParser.js').modifySetStateStrings;
-  let previewParserFixtures = require('./fixtures/previewParserFixtures/bundleFileFixture.js');
 
   it('modifySetStateStrings should be a function', function() {
     expect(modifySetStateStrings).to.be.a.function;
