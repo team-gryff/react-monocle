@@ -149,7 +149,7 @@ function getComponentName(bundle, startingIndex) {
   // get index of component declaration
   bundleSearchIndicesMap[regexLastIndexOf(bundle, /var \w+ = \(\d+, _react.createClass\)/, startingIndex)] = 'GULP';
   // let's try web pack...
-  bundleSearchIndicesMap[regexLastIndexOf(bundle, /(var )?\w+\s*?=\s*?function\s*?\(_React\$Component\)/, startingIndex)] = 'WEBPACK';
+  bundleSearchIndicesMap[regexLastIndexOf(bundle, /(var )?\w+\s*?=\s*?function\s*?\(_(React\$)?Component\)/, startingIndex)] = 'WEBPACK';
 
   const targetIndex = Object.keys(bundleSearchIndicesMap)
   	.filter(index => index >= 0)
@@ -167,7 +167,7 @@ function getComponentName(bundle, startingIndex) {
   	  break;
     case 'WEBPACK':
    	  componentMatch = bundle.slice(targetIndex)
-  	    .match(/(var )?\w+\s*?=\s*?function\s*?\(_React\$Component\)/)
+  	    .match(/(var )?\w+\s*?=\s*?function\s*?\(_(React\$)?Component\)/)
    	  break;
     default:
     	throw new Error('Unable to find component from bundle file');
@@ -199,41 +199,17 @@ function modifySetStateStrings(bundleFilePath) {
       if (modifiedBundle[currentIdx] === '}') parensStack.pop();
       currentIdx++;
     }
-
-    const injection = `wrapper(this.setState)(${ modifiedBundle.slice(openBraceIdx, currentIdx) }, '${getComponentName(modifiedBundle, index)}')`;
-    modifiedBundle = modifiedBundle.slice(0, index) + injection + modifiedBundle.slice(currentIdx + 1);
-    
-    // need to take into account that length of bundle now changes since injected wrapper string length can be different than original
-    const oldLength = currentIdx - index;
-    const newLength = injection.length;
-    
-    index = modifiedBundle.indexOf('this.setState', index+1+newLength-oldLength);
-  }
-
-  return modifiedBundle;
-}
-
-function modifySetStateStrings(bundleFilePath) {
-  let bundle = fs.readFileSync(bundleFilePath, { encoding: 'utf-8' });
-  if (bundle.length == 0) throw new Error('Bundle string is empty, provide valid bundle string input');
-  
-  console.log('Starting to strip comments from bundle file...');
-  const start = Date.now();
-  let modifiedBundle = strip(bundle.slice());
-  console.log(`Took ${(Date.now() - start) / 1000} seconds to strip comments input bundle file`);
-
-  let index = modifiedBundle.indexOf('this.setState', 0);
-  while (index !== -1) {
-    let openBraceIdx = modifiedBundle.indexOf('{', index);
-    let currentIdx = openBraceIdx + 1;
-    const parensStack = ['{'];
+    const stateStr = modifiedBundle.slice(openBraceIdx, currentIdx);
+    const functionStartIdx = currentIdx;
+    parensStack.push('(');
     while (parensStack.length !== 0) {
-      if (modifiedBundle[currentIdx] === '{') parensStack.push(modifiedBundle[currentIdx]);
-      if (modifiedBundle[currentIdx] === '}') parensStack.pop();
+      if (modifiedBundle[currentIdx] === '(') parensStack.push(modifiedBundle[currentIdx]);
+      if (modifiedBundle[currentIdx] === ')') parensStack.pop();
       currentIdx++;
     }
-
-    const injection = `wrapper(this.setState)(${ modifiedBundle.slice(openBraceIdx, currentIdx) }, '${getComponentName(modifiedBundle, index)}')`;
+    currentIdx--;
+    const callbackStr = modifiedBundle.slice(functionStartIdx, currentIdx);
+    const injection = `wrapper('${getComponentName(modifiedBundle, index)}',this)(${ stateStr }${ callbackStr })`;
     modifiedBundle = modifiedBundle.slice(0, index) + injection + modifiedBundle.slice(currentIdx + 1);
     
     // need to take into account that length of bundle now changes since injected wrapper string length can be different than original
