@@ -24,7 +24,7 @@ module.exports = {
   plugins: [
     // new ExtractTextPlugin('style.css', { allChunks: true })
     new webpack.DefinePlugin({
-      NODE_ENV: 'production',
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
     }),
     new webpack.optimize.DedupePlugin(),
     new webpack.NoErrorsPlugin(),

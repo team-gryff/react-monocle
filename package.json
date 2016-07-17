@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "acorn": "^3.2.0",
+    "acorn-bfs": "^0.1.0",
     "acorn-jsx": "^3.0.1",
     "app-root-path": "^1.2.1",
     "commander": "^2.9.0",
@@ -54,6 +55,7 @@
     "glob": "^7.0.5",
     "lodash.assign": "^4.0.9",
     "lodash.clonedeep": "^4.3.2",
+    "lodash.isequal": "^4.2.0",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
     "react-popover": "^0.4.4",

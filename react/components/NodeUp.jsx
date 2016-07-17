@@ -5,11 +5,11 @@ import { Table, Heading, Space } from 'rebass';
 
 function NodeUp(props) {
   // booleans to determine what needs to be dipslayed
-  const propsBool = props.props.length > 0;
-  const stateBool = props.state.length > 0;
+  const propsBool = Object.keys(props.props).length > 0;
+  const stateBool = Object.keys(props.state).length > 0;
   const methodsBool = props.methods.length > 0;
   // headings for the respective tables
-  const propsHeadings = ['prop', 'parent', 'value'];
+  const propsHeadings = ['prop', 'value'];
   const stateHeadings = ['state', 'value'];
   const style = {
     backgroundColor: '#FAFAFA',
@@ -19,12 +19,14 @@ function NodeUp(props) {
   };
 
   // formatting the data for table usage
-  const stateData = props.state.reduce((a, b) => {
-    return a.concat([[b.name, JSON.stringify(b.value, null, 2)]]);
-  }, []);
-  const propsData = props.props.reduce((a, b) => {
-    return a.concat([[b.name, b.parent, JSON.stringify(b.value, null, 2)]]);
-  }, []);
+  const stateData = [];
+  for (const key in props.state) {
+    stateData.push([key, JSON.stringify(props.state[key], null, 2)]);
+  }
+  const propsData = []
+  for (const key in props.props) {
+    propsData.push([key, JSON.stringify(props.props[key], null, 2)]);
+  }
   const methodsData = props.methods.map((ele, i) => {
     return (<li key={i}>{ele}</li>);
   })
@@ -64,15 +66,15 @@ function NodeUp(props) {
 
 NodeUp.propTypes = {
   name: React.PropTypes.string,
-  props: React.PropTypes.array,
-  state: React.PropTypes.array,
+  props: React.PropTypes.object,
+  state: React.PropTypes.object,
   methods: React.PropTypes.array,
 };
 
 NodeUp.defaultProps = {
   name: 'Component',
-  props: [],
-  state: [],
+  props: {},
+  state: {},
   methods: [],
 };
 
