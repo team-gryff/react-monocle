@@ -1,41 +1,41 @@
 module.exports = {
   singleMainAppOutput: { 
     name: 'Main',
-    props: [],
-    state: [],
+    props: {},
+    state: {},
     children: [],
     methods: [],
   },
   nestedComponentsOutput: { 
     name: 'Main',
-    props: [],
-    state: [],
+    props: {},
+    state: {},
     methods: [],
     children: [
       { 
         name: 'SearchBar', 
-        props: [],
-        state: [],
+        props: {},
+        state: {},
         methods: [],
         children: [], 
       }, 
       { 
         name: 'SearchResults',
-        props: [],
-        state: [],
+        props: {},
+        state: {},
         methods: [],
         children: [
           { 
             name: 'Result', 
-            props: [],
-            state: [],
+            props: {},
+            state: {},
             methods: [],
             children: [], 
           }, 
           { 
             name: 'Result', 
-            props: [],
-            state: [],
+            props: {},
+            state: {},
             methods: [],
             children: [],
           },
@@ -45,13 +45,13 @@ module.exports = {
   },
   componentWithPropsOutput: {
     name: 'Main',
-    props: [],
-    state: [],
+    props: {},
+    state: {},
     methods: [],
     children: [
       { name: 'SearchBar' ,
         children: [],
-        state: [],
+        state: {},
         methods: [],
         props: [
           { 
@@ -70,31 +70,21 @@ module.exports = {
   },
   componentWithStateOutput: {
     name: 'Main',
-    props: [],
-    state: [
-      { name: 'number', value: 2 },
-      { name: 'string', value: 'hello' },
-      { name: 'boolean', value: true },
-      { name: 'array', value: [1, 'hello', true] },
-      { name: 'object', value: { 
-        name: 'hello again',
-        age: 27,
-        engineer: true
-      }}
-    ],
+    props: {},
+    state: {},
     children: [],
     methods: [],
   },
   componentWithMethodsOutput: {
     name: 'Main',
-    props: [],
+    props: {},
     children: [],
-    state: [],
+    state: {},
     methods: ['handleSubmit', 'handleReceiveData'],
   },
   nestedComponentCompositionOutput: {
     name: 'Main',
-    props: [],
+    props: {},
     children: [
       {
         name: 'ListItem',
@@ -111,11 +101,11 @@ module.exports = {
           }
         ],
         children: [],
-        state: [],
+        state: {},
         methods: [],
       }
     ],
-    state: [],
+    state: {},
     methods: [],
   }
 }
