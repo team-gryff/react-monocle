@@ -106,13 +106,13 @@ describe('ESTree AST Parser Tests', function() {
     it('should have for loop construct in render return nested components', function() {
       const forLoopComponentFixture = commonComponentFixtures.forLoopComponentFixture;
       expect(getES5ReactComponents(jsToAst(forLoopComponentFixture)))
-        .to.deep.equal(reactParserOutputFixtures.nestedComponentCompositionOutput);
+        .to.deep.equal(reactParserOutputFixtures.nestedForLoopOutput);
     });
 
     it('should have MAP construct in render return nested components', function() {
       const mapComponentFixture = commonComponentFixtures.mapComponentFixture;
       expect(getES5ReactComponents(jsToAst(mapComponentFixture)))
-        .to.deep.equal(reactParserOutputFixtures.nestedComponentCompositionOutput);
+        .to.deep.equal(reactParserOutputFixtures.nestedHigherOrderOutput);
     });
   });
 });

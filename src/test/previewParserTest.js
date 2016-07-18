@@ -4,32 +4,30 @@ const expect = require('chai').expect;
 const fs = require('fs');
 
 describe('ReactApp AST Parser Tests', function() {
-  const modifyTestBundleFile = require('../previewParser.js').modifyTestBundleFile;
   const structureES5Obj = require('../previewParser.js').structureInitialES5StateObj;
   const structureES6Obj = require('../previewParser.js').structureInitialES6StateObj;
   const queryES5Ast = require('../previewParser.js').queryES5Ast;
   const queryES6Ast = require('../previewParser.js').queryES6Ast;
   const previewParserFixtures = require('./fixtures/bundleFileFixture.js');
-  
   const modifySetStateStrings = require('../previewParser.js').modifySetStateStrings;
 
   it('modifySetStateStrings should be a function', function() {
     expect(modifySetStateStrings).to.be.a.function;
   });
 
-  it('modifySetStateStrings should throw error when parser receives empty js code string', function() {
-    expect(modifySetStateStrings.bind(modifySetStateStrings,'')).to.throw(Error, /Bundle string is empty, provide valid bundle string input/); 
+  it('modifySetStateStrings should throw error when parser receives invalid file path', function() {
+    expect(modifySetStateStrings.bind(modifySetStateStrings, ''))
+      .to.throw(Error, /Invalid bundle file path specified. Please enter a valid path to your app\'s bundle file/);
   });
 
   it('modifySetStateStrings should return a string', function() {
-      expect(modifySetStateStrings(previewParserFixtures.bundledSetState))
-        .to.equal(previewParserFixtures.modifiedBundle);
+    expect(modifySetStateStrings(__dirname + '/fixtures/modifySetStateStringsInputFixture.js').length)
+      .to.equal(fs.readFileSync(__dirname + '/fixtures/modifySetStateStringsOutputFixture.js').length);
   });
 
   it('structureES5Obj should be a function', function() {
     expect(structureES5Obj).to.be.a.function;
   });
-
 
   it('structureES6Obj should be a function', function() {
     expect(structureES6Obj).to.be.a.function;
@@ -44,7 +42,7 @@ describe('ReactApp AST Parser Tests', function() {
   });
 
 
-   it('queryES6Ast should be a function', function() {
+  it('queryES6Ast should be a function', function() {
     expect(queryES6Ast).to.be.a.function;
   });
 

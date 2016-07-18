@@ -3,20 +3,31 @@
 const expect = require('chai').expect;
 
 describe('React Interceptor Helper Tests', function() {
-  const monocleHook = require('../reactInterceptor.js');
+  const monocleHook = require('../reactInterceptor.js').reactInterceptor;
+  const initialStateWrapper = require('../reactInterceptor.js').grabInitialState;
 
-  it('should return a valid function', function() {
+  it('monocleHook should return a valid function', function() {
     expect(monocleHook).to.be.a('function');
   });
 
-  it('should execute callback provided when calling function closure', function() {
-    const callback = function() {
-      this.counter++;
-    };
-    callback.counter = 0;
 
-    const hookedCallback = monocleHook(callback);
-    hookedCallback();
-    expect(callback.counter).to.equal(1);
+  it('should update mocked react component\'s state property', function() {
+    const MockReactComponent = {
+      state: { },
+      setState: function(newState, callback) {
+        this.state = Object.assign(this.state, newState);
+        if (callback) callback();
+      }
+    };
+    
+    const hijackedSetState = monocleHook('App', MockReactComponent);
+    hijackedSetState({ name: 'John' });
+    expect(MockReactComponent.state).to.deep.equal({ name: 'John' });
   });
+
+  it('initialStateWrapper should be a function', function() {
+    expect(initialStateWrapper).to.be.a('function');
+  });
+
+  
 });
