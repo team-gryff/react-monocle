@@ -13,7 +13,8 @@ describe('d3DataBuilder Unit Tests', function() {
   const BigPoppa = __dirname + '/fixtures/test_components/BigPoppa.jsx';
   const Notorious = __dirname + '/fixtures/test_components/Notorious.jsx';
   let parseComponents = [app, BIG, Biggie, BigPoppa, Notorious].map(ele => {return astGenerator(ele)});
-  const astObj = assign.apply(null, parseComponents), d3Obj = d3DataBuilder(astObj);
+  const astObj = assign.apply(null, parseComponents), 
+        d3Obj = d3DataBuilder(astObj);
 
 
   it('should be a function', function() {
@@ -24,21 +25,38 @@ describe('d3DataBuilder Unit Tests', function() {
     expect(d3Obj).to.be.an('object');
   })
 
-  it('should start with the correct component', function() {
+  it('should have all components as field properties on object returned', function() {
+    expect(d3Obj['BIG']).to.exist;
+    expect(d3Obj['Biggie']).to.exist;
+    expect(d3Obj['BigPoppa']).to.exist;
+    expect(d3Obj['Notorious']).to.exist;
+  });
+
+  it('should have child length of 2 for BigPoppa and child length of 1 for Notorious components', function() {
+    expect(d3Obj['BigPoppa'].children.length).to.equal(2);
+    expect(d3Obj['Notorious'].children.length).to.equal(1);
+  });
+
+  /** 
+   * Below unit tests should be deprecated to account for breaking 
+   * change in formatting structure of returned d3 data object
+   */
+  xit('should start with the correct component', function() {
+    console.log(d3Obj);
     expect(d3Obj.name).to.equal('BigPoppa');
   })
 
-  it('should have component nesting', function() {
+  xit('should have component nesting', function() {
     expect(d3Obj.children.length).to.equal(2);
     expect(d3Obj.children[0].children.length).to.equal(1);
   })
 
-  it('should account for props', function() {
+  xit('should account for props', function() {
     expect(d3Obj.children[0].props.length).to.equal(3);
     expect(d3Obj.children[0].children[0].props.length).to.equal(2);
   })
 
-  it('should account for state', function() {
+  xit('should account for state', function() {
     expect(d3Obj).to.deep.equal(require('./fixtures/dummyTree'));
   })
 

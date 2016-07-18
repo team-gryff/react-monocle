@@ -82,7 +82,7 @@ module.exports = {
     state: {},
     methods: ['handleSubmit', 'handleReceiveData'],
   },
-  nestedComponentCompositionOutput: {
+  nestedForLoopOutput: {
     name: 'Main',
     props: {},
     children: [
@@ -103,9 +103,39 @@ module.exports = {
         children: [],
         state: {},
         methods: [],
+        iterated: 'forLoop',
+        source: 'props.test',
       }
     ],
     state: {},
     methods: [],
-  }
+  },
+  nestedHigherOrderOutput: {
+    name: 'Main',
+    props: {},
+    children: [
+      {
+        name: 'ListItem',
+        props: [
+          { 
+            name: 'onChange', 
+            parent: 'Main',
+            value: 'handleChange' 
+          },
+          { 
+            name: 'onSubmit',
+            parent: 'Main',
+            value: 'handleSubmit' 
+          }
+        ],
+        children: [],
+        state: {},
+        methods: [],
+        iterated: 'higherOrder',
+        source: 'props.test',
+      }
+    ],
+    state: {},
+    methods: [],
+  },
 }

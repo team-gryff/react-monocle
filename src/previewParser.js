@@ -189,7 +189,13 @@ function getComponentName(bundle, startingIndex) {
 }
 
 function modifySetStateStrings(bundleFilePath) {
-  let bundle = fs.readFileSync(bundleFilePath, { encoding: 'utf-8' });
+  let bundle;
+  try {
+    bundle = fs.readFileSync(bundleFilePath, { encoding: 'utf-8' });
+  } catch(error) {
+    throw new Error('Invalid bundle file path specified. Please enter a valid path to your app\'s bundle file');
+  }
+
   if (bundle.length == 0) throw new Error('Bundle string is empty, provide valid bundle string input');
   
   console.log('Starting to strip comments from bundle file...');

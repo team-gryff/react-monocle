@@ -1,26 +1,17 @@
 module.exports = {
   "name":"BigPoppa",
   "methods": [ 'handleClick' ],
-  "state":[
-    {
-      "name":"foo",
-      "value":true
-    },
-    {
-      "name":"bar",
-      "value":"yo ima string"
-    }
-  ],
+  "state":{},
   "children": [
     {
       "name":"Notorious",
-      "state":[],
+      "state":{},
       "methods":[],
       "children": [
         {
           "name":"BIG",
           "children":[],
-          "state":[],
+          "state":{},
           "methods":[],
           "props": [
             {
@@ -57,7 +48,7 @@ module.exports = {
     {
       "name":"Biggie",
       "children":[],
-      "state":[],
+      "state":{},
       "methods":[],
       "props": [
         {
