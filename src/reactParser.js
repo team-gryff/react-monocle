@@ -31,7 +31,7 @@ function getReactStates(node) {
  * @returns {Array} Array of all JSX props on React component
  */
 function getReactProps(node, parent) {
-  if (node.openingElement.attributes.length === 0 || htmlElements.indexOf(node.openingElement.name.name) > 0) return [];
+  if (node.openingElement.attributes.length === 0 || htmlElements.indexOf(node.openingElement.name.name) > 0) return {};
   return node.openingElement.attributes
     .map(attribute => {
       const name = attribute.name.name;
@@ -277,7 +277,7 @@ function getES5ReactComponents(ast) {
   const output = {
     name: '',
     state: {},
-    props: [],
+    props: {},
     methods: [],
     children: [],
   };
@@ -296,22 +296,15 @@ function getES5ReactComponents(ast) {
       }
       this.visitChildren(node);
     },
-    // ObjectExpression(node) {
-    //   node.properties.forEach(prop => {
-    //     switch (prop.key.name) {
-    //       case 'getInitialState':
-    //         output.state = getReactStates(prop.value.body.body[0].argument);
-    //         break;
-    //       default:
-    //         if (reactMethods.indexOf(prop.key.name) < 0
-    //           && prop.value.type === 'FunctionExpression') {
-    //           output.methods.push(prop.key.name);
-    //         }
-    //         break;
-    //     }
-    //   });
-    //   this.visitChildren(node);
-    // },
+    ObjectExpression(node) {
+      node.properties.forEach(prop => {
+        if (reactMethods.indexOf(prop.key.name) < 0
+          && prop.value.type === 'FunctionExpression') {
+          output.methods.push(prop.key.name);
+        }
+      });
+      this.visitChildren(node);
+    },
     JSXElement(node) {
       output.children = getChildJSXElements(node, output.name);
       output.props = getReactProps(node, output.name);
@@ -378,7 +371,7 @@ function getES5ReactComponents(ast) {
 function getES6ReactComponents(ast) {
   const output = {
     name: '',
-    props: [],
+    props: {},
     state: {},
     methods: [],
     children: [],
