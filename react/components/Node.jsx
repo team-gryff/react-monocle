@@ -42,7 +42,6 @@ class Node extends React.Component {
     for (const key in this.props.props) {
       propsArr.push(key);
     }
-    // if (this.props.props.length !== 0) propsArr = this.props.props.map(ele => { return ele.name; });
 
     return (
       <foreignObject onMouseEnter={this.props.highlight} onMouseLeave={this.props.lowlight} onClick={this.toggle}>
