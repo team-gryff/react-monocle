@@ -4,4 +4,13 @@ const updateState = (name, state) => ({
   state,
 });
 
-module.exports = updateState;
+const sendInitialState = (name, obj) => ({
+  type: 'INITIALIZE_STATE',
+  name,
+  obj,
+});
+
+module.exports = {
+  updateState,
+  sendInitialState,
+};
