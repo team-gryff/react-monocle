@@ -11,6 +11,10 @@ const monocleApp = function(state, action) {
         updatedState[action.name] = Object.assign(currentComponentState, action.state);
       }
       return updatedState;
+    case 'INITIALIZE_STATE':
+      const getState = Object.assign({}, state);
+      getState[action.name] = Object.assign({}, action.obj);
+      return getState;
     default:
       return state;
   }

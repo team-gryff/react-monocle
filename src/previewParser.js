@@ -36,7 +36,7 @@ function structureInitialES5StateObj(bundle, arr) {
       });
       objForReduxStore[getComponentName(bundle, initialStateIndex)] = arrOfStateObjs;
     }
-    initialStateIndex = bundle.indexOf('getInitialState()', initialStateIndex+1);
+    initialStateIndex = bundle.indexOf('getInitialState()', initialStateIndex + 1);
   }
   return objForReduxStore;
 }
@@ -54,7 +54,7 @@ function structureInitialES6StateObj(bundle, arr) {
       });
       objForReduxStore[getComponentName(bundle, initialStateIndex)] = arrOfStateObjs;
     }
-    initialStateIndex = bundle.indexOf('_this.state', initialStateIndex+1);
+    initialStateIndex = bundle.indexOf('_this.state', initialStateIndex + 1);
   }
   return objForReduxStore;
 }
@@ -144,12 +144,16 @@ function modifyTestBundleFile(bundle) {
   return replacedState.replace(searchElem, newMount);
 }
 
+
+
 function getComponentName(bundle, startingIndex) {
   let bundleSearchIndicesMap = {};
   // get index of component declaration
-  bundleSearchIndicesMap[regexLastIndexOf(bundle, /var \w+ = \(\d+, _react.createClass\)/, startingIndex)] = 'GULP';
-  // let's try web pack...
-  bundleSearchIndicesMap[regexLastIndexOf(bundle, /(var )?\w+\s*?=\s*?function\s*?\(_(React\$)?Component\)/, startingIndex)] = 'WEBPACK';
+  bundleSearchIndicesMap[regexLastIndexOf(bundle, /var \w+ = \(\d+, _react.createClass\)/, startingIndex)] = 'WEBPACKES5';
+  // let's try ES6...
+  bundleSearchIndicesMap[regexLastIndexOf(bundle, /(var )?\w+\s*?=\s*?function\s*?\(_(React\$)?Component\)/, startingIndex)] = 'WEBPACKES6';
+  // let's try GULP
+  bundleSearchIndicesMap[regexLastIndexOf(bundle, /var \w+ = React.createClass\({/, startingIndex)] = 'GULP';
 
   const targetIndex = Object.keys(bundleSearchIndicesMap)
   	.filter(index => index >= 0)
@@ -161,14 +165,18 @@ function getComponentName(bundle, startingIndex) {
  
   let componentMatch;
   switch(bundleSearchIndicesMap[targetIndex]) {
-  	case 'GULP':
+  	case 'WEBPACKES5':
   	  componentMatch = bundle.slice(targetIndex)
   	  	.match(/var \w+ = \(\d+, _react.createClass\)/)
   	  break;
-    case 'WEBPACK':
+    case 'WEBPACKES6':
    	  componentMatch = bundle.slice(targetIndex)
   	    .match(/(var )?\w+\s*?=\s*?function\s*?\(_(React\$)?Component\)/)
    	  break;
+    case 'GULP':
+      componentMatch = bundle.slice(targetIndex)
+        .match(/var \w+ = React.createClass\({/)
+      break;
     default:
     	throw new Error('Unable to find component from bundle file');
   }
@@ -179,7 +187,6 @@ function getComponentName(bundle, startingIndex) {
     .replace(/ /g, '')
     .split('=')[0];
 }
-
 
 function modifySetStateStrings(bundleFilePath) {
   let bundle;
@@ -195,7 +202,6 @@ function modifySetStateStrings(bundleFilePath) {
   const start = Date.now();
   let modifiedBundle = strip(bundle.slice());
   console.log(`Took ${(Date.now() - start) / 1000} seconds to strip comments input bundle file`);
-
   let index = modifiedBundle.indexOf('this.setState', 0);
   while (index !== -1) {
     let openBraceIdx = modifiedBundle.indexOf('{', index);
@@ -218,15 +224,72 @@ function modifySetStateStrings(bundleFilePath) {
     const callbackStr = modifiedBundle.slice(functionStartIdx, currentIdx);
     const injection = `wrapper('${getComponentName(modifiedBundle, index)}',this)(${ stateStr }${ callbackStr })`;
     modifiedBundle = modifiedBundle.slice(0, index) + injection + modifiedBundle.slice(currentIdx + 1);
-    
+
     // need to take into account that length of bundle now changes since injected wrapper string length can be different than original
     const oldLength = currentIdx - index;
     const newLength = injection.length;
     
     index = modifiedBundle.indexOf('this.setState', index+1+newLength-oldLength);
   }
-
   return modifiedBundle;
+}
+
+
+function modifyInitialState(modifiedBundle) {
+  let index = modifiedBundle.indexOf('_this.state') > 0
+    ? modifiedBundle.indexOf('_this.state', 0)
+    : modifiedBundle.indexOf('getInitialState() {', 0) + 19;
+  while (index !== -1) {
+    let openBraceIdx = modifiedBundle.indexOf('{', index); // looking for index of follow brace, after return statement
+    let currentIdx = openBraceIdx + 1;
+    const parensStack = ['{'];
+    while (parensStack.length !== 0) {
+      if (modifiedBundle[currentIdx] === '{') parensStack.push(modifiedBundle[currentIdx]);
+      if (modifiedBundle[currentIdx] === '}') parensStack.pop();
+      currentIdx++;
+    }
+    const injection = modifiedBundle.charAt(index) === '_'
+      ? `_this.state = grabInitialState ('${getComponentName(modifiedBundle, index)}', ${modifiedBundle.slice(openBraceIdx, currentIdx)}),`
+      : `return grabInitialState ('${getComponentName(modifiedBundle, index)}', ${modifiedBundle.slice(openBraceIdx, currentIdx)}),`;
+    modifiedBundle = modifiedBundle.slice(0, index) + injection + modifiedBundle.slice(currentIdx + 1);
+    
+    // need to take into account that length of bundle now changes since injected wrapper string length can be different than original
+    const oldLength = currentIdx - index;
+    const newLength = injection.length;
+    
+    index = modifiedBundle.indexOf('_this.state') > 0
+      ? modifiedBundle.indexOf('_this.state', index + 1 + newLength - oldLength)
+      : modifiedBundle.indexOf('getInitialState() {', index + 1 + newLength - oldLength);
+  }
+  return modifiedBundle;
+}
+
+
+function getDivs(modifiedBundle) {
+  let index = modifiedBundle.indexOf('getElementById(', 0);
+  let divsArr = [];
+  while (index !== -1) {
+    let openParenIdx = modifiedBundle.indexOf('(', index - 1);
+    let currentIdx = openParenIdx + 1;
+    const parensStack = ['('];
+    while (parensStack.length !== 0) {
+      if (modifiedBundle[currentIdx] === '(') parensStack.push(modifiedBundle[currentIdx]);
+      if (modifiedBundle[currentIdx] === ')') parensStack.pop();
+      currentIdx++;
+    }
+    divsArr.push(modifiedBundle.slice(openParenIdx + 2, currentIdx - 2));
+    index = modifiedBundle.indexOf('getElementById(', index + 1);
+  }
+  divsArr = divsArr.map(ele => {
+    return `<div id='${ele}'></div>`;
+  });
+  const uniqueArr = [];
+  for (let i = 0; i < divsArr.length; i++) {
+    if (uniqueArr.indexOf(divsArr[i]) < 0) {
+      uniqueArr.push(divsArr[i]);
+    }
+  }
+  return uniqueArr;
 }
 
 module.exports = {
@@ -237,6 +300,8 @@ module.exports = {
   modifyBundleFile,
   modifyTestBundleFile,
   modifySetStateStrings,
+  modifyInitialState,
   getComponentName,
+  getDivs,
 };
 

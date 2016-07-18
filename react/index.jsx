@@ -22,4 +22,5 @@ if (DEVELOPMENT) {
   global.window = global;
 }
 
-window.wrapper = require('../src/reactInterceptor.js');
+window.wrapper = require('../src/reactInterceptor.js').reactInterceptor;
+window.grabInitialState = require('../src/reactInterceptor.js').grabInitialState;
