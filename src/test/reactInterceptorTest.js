@@ -9,14 +9,16 @@ describe('React Interceptor Helper Tests', function() {
     expect(monocleHook).to.be.a('function');
   });
 
-  it('should execute callback provided when calling function closure', function() {
-    const callback = function() {
-      this.counter++;
+  it('should update mocked react component\'s state property', function() {
+    const MockReactComponent = {
+      state: { },
+      setState: function(newState, callback) {
+        this.state = Object.assign(this.state, newState);
+        if (callback) callback();
+      }
     };
-    callback.counter = 0;
-
-    const hookedCallback = monocleHook(callback);
-    hookedCallback();
-    expect(callback.counter).to.equal(1);
+    const hijackedSetState = monocleHook('App', MockReactComponent);
+    hijackedSetState({ name: 'John' });
+    expect(MockReactComponent.state).to.deep.equal({ name: 'John' });
   });
 });
