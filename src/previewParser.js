@@ -249,8 +249,8 @@ function modifyInitialState(modifiedBundle) {
       currentIdx++;
     }
     const injection = modifiedBundle.charAt(index) === '_'
-      ? `_this.state = grabInitialState ('${getComponentName(modifiedBundle, index)}', ${modifiedBundle.slice(openBraceIdx, currentIdx)}),`
-      : `return grabInitialState ('${getComponentName(modifiedBundle, index)}', ${modifiedBundle.slice(openBraceIdx, currentIdx)}),`;
+      ? `_this.state = grabInitialState('${getComponentName(modifiedBundle, index)}', ${modifiedBundle.slice(openBraceIdx, currentIdx)}),`
+      : `return grabInitialState('${getComponentName(modifiedBundle, index)}', ${modifiedBundle.slice(openBraceIdx, currentIdx)}),`;
     modifiedBundle = modifiedBundle.slice(0, index) + injection + modifiedBundle.slice(currentIdx + 1);
     
     // need to take into account that length of bundle now changes since injected wrapper string length can be different than original
