@@ -13,6 +13,7 @@ class Node extends React.Component {
       updating: false,
     };
     this.toggle = this.toggle.bind(this);
+    this.update = this.update.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -26,6 +27,10 @@ class Node extends React.Component {
         this.props.lowlight();
       }, 800);
     }
+  }
+
+  update() {
+    if (!this.state.updating) return this.props.lowlight;
   }
 
   toggle() {
@@ -62,7 +67,7 @@ class Node extends React.Component {
     }
 
     return (
-      <foreignObject onMouseEnter={this.props.highlight} onMouseLeave={this.state.updating || this.props.lowlight} onClick={this.toggle}>
+      <foreignObject onMouseEnter={this.props.highlight} onMouseLeave={this.update} onClick={this.toggle}>
         <Popover
           isOpen={this.state.isOpen}
           preferPlace="row"
