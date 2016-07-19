@@ -27,11 +27,6 @@ class App extends React.Component {
       // iterating through children
       for (let j = 0; j < node.children.length; j++) {
         const child = cloneDeep(node.children[j]);
-        if (formatted.hasOwnProperty(child.name)) child.children = cloneDeep(formatted[child.name].children); // adding children of child
-        if (!Array.isArray(child.props)) {
-          tempChildren.push(child);
-          continue;
-        }
 
         // maybe check if it is object already
         if (formatted.hasOwnProperty(child.name)) child.children = cloneDeep(formatted[child.name].children); // adding children of child
