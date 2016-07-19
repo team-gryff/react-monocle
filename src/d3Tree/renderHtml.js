@@ -12,14 +12,16 @@ function renderHtml(d3Obj, bundle, start, arr) {
     treeLogic = fs.readFileSync(appRoot + treeLogicPath, { encoding: 'utf-8' }),
     hookLogic = fs.readFileSync(appRoot + hookLogicPath, { encoding: 'utf-8' }),
     endHtml = fs.readFileSync(appRoot + endHtmlPath, { encoding: 'utf-8' }),
-    insert = `${treeHtml} \n ${arr.join('') || '<div></div>'} \n 
-        <script type="text/javascript">
-          ${hookLogic}
-          ${bundle} 
-          var formatted = ${JSON.stringify(d3Obj, null, 2)}
-          ${treeLogic}
-        </script> 
-        ${endHtml}`;
+    insert = `${treeHtml} 
+              ${arr.join('') || '<div></div>'} 
+              </div> 
+              <script type="text/javascript"> 
+                ${hookLogic}
+                ${bundle} 
+                var formatted = ${JSON.stringify(d3Obj, null, 2)} 
+                ${treeLogic}
+              </script>
+              ${endHtml}`;
     fs.writeFile(`${process.cwd()}/react-monocle.html`, insert, err => {
     if (err) throw new Error(err);
     exec(`open ${process.cwd()}/react-monocle.html`, (error, stdout, stderr) => {

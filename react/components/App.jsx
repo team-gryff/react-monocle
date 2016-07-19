@@ -36,7 +36,8 @@ class App extends React.Component {
           continue;
         }
 
-        const source = bfs(root, child.props[0].parent);
+        let source;
+        if (Array.isArray(child.props)) source = bfs(root, child.props[0].parent);
 
         // if child is not made through an iterator
         if (!child.iterated) {
@@ -111,7 +112,6 @@ class App extends React.Component {
           }
         }
       }
-
       node.children = tempChildren;
       node.children.forEach(ele => {
         if (ele.children.length > 0) treeRecurse(ele, root, state);

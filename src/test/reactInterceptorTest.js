@@ -10,7 +10,6 @@ describe('React Interceptor Helper Tests', function() {
     expect(monocleHook).to.be.a('function');
   });
 
-
   it('should update mocked react component\'s state property', function() {
     const MockReactComponent = {
       state: { },
@@ -29,5 +28,8 @@ describe('React Interceptor Helper Tests', function() {
     expect(initialStateWrapper).to.be.a('function');
   });
 
+  it('initialStateWrapper should be a function', function() {
+    expect(initialStateWrapper).to.be.a('function');
+  });
   
 });

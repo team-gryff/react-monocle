@@ -28,12 +28,14 @@ function d3DataBuilder(obj) {
 
   for (const key in formatted) {
     formatted[key].children.forEach(ele => {
-      ele.props.forEach((propped, i) => {
-        if (typeof propped.value === 'object' && propped.value.name && propped.value.children) {
-          formatted[propped.parent].children.push(propped.value);
-          ele.props.splice(i, 1);
-        }
-      });
+      if (Array.isArray(ele.props)) {
+        ele.props.forEach((propped, i) => {
+          if (typeof propped.value === 'object' && propped.value.name && propped.value.children) {
+            formatted[propped.parent].children.push(propped.value);
+            ele.props.splice(i, 1);
+          }
+        });
+      }
     });
   };
   formatted.monocleENTRY = obj.ENTRY;
