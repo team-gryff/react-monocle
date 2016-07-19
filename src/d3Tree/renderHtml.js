@@ -6,14 +6,22 @@ const exec = require('child_process').exec;
 function renderHtml(d3Obj, bundle, start, arr) {
   const treeHtmlPath = '/src/d3Tree/d3Tree.html',
     treeLogicPath = '/src/d3Tree/app.js',
+    hookLogicPath = '/src/d3Tree/hooks.js',
     endHtmlPath = '/src/d3Tree/end.html',
     treeHtml = fs.readFileSync(appRoot + treeHtmlPath, { encoding: 'utf-8' }),
     treeLogic = fs.readFileSync(appRoot + treeLogicPath, { encoding: 'utf-8' }),
+    hookLogic = fs.readFileSync(appRoot + hookLogicPath, { encoding: 'utf-8' }),
     endHtml = fs.readFileSync(appRoot + endHtmlPath, { encoding: 'utf-8' }),
-    insert = `${treeHtml} \n ${arr.join('') || '<div></div>'} \n </div> \n 
-        <script type="text/javascript"> \n var formatted = ${JSON.stringify(d3Obj, null, 2)} \n ${treeLogic}</script> \n
-        <script type="text/javascript"> ${bundle} </script> \n 
-        ${endHtml}`;
+    insert = `${treeHtml} 
+              ${arr.join('') || '<div></div>'} 
+              </div> 
+              <script type="text/javascript"> 
+                ${hookLogic}
+                ${bundle} 
+                var formatted = ${JSON.stringify(d3Obj, null, 2)} 
+                ${treeLogic}
+              </script>
+              ${endHtml}`;
     fs.writeFile(`${process.cwd()}/react-monocle.html`, insert, err => {
     if (err) throw new Error(err);
     exec(`open ${process.cwd()}/react-monocle.html`, (error, stdout, stderr) => {

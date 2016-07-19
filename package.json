@@ -8,7 +8,7 @@
     "lint": "eslint src",
     "unit-tests": "mocha ./src/test/test.js",
     "start": "nodemon server/server.js",
-    "test": "npm run lint || true && npm run unit-tests || true",
+    "test": "npm run lint || true && npm run unit-tests",
     "bundle-d3tree": "webpack --watch -d ./src/d3Tree/index.js ./src/d3Tree/bundle.js"
   },
   "repository": {
