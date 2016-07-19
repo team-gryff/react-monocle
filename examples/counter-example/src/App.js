@@ -29,12 +29,7 @@ export default class App extends Component {
   }
 
   render() {
-    return (<div>
-      <button 
-        onClick={this.handleAddCounter}>
-        Add Counter
-      </button>
-      {this.state.counters.map((count, i) => {
+    const renderArr = this.state.counters.map((count, i) => {
         return <Counter 
           header={i+1}
           key={i}
@@ -42,7 +37,13 @@ export default class App extends Component {
           onDecrement={this.handleDecrement.bind(this, i)}
           onIncrement={this.handleIncrement.bind(this, i)}
           />
-      })}
+      });
+    return (<div>
+      <button 
+        onClick={this.handleAddCounter}>
+        Add Counter
+      </button>
+      { renderArr }
     </div>);
   }
 }
