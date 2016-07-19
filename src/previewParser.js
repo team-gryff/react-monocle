@@ -1,7 +1,7 @@
 'use strict';
 const fs = require('fs');
 const acorn = require('acorn');
-const esquery = require('esquery');
+const esquery = require('../esquery/esquery');
 const regexLastIndexOf = require('./stringRegexHelper').regexLastIndexOf;
 const strip = require('strip-comments');
 
