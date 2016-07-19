@@ -26,7 +26,13 @@ class App extends React.Component {
 
       // iterating through children
       for (let j = 0; j < node.children.length; j++) {
+        console.log(node.children);
         const child = cloneDeep(node.children[j]);
+        if (formatted.hasOwnProperty(child.name)) child.children = cloneDeep(formatted[child.name].children); // adding children of child
+        if (!Array.isArray(child.props)) {
+          tempChildren.push(child);
+          continue;
+        }
 
         // maybe check if it is object already
         if (formatted.hasOwnProperty(child.name)) child.children = cloneDeep(formatted[child.name].children); // adding children of child
@@ -36,7 +42,8 @@ class App extends React.Component {
           continue;
         }
 
-        const source = bfs(root, child.props[0].parent);
+        let source;
+        if (Array.isArray(child.props)) source = bfs(root, child.props[0].parent);
 
         // if child is not made through an iterator
         if (!child.iterated) {
@@ -111,9 +118,10 @@ class App extends React.Component {
           }
         }
       }
-
+      console.log(tempChildren, 'tempchildren');
       node.children = tempChildren;
       node.children.forEach(ele => {
+        console.log(ele, 'inside foreach');
         if (ele.children.length > 0) treeRecurse(ele, root, state);
       });
     }

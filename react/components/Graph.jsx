@@ -29,7 +29,7 @@ class Graph extends React.Component {
    * Clone tree data, pass to tree() to create nodes objects, setting state to render nodes,
    */
   componentWillMount() {
-    const nodes = tree().size([window.innerWidth, this.state.height])(hierarchy(this.props.treeData));
+    const nodes = tree().size([window.innerWidth*0.6, this.state.height])(hierarchy(this.props.treeData));
     return this.nodeRender(nodes); // react render
   }
 
@@ -50,7 +50,7 @@ class Graph extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const nodes = tree().size([window.innerWidth, this.state.height])(hierarchy(nextProps.treeData));
+    const nodes = tree().size([window.innerWidth*0.6, this.state.height])(hierarchy(nextProps.treeData));
     this.nodeRender(nodes); // react render
   }
 
@@ -122,7 +122,7 @@ class Graph extends React.Component {
     this.setState({
       nodes: renderArr,
       d3nodes: nodes,
-      width: window.innerWidth,
+      width: window.innerWidth*0.6,
     });
     return nodes;
   }

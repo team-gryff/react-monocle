@@ -10,7 +10,7 @@ function renderHtml(d3Obj, bundle, start, arr) {
     treeHtml = fs.readFileSync(appRoot + treeHtmlPath, { encoding: 'utf-8' }),
     treeLogic = fs.readFileSync(appRoot + treeLogicPath, { encoding: 'utf-8' }),
     endHtml = fs.readFileSync(appRoot + endHtmlPath, { encoding: 'utf-8' }),
-    insert = `${treeHtml} \n ${arr.join('') || '<div></div>'} \n 
+    insert = `${treeHtml} \n ${arr.join('') || '<div></div>'} \n </div> \n 
         <script type="text/javascript"> \n var formatted = ${JSON.stringify(d3Obj, null, 2)} \n ${treeLogic}</script> \n
         <script type="text/javascript"> ${bundle} </script> \n 
         ${endHtml}`;

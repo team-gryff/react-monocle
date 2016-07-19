@@ -34,20 +34,19 @@
 			height: 100%;
 		}
 
-		.fill-height-or-more {
-			display: flex;
-			flex-wrap: wrap;
-		}
 
-		.fill-height-or-more #content #preview {
-			flex: 1;
-		}
+    #flex-container {
+      display: flex;
+    }
+
+		#flex-container > div:nth-child(2){
+      padding-left: 25px;
+      border-left: 1px solid gray;
+    }
 
   </style>
 </head>
 
 <body>
-	<div class="fill-height-or-more">
+	<div id="flex-container">
 		<div id="content"></div>
-		<div id="preview"></div>
-	</div>
