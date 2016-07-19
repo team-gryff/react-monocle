@@ -42,7 +42,6 @@ describe('d3DataBuilder Unit Tests', function() {
    * change in formatting structure of returned d3 data object
    */
   xit('should start with the correct component', function() {
-    console.log(d3Obj);
     expect(d3Obj.name).to.equal('BigPoppa');
   })
 
