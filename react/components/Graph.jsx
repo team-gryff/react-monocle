@@ -37,13 +37,12 @@ class Graph extends React.Component {
    * add resize event listener to resize graph, render links
    */
   componentDidMount() {
-    const graphz = document.getElementById('graphz');
     window.addEventListener('resize', this.resizeGraph);
     return this.linkRender(this.state.d3nodes);  // d3 dom injection
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.width !== this.state.width || prevState.d3nodes !== this.state.d3nodes) {
+    if (prevState.width !== this.state.width || (this.state.nodes && prevState.nodes && prevState.nodes.length !== this.state.nodes.length)) {
       return this.linkRender(this.state.d3nodes);
     }
     return true;
@@ -71,10 +70,10 @@ class Graph extends React.Component {
       return false;
     })
     .classed(linkclass, true);
-    return this.highlightRecursion(d.parent);
+    return this.highlightRecursion(d.parent, linkclass);
   }
 
-  highlight(i, e = false) {
+  highlight(i, e) {
     let linkClass = 'highlight';
     if (e === true) linkClass = 'propchange';
 
@@ -179,7 +178,9 @@ class Graph extends React.Component {
       <div style={divStyle}>
       <svg height={this.state.height} width={this.state.width} style={svgStyle} >
         <g style={gStyle} id="graphz">
+
           {this.state.nodes}
+
         </g>
       </svg>
       </div>

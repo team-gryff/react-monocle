@@ -10,6 +10,7 @@ describe('ReactApp AST Parser Tests', function() {
   const queryES6Ast = require('../previewParser.js').queryES6Ast;
   const previewParserFixtures = require('./fixtures/bundleFileFixture.js');
   const modifySetStateStrings = require('../previewParser.js').modifySetStateStrings;
+  const modifyInitialState = require('../previewParser.js').modifyInitialState;
 
   it('modifySetStateStrings should be a function', function() {
     expect(modifySetStateStrings).to.be.a.function;
@@ -24,6 +25,15 @@ describe('ReactApp AST Parser Tests', function() {
     expect(modifySetStateStrings(__dirname + '/fixtures/modifySetStateStringsInputFixture.js').length)
       .to.equal(fs.readFileSync(__dirname + '/fixtures/modifySetStateStringsOutputFixture.js').length);
   });
+
+  it('modifyInitialState should be a function', function() {
+    expect(modifyInitialState).to.be.a.function;
+  });
+
+  xit('modifyInitialState should return a string', function() {
+    expect(fs.readFileSync(__dirname + '/fixtures/modifySetStateStringsOutputFixture.js').length)
+      .to.equal(fs.readFileSync(__dirname + '/fixtures/modifyInitialStateOutputFixture.js').length)
+  })
 
   it('structureES5Obj should be a function', function() {
     expect(structureES5Obj).to.be.a.function;

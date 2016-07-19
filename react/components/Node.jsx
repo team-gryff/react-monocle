@@ -20,12 +20,8 @@ class Node extends React.Component {
     if (!isEqual(this.props.props, nextProps.props)) {
       this.props.highlight(true);
       this.setState({ updating: true });
-      setTimeout(() => {
-        this.setState({ updating: false });
-      }, 500);
-      setTimeout(() => {
-        this.props.lowlight();
-      }, 800);
+      setTimeout(() => this.setState({ updating: false }), 550);
+      setTimeout(() => this.props.lowlight(), 800);
     }
   }
 
@@ -61,13 +57,14 @@ class Node extends React.Component {
       // fontSize: '10px',
       textDecoration: 'none',
     };
-    let propsArr = [];
+
+    const propsArr = [];
     for (const key in this.props.props) {
       propsArr.push(key);
     }
 
     return (
-      <foreignObject onMouseEnter={this.props.highlight} onMouseLeave={this.update} onClick={this.toggle}>
+      <foreignObject onMouseEnter={this.props.highlight} onMouseLeave={this.props.lowlight} onClick={this.toggle}>
         <Popover
           isOpen={this.state.isOpen}
           preferPlace="row"

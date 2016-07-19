@@ -8,8 +8,8 @@ export default class TODO extends React.Component {
   constructor(props) {
     super(props);
     this.state = {items: [
-      'Learn React',
-      'Make React App'
+      'Build splash page',
+      'Deploy app',
     ]};
   }
 
