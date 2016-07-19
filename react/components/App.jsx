@@ -13,21 +13,14 @@ class App extends React.Component {
     this.treebuilder = this.treebuilder.bind(this);
   }
 
-
-  componentWillReceiveProps(nextProps) {
-    // if (nextProps.state !== this.props.state) return this.setState({treeData: this.treebuilder(nextProps.state)});
-    // else return;
-  }
-
   treebuilder(state) {
     const result = cloneDeep(formatted[formatted.monocleENTRY]);
     const bfs = this.bfs;
 
     function treeRecurse(node, root, newState) {
-      console.log(newState);
       if (!node.children) throw new Error('Invalid Node! Something went wrong with the parsing (no children array)');
       if (newState[node.name]) node.state = cloneDeep(newState[node.name]);
-      
+
       if (node.children.length === 0) return; // base case
       const tempChildren = [];
 
@@ -37,6 +30,12 @@ class App extends React.Component {
 
         // maybe check if it is object already
         if (formatted.hasOwnProperty(child.name)) child.children = cloneDeep(formatted[child.name].children); // adding children of child
+
+        if (!Array.isArray(child.props)) {
+          tempChildren.push(child);
+          continue;
+        }
+
         const source = bfs(root, child.props[0].parent);
 
         // if child is not made through an iterator
@@ -59,49 +58,49 @@ class App extends React.Component {
             case 'forIn':
               for (const key in eval(`source.${child.source}`)) {
                 const forInChild = cloneDeep(child);
-
                 const propsObj = {};
+
                 forInChild.props.forEach(ele => {
                   if (ele.value.match(/(^props.|^state.)/)) {
                     propsObj[ele.name] = eval(`source.${ele.value}`);
                   } else if (ele.value.includes('key')) propsObj[ele.name] = ele.value.replace('key', key);
                   else propsObj[ele.name] = ele.value;
                 });
+
                 forInChild.props = propsObj;
                 tempChildren.push(forInChild);
               }
               break;
 
             case 'forLoop':
-              // do stuff
-              for (let i = 0; i < eval(`source.${child.source}.length`); i++) {
+              for (var i = 0; i < eval(`source.${child.source}.length`); i++) {
                 const forLoopChild = cloneDeep(child);
-
-                // TEMP FOR NOW
-                if (Array.isArray(node.state)) child.state = {};
-
                 const propsObj = {};
+
                 forLoopChild.props.forEach(ele => {
                   if (ele.value.match(/(^props.|^state.)/)) {
                     propsObj[ele.name] = eval(`source.${ele.value}`);
-                  } else propsObj[ele.name] = ele.value;
+                  } else if (ele.value.includes('i')) propsObj[ele.name] = ele.value.replace('i', i);
+                  else propsObj[ele.name] = ele.value;
                 });
+
                 forLoopChild.props = propsObj;
                 tempChildren.push(forLoopChild);
               }
               break;
 
             case 'higherOrder':
-              // do stuff
-              for (let i = 0; i < eval(`source.${child.source}.length`); i++) {
+              for (var i = 0; i < eval(`source.${child.source}.length`); i++) {
                 const forLoopChild = cloneDeep(child);
                 const propsObj = {};
 
                 forLoopChild.props.forEach(ele => {
                   if (ele.value.match(/(^props.|^state.)/)) {
                     propsObj[ele.name] = eval(`source.${ele.value}`);
-                  } else propsObj[ele.name] = ele.value;
+                  } else if (ele.value.includes('i')) propsObj[ele.name] = ele.value.replace('i', i);
+                  else propsObj[ele.name] = ele.value;
                 });
+                
                 forLoopChild.props = propsObj;
                 tempChildren.push(forLoopChild);
               }
@@ -145,32 +144,11 @@ class App extends React.Component {
 }
 
 App.propTypes = {
-  state: React.PropTypes.object.isRequired,
+  store: React.PropTypes.object.isRequired,
 };
 
 App.defaultProps = {
-  state: {
-    App: {
-      dice: {
-        0: 'a',
-        1: 'b',
-        2: 'c',
-        3: 'd',
-        4: 'e',
-        5: 'f',
-      },
-      selected: {},
-      selectionHistory: [2],
-      current: 'WORKPLS',
-      currBlock: 3,
-      wordsPlayed: {
-        testing: 9,
-        this: 10,
-        haha: 11,
-      },
-      score: 20,
-    },
-  },
+  store: {},
 };
 
 
