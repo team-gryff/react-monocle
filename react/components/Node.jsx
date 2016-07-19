@@ -13,7 +13,6 @@ class Node extends React.Component {
       updating: false,
     };
     this.toggle = this.toggle.bind(this);
-    this.update = this.update.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -23,10 +22,6 @@ class Node extends React.Component {
       setTimeout(() => this.setState({ updating: false }), 550);
       setTimeout(() => this.props.lowlight(), 800);
     }
-  }
-
-  update() {
-    if (!this.state.updating) return this.props.lowlight;
   }
 
   toggle() {
