@@ -61,7 +61,7 @@ class Graph extends React.Component {
   }
 
 
-  highlightRecursion(d) {
+  highlightRecursion(d, linkclass) {
     // finds out which links to highlight
     // recurses up to where there is no parent (top most node)
     if (!d.parent) return d;
@@ -70,15 +70,17 @@ class Graph extends React.Component {
       if (ele.source.id === d.parent.id && ele.target.id === d.id) return ele;
       return false;
     })
-    .classed('highlight', true);
+    .classed(linkclass, true);
     return this.highlightRecursion(d.parent);
   }
 
-  highlight(i, e) {
+  highlight(i, e = false) {
+    let linkClass = 'highlight';
+    if (e === true) linkClass = 'propchange';
+
     // highlight links on hover over
-    e.preventDefault();
     this.state.d3nodes.each(ele => {
-      if (ele.id === i) this.highlightRecursion(ele);
+      if (ele.id === i) this.highlightRecursion(ele, linkClass);
     });
     return true;
   }
@@ -87,7 +89,8 @@ class Graph extends React.Component {
     // unhighlight on cursor exit
     return select(document.getElementById('graphz'))
            .selectAll('path.link')
-           .classed('highlight', false);
+           .classed('highlight', false)
+           .classed('propchange', false);
   }
 
   nodeRender(nodes) {
@@ -134,7 +137,8 @@ class Graph extends React.Component {
 
     select(document.getElementById('graphz'))
     .selectAll('path.link').data(links, d => { return d.target.id; })
-    .enter().insert('svg:path', 'foreignObject')
+    .enter()
+    .insert('svg:path', 'foreignObject')
     .attr('class', 'link')
     .attr('d', (node) => {
       // creating a cubic bezier curve for the link
