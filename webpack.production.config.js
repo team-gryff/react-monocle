@@ -2,10 +2,13 @@ const webpack = require('webpack');
 
 
 module.exports = {
-  entry: './react/index.jsx',
+  entry: {
+    app: './react/index.jsx',
+    hooks: './react/hooks.jsx',
+  },
   output: {
     path: __dirname + '/src/d3Tree/',
-    filename: 'app.js',
+    filename: '[name].js',
   },
   resolve: {
     extensions: ['', '.js', '.jsx'],
