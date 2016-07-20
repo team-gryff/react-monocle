@@ -24,6 +24,7 @@ class Graph extends React.Component {
     this.linkRender = this.linkRender.bind(this);
     this.resizeGraph = this.resizeGraph.bind(this);
     this.propUpdate = this.propUpdate.bind(this);
+    this.propDoneUpdate = this.propDoneUpdate.bind(this);
   }
 
   /**
@@ -67,6 +68,16 @@ class Graph extends React.Component {
       return false;
     })
     .classed('propchange', true);
+  }
+
+  propDoneUpdate(i) {
+    select(document.getElementById('graphz'))
+    .selectAll('path.link').filter(ele => {
+      console.log(ele.target);
+      if (ele.target.id === i) return ele;
+      return false;
+    })
+    .classed('propchange', false);
   }
 
 
@@ -117,6 +128,7 @@ class Graph extends React.Component {
         highlight={this.highlight.bind(this, i)}
         lowlight={this.lowlight}
         propUpdate={this.propUpdate.bind(this, i)}
+        propDoneUpdate={this.propDoneUpdate.bind(this, i)}
         name={d.data.name}
         props={d.data.props}
         state={d.data.state}
