@@ -35,6 +35,10 @@ class Node extends React.Component {
     // setting background color depending on state
     let bgColor = '#FAFAFA';
     let updating;
+    let propsFontSize = '12px';
+    if (Object.keys(this.props.props).length > 5) propsFontSize = '11px';
+    else if (Object.keys(this.props.props).length > 7) propsFontSize = '10px';
+    else if (Object.keys(this.props.props).length > 10) propsFontSize = '9px';
     if (Object.keys(this.props.state).length !== 0) bgColor = '#B3E5FC';
     
     if (this.state.updating) updating = '0 0 3em #2979FF';
@@ -43,7 +47,7 @@ class Node extends React.Component {
     // inline styling, as well as using translate coordinates found by d3
     const style = {
       transform: `translate(${this.props.xtranslate}px,${this.props.ytranslate}px)`,
-      transition: 'box-shadow 1s ease',
+      transition: 'box-shadow 1s ease, transform 0.5s ease',
       width: this.props.width,
       height: this.props.height,
       cursor: 'pointer',
@@ -92,7 +96,7 @@ class Node extends React.Component {
               </Heading>
             </Block>
             <Text style={{ fontSize: '14px', color: '#546E7A' }}>Props: </Text>
-            <Text px={1} style={{ fontSize: '12px' }}>
+            <Text px={1} style={{ fontSize: propsFontSize }}>
               {propsArr.join(' | ')} <br />
             </Text>
           </Panel></Popover></foreignObject>
@@ -118,11 +122,11 @@ Node.propTypes = {
 Node.defaultProps = {
   xtranslate: 0,
   ytranslate: 0,
-  name: 'something messed up',
+  name: 'Component',
   props: {},
   state: {},
   methods: [],
-  width: 200,
+  width: 150,
   height: 100,
 };
 
