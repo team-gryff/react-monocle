@@ -31,7 +31,7 @@ class Graph extends React.Component {
    * Clone tree data, pass to tree() to create nodes objects, setting state to render nodes,
    */
   componentWillMount() {
-    const nodes = tree().size([window.innerWidth*0.6, this.state.height])(hierarchy(this.props.treeData));
+    const nodes = tree().size([window.innerWidth * 0.6, this.state.height])(hierarchy(this.props.treeData));
     return this.nodeRender(nodes); // react render
   }
 
@@ -51,7 +51,7 @@ class Graph extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const nodes = tree().size([window.innerWidth*0.6, this.state.height])(hierarchy(nextProps.treeData));
+    const nodes = tree().size([window.innerWidth * 0.6, this.state.height])(hierarchy(nextProps.treeData));
     this.nodeRender(nodes); // react render
   }
 
@@ -73,7 +73,6 @@ class Graph extends React.Component {
   propDoneUpdate(i) {
     select(document.getElementById('graphz'))
     .selectAll('path.link').filter(ele => {
-      console.log(ele.target);
       if (ele.target.id === i) return ele;
       return false;
     })
@@ -81,7 +80,7 @@ class Graph extends React.Component {
   }
 
 
-  highlightRecursion(d, linkclass) {
+  highlightRecursion(d) {
     // finds out which links to highlight
     // recurses up to where there is no parent (top most node)
     if (!d.parent) return d;
@@ -90,16 +89,14 @@ class Graph extends React.Component {
       if (ele.source.id === d.parent.id && ele.target.id === d.id) return ele;
       return false;
     })
-    .classed(linkclass, true);
-    return this.highlightRecursion(d.parent, linkclass);
+    .classed('highlight', true);
+    return this.highlightRecursion(d.parent);
   }
 
-  highlight(i, e) {
-    let linkClass = 'highlight';
-
+  highlight(i) {
     // highlight links on hover over
     this.state.d3nodes.each(ele => {
-      if (ele.id && ele.id === i) this.highlightRecursion(ele, linkClass);
+      if (ele.id && ele.id === i) this.highlightRecursion(ele);
     });
     return true;
   }
@@ -117,7 +114,7 @@ class Graph extends React.Component {
     const renderArr = [];
 
     nodes.each(d => {
-      d.y = d.depth * this.state.initialHeight / 3;
+      d.y = d.depth * this.state.initialHeight / 5;
       d.id = d.id || ++i;
       // using the information provided by d3
       // to render Node components
@@ -142,7 +139,7 @@ class Graph extends React.Component {
     this.setState({
       nodes: renderArr,
       d3nodes: nodes,
-      width: window.innerWidth*0.6,
+      width: window.innerWidth * 0.6,
     });
     return nodes;
   }
@@ -179,7 +176,7 @@ class Graph extends React.Component {
     // makes sure graph is the right size after rendering the graph
     const root = cloneDeep(this.props.treeData);
     const nodes = tree().size([this.state.width, this.state.initialHeight])(hierarchy(root));
-    (this.nodeRender(nodes));
+    this.nodeRender(nodes);
   }
 
   render() {
