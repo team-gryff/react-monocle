@@ -16,11 +16,11 @@ class Node extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!isEqual(this.props.props, nextProps.props)) {
-      this.props.highlight(true);
+    if (!isEqual(this.props.props, nextProps.props) || !isEqual(this.props.state, nextProps.state)) {
+      this.props.propUpdate();
       this.setState({ updating: true });
-      setTimeout(() => this.setState({ updating: false }), 550);
-      setTimeout(() => this.props.lowlight(), 800);
+      setTimeout(() => this.setState({ updating: false }), 1500);
+      setTimeout(() => this.props.lowlight(), 1700);
     }
   }
 
@@ -42,7 +42,7 @@ class Node extends React.Component {
     // inline styling, as well as using translate coordinates found by d3
     const style = {
       transform: `translate(${this.props.xtranslate}px,${this.props.ytranslate}px)`,
-      transition: 'box-shadow 0.5s ease',
+      transition: 'box-shadow 1s ease',
       width: this.props.width,
       height: this.props.height,
       cursor: 'pointer',
@@ -110,6 +110,7 @@ Node.propTypes = {
   height: React.PropTypes.number,
   highlight: React.PropTypes.func,
   lowlight: React.PropTypes.func,
+  propUpdate: React.PropTypes.func,
 };
 
 Node.defaultProps = {
