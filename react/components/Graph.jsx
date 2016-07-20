@@ -89,7 +89,6 @@ class Graph extends React.Component {
 
   highlight(i, e) {
     let linkClass = 'highlight';
-    if (e === true) linkClass = 'propchange';
 
     // highlight links on hover over
     this.state.d3nodes.each(ele => {
