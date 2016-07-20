@@ -23,6 +23,7 @@ class Graph extends React.Component {
     this.nodeRender = this.nodeRender.bind(this);
     this.linkRender = this.linkRender.bind(this);
     this.resizeGraph = this.resizeGraph.bind(this);
+    this.propUpdate = this.propUpdate.bind(this);
   }
 
   /**
@@ -57,6 +58,19 @@ class Graph extends React.Component {
     select(document.getElementById('graphz'))
     .selectAll('path.link').remove();
     window.removeEventListener('resize', this.resizeGraph);
+  }
+
+  propUpdate(i) {
+    this.state.d3nodes.each(ele => {
+      if (ele.id === i) {
+        select(document.getElementById('graphz'))
+        .selectAll('path.link').filter(link => {
+          if (link.source.id === ele.parent.id && link.target.id === ele.id) return link;
+          return false;
+        })
+        .classed('propchange', true);
+      }
+    });
   }
 
 
@@ -108,6 +122,7 @@ class Graph extends React.Component {
         key={i}
         highlight={this.highlight.bind(this, i)}
         lowlight={this.lowlight}
+        propUpdate={this.propUpdate.bind(this, i)}
         name={d.data.name}
         props={d.data.props}
         state={d.data.state}
