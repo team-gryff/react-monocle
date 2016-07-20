@@ -23,7 +23,7 @@ describe('ReactApp AST Parser Tests', function() {
 
   it('modifySetStateStrings should return a string', function() {
     expect(modifySetStateStrings(__dirname + '/fixtures/modifySetStateStringsInputFixture.js').length)
-      .to.equal(fs.readFileSync(__dirname + '/fixtures/modifySetStateStringsOutputFixture.js').length);
+      .to.equal(fs.readFileSync(__dirname + '/fixtures/modifySetStateStringsOutputFixture.js', { encoding: 'utf-8' }).length);
   });
 
   it('modifyInitialState should be a function', function() {
@@ -31,7 +31,7 @@ describe('ReactApp AST Parser Tests', function() {
   });
 
   xit('modifyInitialState should return a string', function() {
-    expect(fs.readFileSync(__dirname + '/fixtures/modifySetStateStringsOutputFixture.js').length)
+    expect(modifyInitialState(fs.readFileSync(__dirname + '/fixtures/modifySetStateStringsInputFixture.js', { encoding: 'utf-8' })).length)
       .to.equal(fs.readFileSync(__dirname + '/fixtures/modifyInitialStateOutputFixture.js').length)
   })
 
