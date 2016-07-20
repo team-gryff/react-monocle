@@ -222,9 +222,7 @@ class Graph extends React.Component {
       <div style={divStyle}>
       <svg height={this.state.height} width={this.state.width} style={svgStyle} >
         <g style={gStyle} id="graphz">
-
           {this.state.nodes}
-
         </g>
       </svg>
       </div>
