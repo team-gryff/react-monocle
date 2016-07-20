@@ -18,9 +18,10 @@ class Node extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (!isEqual(this.props.props, nextProps.props) || !isEqual(this.props.state, nextProps.state)) {
       this.props.propUpdate();
-      this.setState({ updating: true });
-      setTimeout(() => this.setState({ updating: false }), 1500);
-      setTimeout(() => this.props.lowlight(), 1700);
+      this.setState({ updating: true }, () => {
+        setTimeout(() => this.setState({ updating: false }), 1500);
+        setTimeout(() => this.props.propDoneUpdate(), 1700);
+      });
     }
   }
 
@@ -111,6 +112,7 @@ Node.propTypes = {
   highlight: React.PropTypes.func,
   lowlight: React.PropTypes.func,
   propUpdate: React.PropTypes.func,
+  propDoneUpdate: React.PropTypes.func,
 };
 
 Node.defaultProps = {
