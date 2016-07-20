@@ -61,16 +61,12 @@ class Graph extends React.Component {
   }
 
   propUpdate(i) {
-    this.state.d3nodes.each(ele => {
-      if (ele.id === i) {
-        select(document.getElementById('graphz'))
-        .selectAll('path.link').filter(link => {
-          if (link.source.id === ele.parent.id && link.target.id === ele.id) return link;
-          return false;
-        })
-        .classed('propchange', true);
-      }
-    });
+    select(document.getElementById('graphz'))
+    .selectAll('path.link').filter(ele => {
+      if (ele.target.id === i) return ele;
+      return false;
+    })
+    .classed('propchange', true);
   }
 
 
@@ -92,7 +88,7 @@ class Graph extends React.Component {
 
     // highlight links on hover over
     this.state.d3nodes.each(ele => {
-      if (ele.id === i) this.highlightRecursion(ele, linkClass);
+      if (ele.id && ele.id === i) this.highlightRecursion(ele, linkClass);
     });
     return true;
   }
@@ -117,7 +113,6 @@ class Graph extends React.Component {
       renderArr.push(<Node
         xtranslate={d.x}
         ytranslate={d.y}
-        id={i}
         key={i}
         highlight={this.highlight.bind(this, i)}
         lowlight={this.lowlight}
