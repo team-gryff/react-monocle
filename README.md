@@ -4,7 +4,7 @@
 
 </br>
 <p align="center">
-<img src="react/assets/logo.svg" width="150"/>
+<img src="react/assets/logo.png" width="200"/>
 </p>
 </br>
 <img src="demo.gif" width="600"/>
