@@ -2,6 +2,7 @@
 const fs = require('fs');
 const acorn = require('acorn');
 const esquery = require('../esquery/esquery');
+const regexIndexOf = require('./stringRegexHelper').regexIndexOf;
 const regexLastIndexOf = require('./stringRegexHelper').regexLastIndexOf;
 const strip = require('strip-comments');
 
@@ -154,6 +155,8 @@ function getComponentName(bundle, startingIndex) {
   bundleSearchIndicesMap[regexLastIndexOf(bundle, /(var )?\w+\s*?=\s*?function\s*?\(_(React\$)?Component\)/, startingIndex)] = 'WEBPACKES6';
   // let's try GULP
   bundleSearchIndicesMap[regexLastIndexOf(bundle, /var \w+ = React.createClass\({/, startingIndex)] = 'GULP';
+  // let's try Rollup ex: var Slick = (function (superclass) {
+  bundleSearchIndicesMap[regexLastIndexOf(bundle, /var \w+ = \(function \(superclass\) {/, startingIndex)] = 'ROLLUP';
 
   const targetIndex = Object.keys(bundleSearchIndicesMap)
   	.filter(index => index >= 0)
@@ -176,6 +179,10 @@ function getComponentName(bundle, startingIndex) {
     case 'GULP':
       componentMatch = bundle.slice(targetIndex)
         .match(/var \w+ = React.createClass\({/)
+      break;
+    case 'ROLLUP':
+      componentMatch = bundle.slice(targetIndex)
+        .match(/var \w+ = \(function \(superclass\) {/)
       break;
     default:
     	throw new Error('Unable to find component from bundle file');
@@ -236,9 +243,20 @@ function modifySetStateStrings(bundleFilePath) {
 
 
 function modifyInitialState(modifiedBundle) {
-  let index = modifiedBundle.indexOf('_this.state') > 0
-    ? modifiedBundle.indexOf('_this.state', 0)
-    : modifiedBundle.indexOf('getInitialState() {', 0) + 19;
+  let index = -1;
+  if (modifiedBundle.indexOf('_this.state') >= 0) {
+    // do webpack
+    index = modifiedBundle.indexOf('_this.state', 0);
+  } else if (modifiedBundle.indexOf('getInitialState() {', 0) >= 0) {
+    // do gulp
+    index = modifiedBundle.indexOf('getInitialState() {', 0) + 19;
+  } else if (modifiedBundle.indexOf('this.state', 0) >= 0) {
+    // do rollup
+    index = modifiedBundle.indexOf('this.state = {');
+  } else {
+    throw new Error('Unable to find component initial state');
+  }
+
   while (index !== -1) {
     let openBraceIdx = modifiedBundle.indexOf('{', index); // looking for index of follow brace, after return statement
     let currentIdx = openBraceIdx + 1;
@@ -248,18 +266,33 @@ function modifyInitialState(modifiedBundle) {
       if (modifiedBundle[currentIdx] === '}') parensStack.pop();
       currentIdx++;
     }
-    const injection = modifiedBundle.charAt(index) === '_'
-      ? `_this.state = grabInitialState('${getComponentName(modifiedBundle, index)}', ${modifiedBundle.slice(openBraceIdx, currentIdx)}),`
-      : `return grabInitialState('${getComponentName(modifiedBundle, index)}', ${modifiedBundle.slice(openBraceIdx, currentIdx)}),`;
+
+    let injection,
+        componentName = getComponentName(modifiedBundle, index),
+        stateStr = modifiedBundle.slice(openBraceIdx, currentIdx);
+    if (modifiedBundle.indexOf('_this.state', 0) >= 0) {
+      injection = `_this.state = grabInitialState('${componentName}', ${stateStr})`
+    } else if (modifiedBundle.indexOf('getInitialState() {', 0) >= 0) {
+      injection = `return grabInitialState('${componentName}', ${stateStr})`;
+    } else if (modifiedBundle.indexOf('this.state = {', 0) >= 0) {
+      injection = `this.state = grabInitialState('${componentName}', ${stateStr})`
+    }
+
     modifiedBundle = modifiedBundle.slice(0, index) + injection + modifiedBundle.slice(currentIdx + 1);
     
     // need to take into account that length of bundle now changes since injected wrapper string length can be different than original
     const oldLength = currentIdx - index;
     const newLength = injection.length;
     
-    index = modifiedBundle.indexOf('_this.state') > 0
-      ? modifiedBundle.indexOf('_this.state', index + 1 + newLength - oldLength)
-      : modifiedBundle.indexOf('getInitialState() {', index + 1 + newLength - oldLength);
+    if (modifiedBundle.indexOf('_this.state') >= 0) {
+      index = modifiedBundle.indexOf('_this.state', index + 1 + newLength - oldLength);
+    } else if (modifiedBundle.indexOf('getInitialState() {') >= 0) {
+      index = modifiedBundle.indexOf('getInitialState() {', index + 1 + newLength - oldLength);
+    } else if (modifiedBundle.indexOf('this.state = grabInitialState') >= 0) {
+      index = modifiedBundle.indexOf('this.state = grabInitialState', index + 1 + newLength - oldLength);
+    } else {
+      throw new Error('Unable to find next initial state index');
+    }
   }
   return modifiedBundle;
 }
