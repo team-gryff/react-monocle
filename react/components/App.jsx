@@ -1,6 +1,8 @@
 import React from 'react';
 import Graph from './Graph.jsx';
+import logo from '../assets/logo.svg';
 const cloneDeep = require('lodash.clonedeep');
+
 // const formatted = require('../../formattedDataNoState');
 
 
@@ -137,8 +139,15 @@ class App extends React.Component {
 
   render() {
     const builtObj = this.treebuilder(this.props.store);
+    const logoStyle = {
+      width: '300px',
+      height: '115px',
+      zIndex: '1',
+      position: 'absolute',
+    };
     return (
       <div>
+        <div style={logoStyle} dangerouslySetInnerHTML={{ __html: logo }} />
         <Graph treeData={builtObj} />
       </div>
     );
