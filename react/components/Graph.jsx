@@ -12,8 +12,8 @@ class Graph extends React.Component {
       width: 1000,
       height: 900,
       initialHeight: 900,
-      nodeW: 150,
-      nodeH: 100,
+      nodeW: 145.62, // golden ratio
+      nodeH: 90,
       nodes: [],
     };
     this.highlight = this.highlight.bind(this);
@@ -40,19 +40,19 @@ class Graph extends React.Component {
    */
   componentDidMount() {
     window.addEventListener('resize', this.resizeGraph);
-    return this.linkRender(this.state.d3nodes);  // d3 dom injection
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.width !== this.state.width || (this.state.nodes && prevState.nodes && prevState.nodes.length !== this.state.nodes.length)) {
-      return this.linkRender(this.state.d3nodes);
-    }
-    return true;
+    this.linkRender(this.state.d3nodes, this.state.d3nodes, 1);  // d3 dom injection
   }
 
   componentWillReceiveProps(nextProps) {
     const nodes = tree().size([window.innerWidth * 0.6, this.state.height])(hierarchy(nextProps.treeData));
     this.nodeRender(nodes); // react render
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.width !== this.state.width || (this.state.nodes && prevState.nodes && prevState.nodes.length !== this.state.nodes.length)) {
+      this.linkRender(this.state.d3nodes, prevState.d3nodes, 500);
+    }
+    return true;
   }
 
   componentWillUnmount() {
@@ -61,19 +61,19 @@ class Graph extends React.Component {
     window.removeEventListener('resize', this.resizeGraph);
   }
 
-  propUpdate(i) {
+  propUpdate(...i) {
     select(document.getElementById('graphz'))
     .selectAll('path.link').filter(ele => {
-      if (ele.target.id === i) return ele;
+      if (i.indexOf(ele.target.id) !== -1) return ele;
       return false;
     })
     .classed('propchange', true);
   }
 
-  propDoneUpdate(i) {
+  propDoneUpdate(...i) {
     select(document.getElementById('graphz'))
     .selectAll('path.link').filter(ele => {
-      if (ele.target.id === i) return ele;
+      if (i.indexOf(ele.target.id) !== -1) return ele;
       return false;
     })
     .classed('propchange', false);
@@ -145,9 +145,17 @@ class Graph extends React.Component {
   }
 
 
-  linkRender(nodes) {
+  linkRender(nodes, prev, duration) {
     const graphz = document.getElementById('graphz');
     const links = nodes.links();
+
+    const prevPositions = {};
+    prev.each(d => {
+      prevPositions[d.id] = {
+        x: d.x,
+        y: d.y,
+      };
+    });
 
     select(document.getElementById('graphz'))
     .selectAll('path.link').remove();
@@ -157,6 +165,26 @@ class Graph extends React.Component {
     .enter()
     .insert('svg:path', 'foreignObject')
     .attr('class', 'link')
+    .attr('d', (node) => {
+      const pathing = path();
+      if (prevPositions.hasOwnProperty(node.source.id) && prevPositions.hasOwnProperty(node.target.id)) {
+
+        const oldX = prevPositions[node.source.id].x;
+        const oldY = prevPositions[node.source.id].y;
+        const newX = prevPositions[node.target.id].x;
+        const newY = prevPositions[node.target.id].y;
+        pathing.moveTo(oldX + this.state.nodeW / 2, oldY);
+        pathing.bezierCurveTo(oldX + this.state.nodeW / 2, (oldY + newY) / 2, newX + this.state.nodeW / 2, (oldY + newY) / 2, newX + this.state.nodeW / 2, newY);
+        return pathing;
+      }
+      this.propUpdate(node.source.id, node.target.id);
+      setTimeout(() => this.propDoneUpdate(node.source.id, node.target.id), 1700);
+      pathing.moveTo(node.source.x + this.state.nodeW / 2, node.source.y + this.state.nodeH / 2);
+      pathing.lineTo(node.source.x + this.state.nodeW / 2 + 1, node.source.y + 1);
+      return pathing;
+    })
+    .transition()
+    .duration(duration)
     .attr('d', (node) => {
       // creating a cubic bezier curve for the link
       // equiv to d3.svg.diagonal before 4.0
@@ -169,7 +197,8 @@ class Graph extends React.Component {
       pathing.bezierCurveTo(oldX + this.state.nodeW / 2, (oldY + newY) / 2, newX + this.state.nodeW / 2, (oldY + newY) / 2, newX + this.state.nodeW / 2, newY);
       return pathing;
     });
-    return this.setState({ height: graphz.getBBox().y + graphz.getBBox().height + 100 });
+
+    if (this.state.height > this.state.currentHeight) this.setState({ height: graphz.getBBox().y + graphz.getBBox().height + 100 });
   }
 
   resizeGraph() {
@@ -196,9 +225,7 @@ class Graph extends React.Component {
       <div style={divStyle}>
       <svg height={this.state.height} width={this.state.width} style={svgStyle} >
         <g style={gStyle} id="graphz">
-
           {this.state.nodes}
-
         </g>
       </svg>
       </div>
