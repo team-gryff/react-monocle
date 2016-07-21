@@ -2,6 +2,11 @@
 
 **React Monocle** is a developer tool for generating visual representations of your React app's component hierarchy.
 
+</br>
+<p align="center">
+<img src="react/assets/logo.svg" width="150"/>
+</p>
+</br>
 <img src="demo.gif" width="600"/>
 
 ### How It Works
