@@ -10,7 +10,7 @@ const acorn = require('acorn-jsx/inject')(require('acorn'));
  * @returns {Object} Object with Component name and AST
  */
 
-function astGenerator(directory, entry) {
+function astGenerator(directory) {
   // TODO: support for stateless functional components
   // using directory of component to turn into string for acorn
   const stringed = fs.readFileSync(directory, { encoding: 'utf-8' });
@@ -29,7 +29,7 @@ function astGenerator(directory, entry) {
     if ((node.superClass.type === 'MemberExpression' && node.superClass.object.name === 'React' && node.superClass.property.name === 'Component')
      || (node.superClass.type === 'Identifier' && node.superClass.name === 'Component')) return node.id.name;
   }
-  
+
   ast.body.forEach((node, i) => {
     if (node.type === 'ClassDeclaration' && node.superClass) {
       name = nameFinder(node);

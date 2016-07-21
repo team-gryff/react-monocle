@@ -35,7 +35,6 @@ function getReactProps(node, parent) {
   return node.openingElement.attributes
     .map(attribute => {
       const name = attribute.name.name;
-      let valueType;
       let valueName;
       if (attribute.value === null) valueName = undefined;
       else if (attribute.value.type === 'Literal') valueName = attribute.value.value;
@@ -68,13 +67,11 @@ function getReactProps(node, parent) {
           methods: [],
         };
         valueName = output;
-      } else valueName = attribute.value.expression.property.name;
-      // if (attribute.value && attribute.value.expression && attribute.value.expression.object && attribute.value.expression.object.property) {
-      //   valueType = attribute.value.expression.object.property.name;
-      // }
+      } else throw new Error(`Unsupported prop type ${attribute.value.expression.type}, please notify the react-monocle team!`);
+
       return {
         name,
-        value: valueType ? `${valueType}.${valueName}` : valueName,
+        value: valueName,
         parent,
       };
     });
@@ -349,7 +346,7 @@ function getES5ReactComponents(ast) {
   if (higherOrderFunc.length > 0) iter = iter.concat(higherOrderFunctionFinder(higherOrderFunc, output.name));
 
   if (outside) output.children.push(outside);
-  output.children.forEach((ele, i)=> {
+  output.children.forEach((ele, i) => {
     checker[ele.name] = i;
   });
 
@@ -440,7 +437,7 @@ function getES6ReactComponents(ast) {
   });
 
   if (outside) output.children.push(outside);
-  output.children.forEach((ele, i)=> {
+  output.children.forEach((ele, i) => {
     checker[ele.name] = i;
   });
 

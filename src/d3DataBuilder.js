@@ -1,7 +1,5 @@
 'use strict';
 const reactParser = require('./reactParser');
-const cloneDeep = require('lodash.clonedeep');
-
 
 /**
  * Takes in a formatted object and returns the tree object that D3 will need
@@ -10,7 +8,6 @@ const cloneDeep = require('lodash.clonedeep');
  */
 function d3DataBuilder(obj) {
   if (!obj.ENTRY) throw new Error('Entry component not found');
-  const ENTRY = obj.ENTRY;
   const formatted = {};
 
 // parsing AST into formatted objects based on ES5/ES6 syntax
@@ -40,22 +37,6 @@ function d3DataBuilder(obj) {
   };
   formatted.monocleENTRY = obj.ENTRY;
 
-  const result = cloneDeep(formatted[ENTRY]);
-
-// recursive function to concat and build the d3 object
-  // function treeAddition(node) {
-  //   if (!node.children) throw new Error('Invalid Node! Something went wrong with the parsing (no children array)');
-  //   if (node.children.length === 0) return; // base case
-  //   for (let i = 0; i < node.children.length; i++) {
-  //     if (formatted.hasOwnProperty(node.children[i].name)) {
-  //       node.children[i].children = cloneDeep(formatted[node.children[i].name].children);
-  //       // node.children[i].state = cloneDeep(formatted[node.children[i].name].state);
-  //     } 
-  //     // else throw new Error('Parse Error: Could not find needed component');
-  //     if (node.children[i].children.length > 0) treeAddition(node.children[i]); // if the component has nested components, recurse through
-  //   }
-  // }
-  // treeAddition(result);
   return formatted;
 }
 
