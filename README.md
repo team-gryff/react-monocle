@@ -1,4 +1,4 @@
-# react-monocle [![Build Status](https://travis-ci.org/team-gryff/react-monocle.svg?branch=master)](https://travis-ci.org/team-gryff/react-monocle)
+# react-monocle [![Build Status](https://travis-ci.org/mbchoa/react-monocle.svg?branch=master)](https://travis-ci.org/mbchoa/react-monocle)
 
 **React Monocle** is a developer tool for generating visual representations of your React app's component hierarchy.
 
