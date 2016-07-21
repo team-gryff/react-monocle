@@ -39,7 +39,7 @@ class Node extends React.Component {
     if (Object.keys(this.props.props).length > 5) propsFontSize = '11px';
     else if (Object.keys(this.props.props).length > 7) propsFontSize = '10px';
     else if (Object.keys(this.props.props).length > 10) propsFontSize = '9px';
-    if (Object.keys(this.props.state).length !== 0) bgColor = '#B3E5FC';
+    if (Object.keys(this.props.state).length !== 0) bgColor = '#99E3E8';
     
     if (this.state.updating) updating = '0 0 3em #2979FF';
     else updating = '0 0 1em #90A4AE';
@@ -85,7 +85,7 @@ class Node extends React.Component {
             <Block
               borderLeft
               borderColor="#263238"
-              backgroundColor="#1976D2"
+              backgroundColor="#0B92FF"
               color="#FAFAFA"
               px={2}
               py={0}

@@ -19,6 +19,11 @@ module.exports = {
       loaders: ['react-hot', 'babel-loader'],
       exclude: /node_modules/,
     },
+    {
+      test: /\.svg$/,
+      loader: 'svg-inline',
+    },
+
     // {
     //   loader: 'uglify',
     // },
