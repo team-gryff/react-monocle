@@ -14,6 +14,7 @@ class App extends React.Component {
   }
 
   treebuilder(state) {
+    console.log(state);
     const result = cloneDeep(formatted[formatted.monocleENTRY]);
     const bfs = this.bfs;
 
@@ -30,6 +31,8 @@ class App extends React.Component {
 
         // maybe check if it is object already
         if (formatted.hasOwnProperty(child.name)) child.children = cloneDeep(formatted[child.name].children); // adding children of child
+        if (newState[child.name]) child.state = cloneDeep(newState[child.name]);
+
 
         if (!Array.isArray(child.props)) {
           tempChildren.push(child);
