@@ -14,10 +14,7 @@ function renderHtml(d3Obj, bundle, start, arr, scripts, css) {
 
   css.forEach(ele => {
     cssStyles += ele;
-  })
-
-  console.log(cssStyles);
-  console.log(inlineScripts);
+  });
 
   const treeLogicPath = '/src/d3Tree/app.js',
     hookLogicPath = '/src/d3Tree/hooks.js',
@@ -52,6 +49,7 @@ function htmlTop(css) {
 <html>
 <head>
   <meta charset="utf-8">
+  <title>React Monocle</title>
 	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
     <style>
