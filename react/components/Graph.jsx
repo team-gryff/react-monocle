@@ -61,19 +61,19 @@ class Graph extends React.Component {
     window.removeEventListener('resize', this.resizeGraph);
   }
 
-  propUpdate(i) {
+  propUpdate(...i) {
     select(document.getElementById('graphz'))
     .selectAll('path.link').filter(ele => {
-      if (ele.target.id === i) return ele;
+      if (i.indexOf(ele.target.id) !== -1) return ele;
       return false;
     })
     .classed('propchange', true);
   }
 
-  propDoneUpdate(i) {
+  propDoneUpdate(...i) {
     select(document.getElementById('graphz'))
     .selectAll('path.link').filter(ele => {
-      if (ele.target.id === i) return ele;
+      if (i.indexOf(ele.target.id) !== -1) return ele;
       return false;
     })
     .classed('propchange', false);
@@ -168,6 +168,7 @@ class Graph extends React.Component {
     .attr('d', (node) => {
       const pathing = path();
       if (prevPositions.hasOwnProperty(node.source.id) && prevPositions.hasOwnProperty(node.target.id)) {
+
         const oldX = prevPositions[node.source.id].x;
         const oldY = prevPositions[node.source.id].y;
         const newX = prevPositions[node.target.id].x;
@@ -176,6 +177,8 @@ class Graph extends React.Component {
         pathing.bezierCurveTo(oldX + this.state.nodeW / 2, (oldY + newY) / 2, newX + this.state.nodeW / 2, (oldY + newY) / 2, newX + this.state.nodeW / 2, newY);
         return pathing;
       }
+      this.propUpdate(node.source.id, node.target.id);
+      setTimeout(() => this.propDoneUpdate(node.source.id, node.target.id), 1700);
       pathing.moveTo(node.source.x + this.state.nodeW / 2, node.source.y + this.state.nodeH / 2);
       pathing.lineTo(node.source.x + this.state.nodeW / 2 + 1, node.source.y + 1);
       return pathing;
