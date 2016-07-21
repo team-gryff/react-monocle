@@ -36,9 +36,9 @@ class Node extends React.Component {
     let bgColor = '#FAFAFA';
     let updating;
     let propsFontSize = '12px';
-    if (Object.keys(this.props.props).length > 5) propsFontSize = '11px';
-    else if (Object.keys(this.props.props).length > 7) propsFontSize = '10px';
-    else if (Object.keys(this.props.props).length > 10) propsFontSize = '9px';
+    if (Object.keys(this.props.props).length < 7) propsFontSize = '11px';
+    else if (Object.keys(this.props.props).length < 10) propsFontSize = '10px';
+    else if (Object.keys(this.props.props).length < 13) propsFontSize = '9px';
     if (Object.keys(this.props.state).length !== 0) bgColor = '#99E3E8';
     
     if (this.state.updating) updating = '0 0 3em #2979FF';
