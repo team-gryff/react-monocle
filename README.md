@@ -1,6 +1,7 @@
 # react-monocle [![Build Status](https://travis-ci.org/team-gryff/react-monocle.svg?branch=master)](https://travis-ci.org/team-gryff/react-monocle)
 
 <img src="react/assets/logo.png" width="300"/>
+
 </br>
 **React Monocle** is a developer tool for generating visual representations of your React app's component hierarchy.
 
