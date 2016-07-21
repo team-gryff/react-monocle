@@ -6,7 +6,7 @@ import monocleStore from './store/monocleStore';
 function render () {
   ReactDOM.render(
     <App store={monocleStore.getState()} />,
-    document.getElementById('content')
+    document.getElementById('monocle-content')
   );
 }
 
