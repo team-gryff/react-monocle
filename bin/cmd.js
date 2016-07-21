@@ -12,7 +12,7 @@ const start = Date.now();
 
 // specifying one required parameter
 program
-  .option('-h --html <html>', 'HTML page which has your bundle and css files')
+  .option('-c --html <html>', 'HTML page which has your bundle and css files')
   .option('-b, --bundle <bundle>', '**Required** Path to react bundle file')
   .option('-e, --entry <entry>', 'App entry point. Defaults to JSX file where ReactDOM.render is found.')
   .option('-d, --directory <directory>', 'directory of React files. Defaults to where Monocle was called.')
