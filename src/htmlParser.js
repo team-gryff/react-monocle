@@ -15,16 +15,18 @@ function findCSS(str) {
   const styleTags = str.match(/<style>(\n|.)*?(<\/style>)/g);
   const cssLinks = str.match(/<link.*stylesheet.*?>/g);
   if (!cssLinks && !styleTags) return [];
-  if (!cssLinks) return styleTags; 
+  if (!cssLinks) return styleTags;
   return cssLinks.map(ele => {
     if (ele.search(/http/) !== -1) return ele;
     else {
-      const cssFile = ele.match(/href(\s?)\=(\s?)(\\?)(\'|\").*?(\\?)(\'|\")/g)[0]
-      .match(/(\\?)(\'|\").*?(\\?)(\'|\")/g)[0]
+      const cssFile = ele.match(/href(\s?)=(\s?)(\\?)('|").*?(\\?)('|")/g)[0]
+      .match(/(\\?)('|").*?(\\?)('|")/g)[0]
       .replace(/\\/g, '')
-      .replace(/\'/g, '')
-      .replace(/\"/g, '');
-      return `<style>${fs.readFileSync(cssFile, { encoding: 'utf-8' })}</style>`;
+      .replace(/'/g, '')
+      .replace(/"/g, '');
+      const cssFileString = fs.readFileSync(cssFile, { encoding: 'utf-8' });
+      if (!cssFileString) throw new Error(`Invalid CSS file path found (${cssFile})`);
+      return `<style>${cssFileString}</style>`;
     }
   })
   .concat(styleTags);
@@ -40,14 +42,13 @@ function findJavaScript(str, bundle) {
   const scriptz = str.match(/<script.*?<\/script>/g);
   scriptz.forEach(ele => {
     if (ele.includes(bundle)) {
-      result.bundle = ele.match(/src(\s?)\=(\s?)(\\?)(\'|\").*?(\\?)(\'|\")/g)[0]
-      .match(/(\\?)(\'|\").*?(\\?)(\'|\")/g)[0]
+      result.bundle = ele.match(/src(\s?)=(\s?)(\\?)('|").*?(\\?)('|")/g)[0]
+      .match(/(\\?)('|").*?(\\?)('|")/g)[0]
       .replace(/\\/g, '')
-      .replace(/\'/g, '')
-      .replace(/\"/g, '')
+      .replace(/'/g, '')
+      .replace(/"/g, '')
       .trim();
-    } 
-    else if (ele.search(/src(\s?)\=(\s?)(\\?)(\'|\").*?(\\?)(\'|\")/ === -1) || ele.search(/http/) !== -1) result.scripts.push(ele);
+    } else if (ele.search(/src(\s?)=(\s?)(\\?)('|").*?(\\?)('|")/ === -1) || ele.search(/http/) !== -1) result.scripts.push(ele);
   });
   return result;
 }

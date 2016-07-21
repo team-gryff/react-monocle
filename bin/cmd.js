@@ -50,7 +50,7 @@ program.name = 'monocle';
     // converting file paths to abstract syntax trees (output is an array with {ComponentName: AST} objects)
     const astz = files.map(ele => astGenerator(ele));
     let componentObject = assign.apply(null, astz); // combining into one file
-    if (entry) componentObject = assign(componentObject, astGenerator(entry, true));
+    if (entry) componentObject = assign(componentObject, astGenerator(entry));
     const formatedD3Object = d3DataBuilder(componentObject); // building the tree
     renderHtml(formatedD3Object, modifiedBundle, start, divsArr, htmlElements.scripts, htmlElements.css); // sending the completed tree to be built and rendered
   });
