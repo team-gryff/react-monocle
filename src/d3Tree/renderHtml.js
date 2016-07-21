@@ -52,6 +52,7 @@ function htmlTop(css) {
   <title>React Monocle</title>
 	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
+  ${css}
     <style>
     #monocle-content {
       font-family: 'Roboto', sans-serif;
@@ -91,7 +92,6 @@ function htmlTop(css) {
     }
 
   </style>
-  ${css}
   
 </head>
 

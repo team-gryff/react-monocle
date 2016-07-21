@@ -13,6 +13,7 @@ function NodeUp(props) {
   const stateHeadings = ['state', 'value'];
   const style = {
     backgroundColor: '#FAFAFA',
+    fontFamily: '"Roboto", sans-serif',
     padding: '1em 1em 1em 1em',
     border: '1px solid #78909C',
     borderRadius: '10px',
