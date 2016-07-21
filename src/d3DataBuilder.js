@@ -19,7 +19,6 @@ function d3DataBuilder(obj) {
       const es5obj = reactParser.getES5ReactComponents(obj[key]);
       formatted[key] = es5obj; // if the name is defined, it is an es5 component
       formatted[key].name = key;
-      // else formatted[key] = reactParser.getStatelessFunctionalComponents(obj[key]); //else it is a stateless functional component
     }
   }
 
@@ -34,7 +33,7 @@ function d3DataBuilder(obj) {
         });
       }
     });
-  };
+  }
   formatted.monocleENTRY = obj.ENTRY;
 
   return formatted;

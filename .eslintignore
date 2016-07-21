@@ -1,2 +1,5 @@
 src/d3Tree/*
 src/test/*
+esquery/*
+esrecurse/*
+node_modules/*

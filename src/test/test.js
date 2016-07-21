@@ -1,3 +1,5 @@
+// set global environment
+global.window = global;
 describe('react-monocle Test Suite', function() {
   require('./reactParserTest.js');
   require('./astGeneratorTest.js');
