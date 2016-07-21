@@ -1,7 +1,7 @@
 'use strict';
 
 const acorn = require('acorn-jsx');
-const esrecurse = require('esrecurse');
+const esrecurse = require('../esrecurse/esrecurse');
 const escodegen = require('escodegen');
 const esquery = require('../esquery/esquery');
 const bfs = require('acorn-bfs');

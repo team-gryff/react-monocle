@@ -6,7 +6,7 @@ function htmlParser(path, bundle) {
   const stringed = fs.readFileSync(path, { encoding: 'utf-8' });
 
   const result = findJavaScript(stringed, bundle);
-  result.css = findCSS(stringed)
+  result.css = findCSS(stringed);
 
   return result;
 }
