@@ -271,11 +271,11 @@ function modifyInitialState(modifiedBundle) {
         componentName = getComponentName(modifiedBundle, index),
         stateStr = modifiedBundle.slice(openBraceIdx, currentIdx);
     if (modifiedBundle.indexOf('_this.state', 0) >= 0) {
-      injection = `_this.state = grabInitialState('${componentName}', ${stateStr}),`
+      injection = `_this.state = grabInitialState('${componentName}', ${stateStr}),`;
     } else if (modifiedBundle.indexOf('getInitialState() {', 0) >= 0) {
       injection = `return grabInitialState('${componentName}', ${stateStr}),`;
     } else if (modifiedBundle.indexOf('this.state = {', 0) >= 0) {
-      injection = `this.state = grabInitialState('${componentName}', ${stateStr}),`
+      injection = `this.state = grabInitialState('${componentName}', ${stateStr}),`;
     }
 
     modifiedBundle = modifiedBundle.slice(0, index) + injection + modifiedBundle.slice(currentIdx + 1);
