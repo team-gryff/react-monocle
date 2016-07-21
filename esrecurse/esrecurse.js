@@ -125,7 +125,6 @@
         this.visitChildren(node);
     };
 
-    exports.version = require('./package.json').version;
     exports.Visitor = Visitor;
     exports.visit = function (node, visitor, options) {
         var v = new Visitor(visitor, options);
