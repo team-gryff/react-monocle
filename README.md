@@ -12,7 +12,7 @@ The rendered tree is synced up to the state(s) of your component using Redux, an
 ### Setup
 1. ```npm install -g react-monocle```
 2. Navigate to the directory which contains your html file.
-3. Run ```monocle -h <html> -b <bundle>```, where html and bundle are the relative paths to your html and bundle files.
+3. Run ```monocle -c <html> -b <bundle>```, where html and bundle are the relative paths to your html and bundle files.
 4. If more options are needed (ie if your React files are written in .js instead of .jsx), type ```monocle -h``` for more available options.
 
 ### Options
