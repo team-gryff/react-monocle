@@ -14,7 +14,6 @@ class App extends React.Component {
   }
 
   treebuilder(state) {
-    console.log(state);
     const result = cloneDeep(formatted[formatted.monocleENTRY]);
     const bfs = this.bfs;
 
