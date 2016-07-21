@@ -3,9 +3,9 @@
 <img src="react/assets/logo.png" width="300"/>
 
 </br>
-
 **React Monocle** is a developer tool for generating visual representations of your React app's component hierarchy.
 
+</br>
 <img src="demo.gif" width="600"/>
 
 ### How It Works
