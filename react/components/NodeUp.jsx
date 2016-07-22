@@ -22,11 +22,11 @@ function NodeUp(props) {
   // formatting the data for table usage
   const stateData = [];
   for (const key in props.state) {
-    stateData.push([key, JSON.stringify(props.state[key], null, 2)]);
+    stateData.push([key, `${JSON.stringify(props.state[key], null, 2)}`]);
   }
   const propsData = []
   for (const key in props.props) {
-    propsData.push([key, JSON.stringify(props.props[key], null, 2)]);
+    propsData.push([key, `${JSON.stringify(props.props[key], null, 2)}`]);
   }
   const methodsData = props.methods.map((ele, i) => {
     return (<li key={i}>{ele}</li>);
