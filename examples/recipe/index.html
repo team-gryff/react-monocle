@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: Raleway, sans-serif;
+  background: #A7B16A;
+}
+
+@media (max-width: 600px) {
+  body {
+    font-size: 12px;
+  }
+}
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Global styles
+ */
+/* Buttons */
+.button-group {
+  float: right;
+  margin-top: 0.8em;
+}
+
+.button {
+  background: #EAEBE3;
+  border-radius: 2px;
+  margin: 2px;
+  padding: 0.3em 0.5em;
+  cursor: pointer;
+}
+
+.button:hover .fa {
+  color: #F49373;
+}
+
+/* Layout of main components
+ */
+.container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  max-width: 980px;
+}
+
+.card-area {
+  width: 38em;
+  margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+  .card-area {
+    width: 25em;
+  }
+}
+.cycle {
+  float: left;
+  position: relative;
+  top: 50%;
+  width: 3em;
+  text-align: center;
+  cursor: pointer;
+  color: #3D414C;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+/* Grid
+ *
+ * row-1, row-2, row-3 only used by card-area
+ */
+.row {
+  height: 15em;
+  /*8px offset for card pseudo elements */
+  margin: 2em 0 2 -8px;
+}
+
+.col {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.col-1 {
+  width: 6.25em;
+}
+
+.col-1 span {
+  float: right;
+  padding-right: 1.5em;
+}
+
+.col-2 {
+  width: 25em;
+}
+
+.col-3 {
+  width: 6.25em;
+}
+
+.col-3 span {
+  padding-left: 1.5em;
+}
+
+@media (max-width: 600px) {
+  /*hide left and right carets */
+  .col-1, .col-3 {
+    width: 0;
+    display: none;
+  }
+}
+/* Cards
+ */
+.card-wrap {
+  position: relative;
+}
+
+.card {
+  height: 15em;
+  width: 100%;
+  background: #FFF;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+.card h3 {
+  width: 80%;
+  margin: 0 auto;
+  padding: 5px;
+  border-bottom: 1px solid #ccc;
+  font-weight: 600;
+  text-align: center;
+}
+.card ul {
+  padding-left: 40px;
+  padding-right: 7px;
+  text-align: left;
+  list-style-position: outside;
+}
+
+.content {
+  font-size: 0.85em;
+  padding: 0.3em;
+  width: 50%;
+  text-align: center;
+}
+.content .button {
+  font-size: 0.9em;
+}
+
+.recipe-content {
+  height: 14.5em;
+  overflow: auto;
+}
+
+.image {
+  height: 15em;
+  width: 50%;
+}
+
+.image, .content {
+  display: inline-block;
+  vertical-align: top;
+}
+
+/* edit and add mode styles */
+form {
+  width: 80%;
+  margin: 0 auto;
+  padding: 1em;
+  font-size: 0.8em;
+}
+
+input {
+  margin: 0.4em;
+  width: 100%;
+  height: 2.5em;
+  font-size: 0.8em;
+  padding: 2px;
+}
+
+/* card stack effect /* */
+.card-stack1 {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -4px;
+  left: 4px;
+}
+
+.card-stack1:after {
+  content: "";
+  position: absolute;
+  background: #dda894;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+}
+
+.card-stack2 {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  top: -8px;
+  left: 8px;
+}
+
+.card-stack2:after {
+  content: "";
+  position: absolute;
+  background: #EEDBC4;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+}
+
+/* Menu area
+ */
+.menu {
+  text-align: center;
+  margin: 1em auto;
+}
+.menu ul {
+  padding-left: 0;
+}
+.menu li {
+  display: inline-block;
+  margin: 0.3em;
+  border-radius: 2px;
+  padding: 0.5em;
+  background: #EAEBE3;
+  cursor: pointer;
+}
+.menu li.highlighted {
+  background: #F49373;
+}
+
+/* edit and add mode styles */
+form {
+  width: 80%;
+  margin: 0 auto;
+  padding: 1em;
+  font-size: 0.8em;
+}
+
+input {
+  margin: 0.4em;
+  width: 100%;
+  height: 2.5em;
+  font-size: 0.8em;
+  padding: 2px;
+}
+
+@media (max-width: 600px) {
+  input {
+    height: 2em;
+    font-size: 0.9em;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div id="container"></div>
+  <script src="public/bundle.js"></script>
+</body>
+</html>
