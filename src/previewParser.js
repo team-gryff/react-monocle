@@ -150,14 +150,13 @@ function modifyTestBundleFile(bundle) {
 function getComponentName(bundle, startingIndex) {
   let bundleSearchIndicesMap = {};
   // get index of component declaration
-  bundleSearchIndicesMap[regexLastIndexOf(bundle, /var \w+ = \(\d+, _react.createClass\)/, startingIndex)] = 'WEBPACKES5';
+  bundleSearchIndicesMap[regexLastIndexOf(bundle, /(var )?\w+\s*?=\s*(\(\d+\, )?_react(\d+\[\"\w+\"\])?.createClass/, startingIndex)] = 'WEBPACKES5';
   // let's try ES6...
   bundleSearchIndicesMap[regexLastIndexOf(bundle, /(var )?\w+\s*?=\s*?function\s*?\(_(React\$)?Component\)/, startingIndex)] = 'WEBPACKES6';
   // let's try GULP
   bundleSearchIndicesMap[regexLastIndexOf(bundle, /var \w+ = React.createClass\({/, startingIndex)] = 'GULP';
   // let's try Rollup ex: var Slick = (function (superclass) {
   bundleSearchIndicesMap[regexLastIndexOf(bundle, /var \w+ = \(function \(superclass\) {/, startingIndex)] = 'ROLLUP';
-
   const targetIndex = Object.keys(bundleSearchIndicesMap)
   	.filter(index => index >= 0)
   	.reduce((prev, curr) => {
@@ -170,7 +169,7 @@ function getComponentName(bundle, startingIndex) {
   switch(bundleSearchIndicesMap[targetIndex]) {
   	case 'WEBPACKES5':
   	  componentMatch = bundle.slice(targetIndex)
-  	  	.match(/var \w+ = \(\d+, _react.createClass\)/)
+  	  	.match(/(var )?\w+\s*?=\s*(\(\d+\, )?_react(\d+\[\"\w+\"\])?.createClass/)
   	  break;
     case 'WEBPACKES6':
    	  componentMatch = bundle.slice(targetIndex)
@@ -231,13 +230,13 @@ function modifySetStateStrings(bundleFilePath) {
     const callbackStr = modifiedBundle.slice(functionStartIdx, currentIdx);
     const injection = `wrapper('${getComponentName(modifiedBundle, index)}',this)(${ stateStr }${ callbackStr })`;
     modifiedBundle = modifiedBundle.slice(0, index) + injection + modifiedBundle.slice(currentIdx + 1);
-
     // need to take into account that length of bundle now changes since injected wrapper string length can be different than original
     const oldLength = currentIdx - index;
     const newLength = injection.length;
     
     index = modifiedBundle.indexOf('this.setState', index+1+newLength-oldLength);
   }
+  fs.writeFileSync(__dirname + 'modifiedBundle.js', modifiedBundle);
   return modifiedBundle;
 }
 
