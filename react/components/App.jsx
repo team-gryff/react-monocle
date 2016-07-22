@@ -11,8 +11,26 @@ const cloneDeep = require('lodash.clonedeep');
 class App extends React.Component {
   constructor() {
     super();
+    this.state = {};
     this.bfs = this.bfs.bind(this);
     this.treebuilder = this.treebuilder.bind(this);
+  }
+
+  componentWillMount() {
+    return this.setState(this.props.store);
+  }
+  
+
+  componentWillReceiveProps(nextProps) {
+    const result = {};
+    for (const key in nextProps.store) {
+      if (this.props.store.hasOwnProperty(key)) {
+        result[key] = Object.assign({}, this.state[key], nextProps.store[key]);
+      } else {
+        result[key] = nextProps.store[key];
+      }
+    }
+    this.setState(Object.assign({}, this.state, result));
   }
 
   treebuilder(state) {
@@ -138,7 +156,7 @@ class App extends React.Component {
   }
 
   render() {
-    const builtObj = this.treebuilder(this.props.store);
+    const builtObj = this.treebuilder(this.state);
     const logoStyle = {
       width: '300px',
       height: '115px',
