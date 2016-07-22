@@ -236,7 +236,6 @@ function modifySetStateStrings(bundleFilePath) {
     
     index = modifiedBundle.indexOf('this.setState', index+1+newLength-oldLength);
   }
-  fs.writeFileSync(__dirname + 'modifiedBundle.js', modifiedBundle);
   return modifiedBundle;
 }
 
