@@ -147,8 +147,8 @@ class App extends React.Component {
   render() {
     const builtObj = this.treebuilder(this.state);
     const logoStyle = {
-      width: '300px',
-      height: '115px',
+      width: '200px',
+      height: '100px',
       zIndex: '1',
       position: 'absolute',
     };
