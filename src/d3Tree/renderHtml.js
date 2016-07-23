@@ -54,26 +54,32 @@ function htmlTop(css) {
 
   ${css}
     <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
     #monocle-content {
       font-family: 'Roboto', sans-serif;
-      background-color: #FAFAFA;
+      background-color: #2D2D2D;
+      padding: 35px 0 0 5px;
     }
 
   	#monocle-content .link {
   	  fill: none;
-  	  stroke: #455A64;
+  	  stroke: #969696;
   	  stroke-width: 2px;
 			transition: stroke-width 0.7s ease, stroke 0.7s ease;
   	}
 
     #monocle-content .highlight {
       stroke: #01FFD5;
-      stroke-width: 16px;
+      stroke-width: 14px;
     }
 
     #monocle-content .propchange {
-      stroke: #01FFD5;
-      stroke-width: 20px;
+      stroke: #FF5601;
+      stroke-width: 12px;
     }
 
 		#monocle-content #graph {

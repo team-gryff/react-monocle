@@ -210,13 +210,13 @@ class Graph extends React.Component {
 
   render() {
     const divStyle = {
-      backgroundColor: '#FAFAFA',
+      backgroundColor: '#2D2D2D',
       paddingTop: '20px',
       transform: 'translate(0px, -20px)',
     };
     const gStyle = {
       transform: 'translate(0px,40px)',
-      fill: '#FAFAFA',
+      fill: '#969696',
     };
     const svgStyle = {
       transform: `translate(-${this.state.nodeW / 2}px, 0px)`,
