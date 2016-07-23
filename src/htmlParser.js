@@ -4,14 +4,16 @@ const fs = require('fs');
 
 function htmlParser(path, bundle) {
   const stringed = fs.readFileSync(path, { encoding: 'utf-8' });
+  console.log(stringed);
 
-  const result = findJavaScript(stringed, bundle);
-  result.css = findCSS(stringed);
+  const result = findJavaScript(stringed, bundle, path.replace(/\/.*?\.html/, ''));
+  result.css = findCSS(stringed, path.replace(/\/.*?\.html/, ''));
 
   return result;
 }
 
-function findCSS(str) {
+function findCSS(str, relPath) {
+  if (relPath !== '') relPath = relPath + '/';
   const styleTags = str.match(/<style>(\n|.)*?(<\/style>)/g);
   const cssLinks = str.match(/<link.*stylesheet.*?>/g);
   if (!cssLinks && !styleTags) return [];
@@ -19,12 +21,13 @@ function findCSS(str) {
   return cssLinks.map(ele => {
     if (ele.search(/http/) !== -1) return ele;
     else {
-      const cssFile = ele.match(/href(\s?)=(\s?)(\\?)('|").*?(\\?)('|")/g)[0]
+      const cssFile = relPath + ele.match(/href(\s?)=(\s?)(\\?)('|").*?(\\?)('|")/g)[0]
       .match(/(\\?)('|").*?(\\?)('|")/g)[0]
       .replace(/\\/g, '')
       .replace(/'/g, '')
       .replace(/"/g, '');
-      const cssFileString = fs.readFileSync(cssFile, { encoding: 'utf-8' });
+      console.log(cssFile);
+      const cssFileString = fs.readFileSync(`${process.cwd()}/${cssFile}`, { encoding: 'utf-8' });
       if (!cssFileString) throw new Error(`Invalid CSS file path found (${cssFile})`);
       return `<style>${cssFileString}</style>`;
     }
@@ -32,8 +35,8 @@ function findCSS(str) {
   .concat(styleTags);
 }
 
-
-function findJavaScript(str, bundle) {
+function findJavaScript(str, bundle, relPath) {
+  if (relPath !== '') relPath = relPath + '/';
   const result = {
     bundle: '',
     scripts: [],
@@ -42,7 +45,7 @@ function findJavaScript(str, bundle) {
   const scriptz = str.match(/<script.*?<\/script>/g);
   scriptz.forEach(ele => {
     if (ele.includes(bundle)) {
-      result.bundle = ele.match(/src(\s?)=(\s?)(\\?)('|").*?(\\?)('|")/g)[0]
+      result.bundle = relPath + ele.match(/src(\s?)=(\s?)(\\?)('|").*?(\\?)('|")/g)[0]
       .match(/(\\?)('|").*?(\\?)('|")/g)[0]
       .replace(/\\/g, '')
       .replace(/'/g, '')
