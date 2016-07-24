@@ -27,9 +27,9 @@ The rendered tree is synced up to the state(s) of your component using Redux, an
 -j, --extension <extension>: extension of React files (jsx or js). Defaults to .jsx (only use when specifying/in directory which has your React files!)
 ```
 ## Our Team
-* Michael-Bryant Choa - github.com/mbchoa
-* Jenna Davis - github.com/jdavis218
-* Jerry Mao - github.com/jerrymao15
+* Michael-Bryant Choa - [github.com/mbchoa](https://github.com/mbchoa)
+* Jenna Davis - [github.com/jdavis218](https://github.com/jdavis218)
+* Jerry Mao - [github.com/jerrymao15](https://github.com/jerrymao15)
 
 ## License
 MIT
