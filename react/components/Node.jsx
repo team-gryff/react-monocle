@@ -95,7 +95,7 @@ class Node extends React.Component {
                 {this.props.name.toUpperCase()}
               </Heading>
             </Block>
-            <Text style={{ fontSize: '14px', color: '#546E7A' }}>Props: </Text>
+            <Text style={{ fontSize: '16px', color: '#2d2d2d' }}>Props: </Text>
             <Text px={1} style={{ fontSize: propsFontSize }}>
               {propsArr.join(' | ')} <br />
             </Text>
