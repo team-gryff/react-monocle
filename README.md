@@ -1,4 +1,5 @@
-# react-monocle [![Build Status](https://travis-ci.org/team-gryff/react-monocle.svg?branch=master)](https://travis-ci.org/team-gryff/react-monocle)
+# react-monocle 
+[![Build Status](https://travis-ci.org/team-gryff/react-monocle.svg?branch=master)](https://travis-ci.org/team-gryff/react-monocle) [![npm version](https://badge.fury.io/js/react-monocle.svg)](https://badge.fury.io/js/react-monocle)
 
 <img src="react/assets/logo.png" width="300"/>
 
