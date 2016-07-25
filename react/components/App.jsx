@@ -64,7 +64,7 @@ class App extends React.Component {
           // iterating through props to parse
           child.props.forEach(ele => {
             // if it has a prop or state find source and parse
-            if (typeof ele.value === 'string' && ele.value.match(/(^props.|^state.)/)) {
+            if (typeof ele.value === 'string' && ele.value.search(/(^props.|^state.)/) !== -1) {
               propsObj[ele.name] = eval(`node.${ele.value}`);
             } else propsObj[ele.name] = ele.value; // else just return the value
           });
@@ -80,9 +80,9 @@ class App extends React.Component {
                 const propsObj = {};
 
                 forInChild.props.forEach(ele => {
-                  if (typeof ele.value === 'string' && ele.value.match(/(^props.|^state.)/)) {
+                  if (typeof ele.value === 'string' && ele.value.search(/(^props.|^state.)/) !== -1) {
                     propsObj[ele.name] = eval(`node.${ele.value}`);
-                  } else if (ele.value.includes('key')) propsObj[ele.name] = ele.value.replace('key', key);
+                  } else if (ele.value.includes(key) && ele.value.search(/\wkey\w/) === -1) propsObj[ele.name] = ele.value.replace('key', key);
                   else propsObj[ele.name] = ele.value;
                 });
 
@@ -98,9 +98,9 @@ class App extends React.Component {
                 const propsObj = {};
 
                 forLoopChild.props.forEach(ele => {
-                  if (typeof ele.value === 'string' && ele.value.match(/(^props.|^state.)/)) {
+                  if (typeof ele.value === 'string' && ele.value.search(/(^props.|^state.)/) !== -1) {
                     propsObj[ele.name] = eval(`node.${ele.value}`);
-                  } else if (ele.value.includes('i')) propsObj[ele.name] = ele.value.replace('i', i);
+                  } else if (ele.value.includes('i') && ele.value.search(/\wi\w/) === -1) propsObj[ele.name] = ele.value.replace('i', i);
                   else propsObj[ele.name] = ele.value;
                 });
 
@@ -117,9 +117,9 @@ class App extends React.Component {
                 const propsObj = {};
 
                 forLoopChild.props.forEach(ele => {
-                  if (typeof ele.value === 'string' && ele.value.match(/(^props.|^state.)/)) {
+                  if (typeof ele.value === 'string' && ele.value.search(/(^props.|^state.)/) !== -1) {
                     propsObj[ele.name] = eval(`node.${ele.value}`);
-                  } else if (ele.value.includes('i')) propsObj[ele.name] = ele.value.replace('i', i);
+                  } else if (ele.value.includes('i') && ele.value.search(/\wi\w/) === -1) propsObj[ele.name] = ele.value.replace('i', i);
                   else propsObj[ele.name] = ele.value;
                 });
                 
