@@ -21,12 +21,12 @@ function findCSS(str, relPath) {
     if (!ele) return;
     if (ele.search(/http/) !== -1) return ele;
     else {
-      const cssFile = relPath + ele.match(/href(\s?)=(\s?)(\\?)('|").*?(\\?)('|")/g)[0]
+      let cssFile = relPath + ele.match(/href(\s?)=(\s?)(\\?)('|").*?(\\?)('|")/g)[0]
       .match(/(\\?)('|").*?(\\?)('|")/g)[0]
       .replace(/\\/g, '')
       .replace(/'/g, '')
       .replace(/"/g, '');
-      console.log(cssFile);
+      if (cssFile[0] === '/') cssFile = cssFile.slice(1);
       const cssFileString = fs.readFileSync(`${process.cwd()}/${cssFile}`, { encoding: 'utf-8' });
       if (!cssFileString) throw new Error(`Invalid CSS file path found (${cssFile})`);
       return `<style>${cssFileString}</style>`;
@@ -52,6 +52,7 @@ function findJavaScript(str, bundle, relPath) {
       .replace(/'/g, '')
       .replace(/"/g, '')
       .trim();
+      if (result.bundle[0] === '/') result.bundle = result.bundle.slice(1);
     } else if (ele.search(/src(\s?)=(\s?)(\\?)('|").*?(\\?)('|")/ === -1) || ele.search(/http/) !== -1) result.scripts.push(ele);
   });
   return result;
