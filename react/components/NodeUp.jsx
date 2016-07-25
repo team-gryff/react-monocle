@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Heading, Space } from 'rebass';
+import { Table, Heading, Space, Close } from 'rebass';
 
 
 
@@ -12,6 +12,7 @@ function NodeUp(props) {
   const propsHeadings = ['prop', 'value'];
   const stateHeadings = ['state', 'value'];
   const style = {
+    overflow: 'visible',
     backgroundColor: '#FAFAFA',
     fontFamily: '"Roboto", sans-serif',
     padding: '1em 1em 1em 1em',
@@ -19,12 +20,16 @@ function NodeUp(props) {
     borderRadius: '10px',
   };
 
+  const tableStyle = {
+    overflowX: 'visible',
+  };
+
   // formatting the data for table usage
   const stateData = [];
   for (const key in props.state) {
     stateData.push([key, `${JSON.stringify(props.state[key], null, 2)}`]);
   }
-  const propsData = []
+  const propsData = [];
   for (const key in props.props) {
     propsData.push([key, `${JSON.stringify(props.props[key], null, 2)}`]);
   }
@@ -33,24 +38,27 @@ function NodeUp(props) {
   })
   return (
     <div style={style}>
-      <Heading size={1} style={{ color: '#0088F0' }}>{props.name}</Heading>
+      <Close onClick={props.toggle} style={{ float: 'right' }} />
+      <Heading size={2} style={{ color: '#039BE5' }}>{props.name}</Heading>
       <Space x={4} />
       {
-        stateBool ? (<div><Heading>STATE</Heading>
+        stateBool ? (<div><Heading size={3}>STATE</Heading>
           <Table
             data={stateData}
             headings={stateHeadings}
+            style={tableStyle}
             /></div>)
           : null
       }
-      {propsBool ? (<div><Heading>PROPS</Heading>
+      {propsBool ? (<div><Heading size={3}>PROPS</Heading>
         <Table
           data={propsData}
           headings={propsHeadings}
+          style={tableStyle}
           /></div>)
         : null
       }
-      {methodsBool ? (<div><Heading>METHODS</Heading>
+      {methodsBool ? (<div><Heading size={3}>METHODS</Heading>
         <ul>
           {methodsData}
         </ul>
@@ -58,7 +66,7 @@ function NodeUp(props) {
         : null
       }
       {
-        (!propsBool && !stateBool) ? <Heading>nothing to see here!</Heading>
+        (!propsBool && !stateBool && !methodsBool) ? <Heading>Nothing to see here!</Heading>
           : null
       }
     </div>

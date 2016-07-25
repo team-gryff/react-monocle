@@ -41,7 +41,7 @@ function getReactProps(node, parent) {
       else if (attribute.value.expression.type === 'Literal') valueName = attribute.value.expression.value;
       else if (attribute.value.expression.type === 'Identifier') valueName = attribute.value.expression.name;
       else if (attribute.value.expression.type === 'CallExpression') valueName = attribute.value.expression.callee.object.property.name;
-      else if (attribute.value.expression.type === 'BinaryExpression') valueName = attribute.value.expression.left.name + attribute.value.expression.operator + attribute.value.expression.right.name;
+      else if (attribute.value.expression.type === 'BinaryExpression') valueName = attribute.value.expression.left.name + attribute.value.expression.operator + (attribute.value.expression.right.name || attribute.value.expression.right.value);
       else if (attribute.value.expression.type === 'MemberExpression') {
         let current = attribute.value.expression;
         while (current && current.property) {
@@ -67,7 +67,7 @@ function getReactProps(node, parent) {
           methods: [],
         };
         valueName = output;
-      } else throw new Error(`Unsupported prop type ${attribute.value.expression.type}, please notify the react-monocle team!`);
+      } else valueName = escodegen.generate(attribute.value);
 
       return {
         name,

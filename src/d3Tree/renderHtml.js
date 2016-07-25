@@ -73,8 +73,8 @@ function htmlTop(css) {
   	}
 
     #monocle-content .highlight {
-      stroke: #01FFD5;
-      stroke-width: 14px;
+      stroke: #969696;
+      stroke-width: 5px;
     }
 
     #monocle-content .propchange {
@@ -95,6 +95,22 @@ function htmlTop(css) {
 		#flex-container > div:nth-child(2){
       padding-left: 25px;
       border-left: 1px solid gray;
+    }
+
+    #monocle-content::-webkit-scrollbar {
+      width:5px;
+    }
+
+#monocle-content::-webkit-scrollbar-track-piece:start {
+    background: transparent url('http://cdn2.packshot-creator.com/sites/all/themes/basic/images/interface/grid.png') repeat-y !important;
+}
+
+#monocle-content::-webkit-scrollbar-track-piece:end {
+    background: transparent url('http://cdn2.packshot-creator.com/sites/all/themes/basic/images/interface/grid.png') repeat-y !important;
+}
+
+    #monocle-content::-webkit-scrollbar-thumb {
+      background:rgba(255,0,0,0.1); !important;
     }
 
   </style>
