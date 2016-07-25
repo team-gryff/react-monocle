@@ -12,7 +12,6 @@ const esquery = require('../esquery/esquery');
  */
 
 function astGenerator(directory) {
-  // TODO: support for stateless functional components
   // using directory of component to turn into string for acorn
   const stringed = fs.readFileSync(directory, { encoding: 'utf-8' });
   const result = {};
@@ -56,11 +55,13 @@ function astGenerator(directory) {
         }
       }
     } else if (node.type === 'ExpressionStatement') {
-      if (node.expression.callee && (node.expression.callee.type === 'MemberExpression' && node.expression.callee.object.name === 'ReactDOM'
+      if (node.expression.callee) {
+        if ((node.expression.callee.type === 'MemberExpression' && node.expression.callee.object.name === 'ReactDOM'
         && node.expression.callee.property.name === 'render') || (node.expression.callee.type === 'Identifier' && node.expression.callee.name === 'render')) {
-        name = node.expression.arguments[0].openingElement.name.name;
-        result.ENTRY = name;
-        splicing = i;
+          name = node.expression.arguments[0].openingElement.name.name;
+          result.ENTRY = name;
+          splicing = i;
+        }
       } else if (node.expression.left && node.expression.left.object.name === 'module') {
         sfc = node.expression.right.name;
       }
@@ -70,7 +71,6 @@ function astGenerator(directory) {
       }
     }
   });
-
 
 
   if (splicing) ast.body.splice(splicing, 1);
