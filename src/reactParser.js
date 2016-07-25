@@ -67,7 +67,7 @@ function getReactProps(node, parent) {
           methods: [],
         };
         valueName = output;
-      } else throw new Error(`Unsupported prop type ${attribute.value.expression.type}, please notify the react-monocle team!`);
+      } else valueName = escodegen.generate(attribute.value);
 
       return {
         name,
