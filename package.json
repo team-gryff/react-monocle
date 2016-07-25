@@ -1,6 +1,6 @@
 {
   "name": "react-monocle",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A developer tool to visualize a React application's component hierarchy.",
   "main": "index.js",
   "scripts": {

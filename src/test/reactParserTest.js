@@ -82,15 +82,15 @@ describe('ESTree AST Parser Tests', function() {
     })
 
     it('should return an object with correct name property', function() {
-      expect(getStatelessFunctionalComponents(jsToAst(statelessFuncFixtures.statelessNested)).name).to.equal('Foo');
+      expect(getStatelessFunctionalComponents(jsToAst(statelessFuncFixtures.statelessNested), 'Foo').name).to.equal('Foo');
     })
 
     it('should account for nested children components', function() {
-      expect(getStatelessFunctionalComponents(jsToAst(statelessFuncFixtures.statelessNested)).children[0].name).to.equal('Bar');
+      expect(getStatelessFunctionalComponents(jsToAst(statelessFuncFixtures.statelessNested), 'Foo').children[0].name).to.equal('Bar');
     })
 
     it('should return an object with correct props', function(){
-      expect(getStatelessFunctionalComponents(jsToAst(statelessFuncFixtures.statelessNested)).children[0].props.length).to.equal(1);
+      expect(getStatelessFunctionalComponents(jsToAst(statelessFuncFixtures.statelessNested), 'Foo').children[0].props.length).to.equal(1);
     })
   })
 

@@ -12,8 +12,8 @@ class Graph extends React.Component {
       width: 1000,
       height: 900,
       initialHeight: 900,
-      nodeW: 145.62, // golden ratio
-      nodeH: 90,
+      nodeW: 129.44, // golden ratio
+      nodeH: 80,
       nodes: [],
     };
     this.highlight = this.highlight.bind(this);
