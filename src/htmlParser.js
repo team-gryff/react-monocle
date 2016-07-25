@@ -42,6 +42,7 @@ function findJavaScript(str, bundle, relPath) {
     scripts: [],
   };
   const scriptz = str.match(/<script.*?<\/script>/g);
+  if (!scriptz) throw new Error('Was not able to find script tags in HTML.')
   scriptz.forEach(ele => {
     if (!ele) return;
     if (ele.includes(bundle)) {
