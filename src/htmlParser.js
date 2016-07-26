@@ -14,7 +14,7 @@ function htmlParser(path, bundle) {
 function findCSS(str, relPath) {
   if (relPath !== '') relPath = relPath + '/';
   const styleTags = str.match(/<style>(\n|.)*?(<\/style>)/g) || [''];
-  const cssLinks = str.match(/<link.*stylesheet.*?>/g);
+  const cssLinks = str.match(/<link.*?css.*?>/g);
   if (!cssLinks && !styleTags) return [];
   if (!cssLinks) return styleTags;
   return cssLinks.map(ele => {
