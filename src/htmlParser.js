@@ -19,7 +19,7 @@ function findCSS(str, relPath) {
   if (!cssLinks) return styleTags;
   return cssLinks.map(ele => {
     if (!ele) return;
-    if (ele.search(/http/) !== -1) return ele;
+    if (ele.search(/http/) !== -1 || ele.search(/href(\s?)=(\s?)(\\?)('|")\/{2}/)) return ele;
     else {
       let cssFile = relPath + ele.match(/href(\s?)=(\s?)(\\?)('|").*?(\\?)('|")/g)[0]
       .match(/(\\?)('|").*?(\\?)('|")/g)[0]
