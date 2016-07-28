@@ -6,22 +6,7 @@ const regexIndexOf = require('./stringRegexHelper').regexIndexOf;
 const regexLastIndexOf = require('./stringRegexHelper').regexLastIndexOf;
 const strip = require('strip-comments');
 
-/**
- * Alters user's bundled React code to wrap 'setState' functions in universal,
- * global function and updates 'getElementById' to mount to Monocle DOM
- * @param {bundlejs} filepath to user's bundled React code
- * @returns {String} String of updated bundle file
- */
-function modifyBundleFile(bundlejs) {
-  const bundle = fs.readFileSync(bundlejs, { encoding: 'utf-8' });
-  if (bundle.length === 0) throw new Error('Empty AST input');
-  const searchState = /this.setState/g;
-  const wrappedFunc = 'wrapper(this.setState)';
-  const searchElem = /(getElementById\([\'\"])\w+[\'\"]/;
-  const newMount = 'getElementById("preview"';
-  const replacedState = bundle.replace(searchState, wrappedFunc);
-  return replacedState.replace(searchElem, newMount);
-}
+
 
 
 function structureInitialES5StateObj(bundle, arr) {
@@ -328,7 +313,6 @@ module.exports = {
   structureInitialES6StateObj,
   queryES5Ast,
   queryES6Ast,
-  modifyBundleFile,
   modifyTestBundleFile,
   modifySetStateStrings,
   modifyInitialState,
