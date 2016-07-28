@@ -12,7 +12,6 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {};
-    this.bfs = this.bfs.bind(this);
     this.treebuilder = this.treebuilder.bind(this);
   }
 
@@ -50,7 +49,6 @@ class App extends React.Component {
 
         // maybe check if it is object already
         if (formatted.hasOwnProperty(child.name)) child.children = cloneDeep(formatted[child.name].children); // adding children of child
-        if (newState[child.name]) child.state = cloneDeep(newState[child.name]);
 
 
         if (!Array.isArray(child.props)) {
@@ -58,8 +56,6 @@ class App extends React.Component {
           continue;
         }
 
-        let source;
-        if (Array.isArray(child.props)) source = bfs(root, child.props[0].parent);
 
         // if child is not made through an iterator
         if (!child.iterated) {
@@ -68,8 +64,8 @@ class App extends React.Component {
           // iterating through props to parse
           child.props.forEach(ele => {
             // if it has a prop or state find source and parse
-            if (ele.value.match(/(^props.|^state.)/)) {
-              propsObj[ele.name] = eval(`source.${ele.value}`);
+            if (typeof ele.value === 'string' && ele.value.search(/(^props.|^state.)/) !== -1) {
+              propsObj[ele.name] = eval(`node.${ele.value}`);
             } else propsObj[ele.name] = ele.value; // else just return the value
           });
           child.props = propsObj;
@@ -79,14 +75,14 @@ class App extends React.Component {
         } else {
           switch (child.iterated) {
             case 'forIn':
-              for (const key in eval(`source.${child.source}`)) {
+              for (const key in eval(`node.${child.source}`)) {
                 const forInChild = cloneDeep(child);
                 const propsObj = {};
 
                 forInChild.props.forEach(ele => {
-                  if (ele.value.match(/(^props.|^state.)/)) {
-                    propsObj[ele.name] = eval(`source.${ele.value}`);
-                  } else if (ele.value.includes('key')) propsObj[ele.name] = ele.value.replace('key', key);
+                  if (typeof ele.value === 'string' && ele.value.search(/(^props.|^state.)/) !== -1) {
+                    propsObj[ele.name] = eval(`node.${ele.value}`);
+                  } else if (ele.value.includes(key) && ele.value.search(/\wkey\w/) === -1) propsObj[ele.name] = ele.value.replace('key', key);
                   else propsObj[ele.name] = ele.value;
                 });
 
@@ -96,35 +92,39 @@ class App extends React.Component {
               break;
 
             case 'forLoop':
-              for (var i = 0; i < eval(`source.${child.source}.length`); i++) {
+              for (var i = 0; i < eval(`node.${child.source}.length`); i++) {
+                const num = i;
                 const forLoopChild = cloneDeep(child);
                 const propsObj = {};
 
                 forLoopChild.props.forEach(ele => {
-                  if (ele.value.match(/(^props.|^state.)/)) {
-                    propsObj[ele.name] = eval(`source.${ele.value}`);
-                  } else if (ele.value.includes('i')) propsObj[ele.name] = ele.value.replace('i', i);
+                  if (typeof ele.value === 'string' && ele.value.search(/(^props.|^state.)/) !== -1) {
+                    propsObj[ele.name] = eval(`node.${ele.value}`);
+                  } else if (ele.value.includes('i') && ele.value.search(/\wi\w/) === -1) propsObj[ele.name] = ele.value.replace('i', i);
                   else propsObj[ele.name] = ele.value;
                 });
 
                 forLoopChild.props = propsObj;
+                forLoopChild.num = num;
                 tempChildren.push(forLoopChild);
               }
               break;
 
             case 'higherOrder':
-              for (var i = 0; i < eval(`source.${child.source}.length`); i++) {
+              for (var i = 0; i < eval(`node.${child.source}.length`); i++) {
+                const num = i;
                 const forLoopChild = cloneDeep(child);
                 const propsObj = {};
 
                 forLoopChild.props.forEach(ele => {
-                  if (ele.value.match(/(^props.|^state.)/)) {
-                    propsObj[ele.name] = eval(`source.${ele.value}`);
-                  } else if (ele.value.includes('i')) propsObj[ele.name] = ele.value.replace('i', i);
+                  if (typeof ele.value === 'string' && ele.value.search(/(^props.|^state.)/) !== -1) {
+                    propsObj[ele.name] = eval(`node.${ele.value}`);
+                  } else if (ele.value.includes('i') && ele.value.search(/\wi\w/) === -1) propsObj[ele.name] = ele.value.replace('i', i);
                   else propsObj[ele.name] = ele.value;
                 });
                 
                 forLoopChild.props = propsObj;
+                forLoopChild.num = num;
                 tempChildren.push(forLoopChild);
               }
               break;
@@ -136,23 +136,12 @@ class App extends React.Component {
       }
       node.children = tempChildren;
       node.children.forEach(ele => {
-        if (ele.children.length > 0) treeRecurse(ele, root, state);
+        treeRecurse(ele, root, state);
       });
     }
 
     treeRecurse(result, result, state);
     return result;
-  }
-
-  bfs(tree, nodeName) {
-    let queue = [tree];
-
-    while (queue.length > 0) {
-      if (queue[0].name === nodeName) return queue[0];
-      if (queue[0].children.length > 0) queue = queue.concat(queue[0].children);
-      queue.shift();
-    }
-    return false;
   }
 
   render() {

@@ -12,8 +12,8 @@ const start = Date.now();
 
 // specifying one required parameter
 program
-  .option('-c --html <html>', 'HTML page which has your bundle and css files')
-  .option('-b, --bundle <bundle>', '**Required** Path to react bundle file')
+  .option('-b, --bundle <bundle>', '**Required** Path to React bundle file.')
+  .option('-c --html <html>', 'HTML page which has your bundle and CSS files. Specify if you want CSS displayed and/or you are relying on external scripts.')
   .option('-e, --entry <entry>', 'App entry point. Defaults to JSX file where ReactDOM.render is found.')
   .option('-d, --directory <directory>', 'directory of React files. Defaults to where Monocle was called.')
   .option('-j, --extension <extension>', 'extension of React files (jsx or js). Defaults to .jsx (only use when specifying/in directory which has your React files!)')
@@ -27,12 +27,13 @@ program.name = 'monocle';
   let entry = null;
   let htmlElements;
   let directory = process.cwd();
-  if (!program.html) throw new Error('    --html | -h required    ');
-  else htmlElements = htmlParser(program.html, program.bundle);
+  if (program.html) htmlElements = htmlParser(program.html, program.bundle);
   if (!program.bundle) {
     throw new Error('    --bundle | -b required    ');
-  } else {
+  } else if (program.html) {
     bundle = `${process.cwd()}/${htmlElements.bundle}`;
+  } else {
+    bundle = `${process.cwd()}/${program.bundle}`;
   }
   if (program.entry) entry = `${process.cwd()}/${program.entry}`;
   if (program.directory) directory = `${process.cwd()}/${program.directory}`;
@@ -52,6 +53,7 @@ program.name = 'monocle';
     let componentObject = assign.apply(null, astz); // combining into one file
     if (entry) componentObject = assign(componentObject, astGenerator(entry));
     const formatedD3Object = d3DataBuilder(componentObject); // building the tree
-    renderHtml(formatedD3Object, modifiedBundle, start, divsArr, htmlElements.scripts, htmlElements.css); // sending the completed tree to be built and rendered
+    if (htmlElements) renderHtml(formatedD3Object, modifiedBundle, start, divsArr, htmlElements.scripts, htmlElements.css); // sending the completed tree to be built and rendered
+    else renderHtml(formatedD3Object, modifiedBundle, start, divsArr, [], []);
   });
 })();

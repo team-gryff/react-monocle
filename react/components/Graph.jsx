@@ -12,8 +12,8 @@ class Graph extends React.Component {
       width: 1000,
       height: 900,
       initialHeight: 900,
-      nodeW: 145.62, // golden ratio
-      nodeH: 90,
+      nodeW: 121.35, // golden ratio
+      nodeH: 75,
       nodes: [],
     };
     this.highlight = this.highlight.bind(this);
@@ -114,7 +114,7 @@ class Graph extends React.Component {
     const renderArr = [];
 
     nodes.each(d => {
-      d.y = d.depth * this.state.initialHeight / 5;
+      d.y = d.depth * this.state.initialHeight / 7;
       d.id = d.id || ++i;
       // using the information provided by d3
       // to render Node components
@@ -156,6 +156,14 @@ class Graph extends React.Component {
         y: d.y,
       };
     });
+
+    // const prev = {};
+    // prev.each(d => {
+    //   const source = d.source.id;
+    //   if (!prev.hasOwnProperty(source)) prev[source] = 0;
+    //   prev[source]++;
+    // })
+    // const current = {};
 
     select(document.getElementById('graphz'))
     .selectAll('path.link').remove();

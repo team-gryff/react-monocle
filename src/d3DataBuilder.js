@@ -1,5 +1,6 @@
 'use strict';
 const reactParser = require('./reactParser');
+const fs = require('fs');
 
 /**
  * Takes in a formatted object and returns the tree object that D3 will need
@@ -13,14 +14,11 @@ function d3DataBuilder(obj) {
 // parsing AST into formatted objects based on ES5/ES6 syntax
   for (const key in obj) {
     if (key === 'ENTRY') continue;
+    const componentChecker = reactParser.componentChecker(obj[key]);
     // componentChecker returns true for es6 classes, false for everything else
-    else if (reactParser.componentChecker(obj[key])) formatted[key] = reactParser.getES6ReactComponents(obj[key]);
-    else {
-      const es5obj = reactParser.getES5ReactComponents(obj[key]);
-      formatted[key] = es5obj; // if the name is defined, it is an es5 component
-      formatted[key].name = key;
-      // else formatted[key] = reactParser.getStatelessFunctionalComponents(obj[key]); //else it is a stateless functional component
-    }
+    if (componentChecker === 'ES6') formatted[key] = reactParser.getES6ReactComponents(obj[key]);
+    else if (componentChecker === 'ES5') formatted[key] = reactParser.getES5ReactComponents(obj[key]);
+    else formatted[key] = reactParser.getStatelessFunctionalComponents(obj[key], key)
   }
 
   for (const key in formatted) {
@@ -36,6 +34,7 @@ function d3DataBuilder(obj) {
     });
   };
   formatted.monocleENTRY = obj.ENTRY;
+  fs.writeFileSync('data.js', JSON.stringify(formatted, null, 2))
 
   return formatted;
 }
