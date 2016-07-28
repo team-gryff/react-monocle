@@ -28,8 +28,12 @@ function astGenerator(directory) {
   });
 
   function nameFinder(node) {
-    if ((node.superClass.type === 'MemberExpression' && node.superClass.object.name === 'React' && node.superClass.property.name === 'Component')
-     || (node.superClass.type === 'Identifier' && node.superClass.name === 'Component')) return node.id.name;
+    if ((node.superClass.type === 'MemberExpression' &&
+      node.superClass.object.name === 'React' &&
+      node.superClass.property.name === 'Component')
+      || (node.superClass.type === 'Identifier' &&
+      node.superClass.name === 'Component')) return node.id.name;
+    throw new Error(`Unable to find component name at specified directory: ${directory}`);
   }
 
   ast.body.forEach((node, i) => {
@@ -37,27 +41,33 @@ function astGenerator(directory) {
       name = nameFinder(node);
       found = true;
     } else if (node.type === 'ExportDefaultDeclaration') {
-      if (node.declaration.type === 'ClassDeclaration' && node.declaration.superClass) {
+      if (node.declaration.type === 'ClassDeclaration' &&
+        node.declaration.superClass) {
         name = nameFinder(node.declaration);
         found = true;
       } else if (node.declaration.name || node.declaration.id.name) {
         sfc = node.declaration.name || node.declaration.id.name;
       }
     } else if (node.type === 'VariableDeclaration' && node.declarations[0].init) {
-      if (node.declarations[0].init.callee
-        && node.declarations[0].init.callee.object && node.declarations[0].init.callee.object.name === 'React'
-        && node.declarations[0].init.callee.property.name === 'createClass') {
+      if (node.declarations[0].init.callee &&
+        node.declarations[0].init.callee.object &&
+        node.declarations[0].init.callee.object.name === 'React' &&
+        node.declarations[0].init.callee.property.name === 'createClass') {
         name = node.declarations[0].id.name;
         found = true;
-      } else if (node.declarations[0].init.type === 'FunctionExpression' || node.declarations[0].init.type === 'ArrowFunctionExpression') {
+      } else if (node.declarations[0].init.type === 'FunctionExpression' ||
+        node.declarations[0].init.type === 'ArrowFunctionExpression') {
         if (esquery(node, 'JSXElement').length < 0) {
           sfcNames.push(node.declarations[0].id.name);
         }
       }
     } else if (node.type === 'ExpressionStatement') {
       if (node.expression.callee) {
-        if ((node.expression.callee.type === 'MemberExpression' && node.expression.callee.object.name === 'ReactDOM'
-        && node.expression.callee.property.name === 'render') || (node.expression.callee.type === 'Identifier' && node.expression.callee.name === 'render')) {
+        if ((node.expression.callee.type === 'MemberExpression' &&
+        node.expression.callee.object.name === 'ReactDOM' &&
+        node.expression.callee.property.name === 'render') ||
+        (node.expression.callee.type === 'Identifier' &&
+        node.expression.callee.name === 'render')) {
           name = node.expression.arguments[0].openingElement.name.name;
           result.ENTRY = name;
           splicing = i;
