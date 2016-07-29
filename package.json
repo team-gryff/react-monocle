@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --progress --colors --config  webpack.production.config.js --watch",
     "lint": "eslint src",
-    "unit-tests": "mocha ./src/test/test.js",
+    "unit-tests": "mocha --compilers js:babel-core/register ./src/test/test.js",
     "start": "nodemon server/server.js",
     "test": "npm run lint || true && npm run unit-tests",
     "bundle-d3tree": "webpack --watch -d ./src/d3Tree/index.js ./src/d3Tree/bundle.js"
