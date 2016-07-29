@@ -33,7 +33,7 @@ function d3DataBuilder(obj) {
       if (Array.isArray(ele.props)) {
         ele.props.forEach((propped, i) => {
           if (typeof propped.value === 'object' && propped.value.name && propped.value.children) {
-            formatted[propped.parrent].children.push(propped.value);
+            formatted[propped.parent].children.push(propped.value);
             ele.props.splice(i, 1);
           }
         });
