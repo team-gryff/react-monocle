@@ -17,9 +17,10 @@ describe('ReactApp AST Parser Tests', function() {
       .to.throw(Error, /Invalid bundle file path specified. Please enter a valid path to your app\'s bundle file/);
   });
 
-  it('modifySetStateStrings should return a string', function() {
+  it('modifySetStateStrings should return a string', function(done) {
     expect(modifySetStateStrings(__dirname + '/fixtures/modifySetStateStringsInputFixture.js').length)
       .to.equal(fs.readFileSync(__dirname + '/fixtures/modifySetStateStringsOutputFixture.js', { encoding: 'utf-8' }).length);
+    done();
   });
 
   it('modifyInitialState should be a function', function() {
