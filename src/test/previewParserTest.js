@@ -4,10 +4,6 @@ const expect = require('chai').expect;
 const fs = require('fs');
 
 describe('ReactApp AST Parser Tests', function() {
-  const structureES5Obj = require('../previewParser.js').structureInitialES5StateObj;
-  const structureES6Obj = require('../previewParser.js').structureInitialES6StateObj;
-  const queryES5Ast = require('../previewParser.js').queryES5Ast;
-  const queryES6Ast = require('../previewParser.js').queryES6Ast;
   const previewParserFixtures = require('./fixtures/bundleFileFixture.js');
   const modifySetStateStrings = require('../previewParser.js').modifySetStateStrings;
   const modifyInitialState = require('../previewParser.js').modifyInitialState;
@@ -34,31 +30,6 @@ describe('ReactApp AST Parser Tests', function() {
     expect(modifyInitialState(fs.readFileSync(__dirname + '/fixtures/modifySetStateStringsInputFixture.js', { encoding: 'utf-8' })).length)
       .to.equal(fs.readFileSync(__dirname + '/fixtures/modifyInitialStateOutputFixture.js').length)
   })
-
-  it('structureES5Obj should be a function', function() {
-    expect(structureES5Obj).to.be.a.function;
-  });
-
-  it('structureES6Obj should be a function', function() {
-    expect(structureES6Obj).to.be.a.function;
-  });
-
-  it('queryES5Ast should be a function', function() {
-    expect(queryES5Ast).to.be.a.function;
-  });
-
-  it('queryES5Ast should throw error when it receives empty bundle file path', function() {
-    expect(queryES5Ast.bind(queryES5Ast, '')).to.throw(Error, /Empty bundle file input/); 
-  });
-
-
-  it('queryES6Ast should be a function', function() {
-    expect(queryES6Ast).to.be.a.function;
-  });
-
-  it('queryES6Ast should throw error when it receives empty bundle file path', function() {
-    expect(queryES6Ast.bind(queryES6Ast, '')).to.throw(Error, /Empty bundle file input/); 
-  });
 
   describe('getComponentName Tests', function() {
     const getComponentName = require('../previewParser.js').getComponentName;
