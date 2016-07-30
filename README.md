@@ -35,7 +35,7 @@ The rendered tree is synced up to the state(s) of your component using Redux, an
 
 ## Contributing/Testing
 
-* Please feel free to fork and submit pull resquests!
+* Please feel free to fork and submit pull requests!
 * After installing, you can run tests via ```npm run unit-tests``` or ```npm run test``` to run ESLint simultaneously
 * Tests can be found in src/test and are currently broken out into: 
   1. astGeneratorTest.js
