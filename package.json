@@ -68,6 +68,7 @@
     "babel-register": "^6.9.0",
     "babel-runtime": "^6.9.2",
     "chai": "^3.5.0",
+    "d3": "^4.1.1",
     "eslint": "^2.9.0",
     "eslint-config-airbnb": "^9.0.1",
     "eslint-plugin-import": "^1.10.0",
