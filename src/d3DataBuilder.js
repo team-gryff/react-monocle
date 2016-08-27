@@ -11,18 +11,25 @@ function d3DataBuilder(obj) {
   if (!obj.ENTRY) throw new Error('Entry component not found');
   const formatted = {};
 
-// parsing AST into formatted objects based on ES5/ES6 syntax
-  for (const key in obj) {
-    if (key === 'ENTRY') continue;
-    const componentChecker = reactParser.componentChecker(obj[key]);
-    // componentChecker returns true for es6 classes, false for everything else
-    if (componentChecker === 'ES6') formatted[key] = reactParser.getES6ReactComponents(obj[key]);
-    else if (componentChecker === 'ES5') formatted[key] = reactParser.getES5ReactComponents(obj[key]);
-    else formatted[key] = reactParser.getStatelessFunctionalComponents(obj[key], key)
-  }
+  // parsing AST into formatted objects based on ES5/ES6 syntax
+  Object.entries(obj).forEach(entry => {
+    if (entry[0] === 'ENTRY') return;
+    const componentChecker = reactParser.componentChecker(entry[1]);
+    switch (componentChecker) {
+      case 'ES6':
+        formatted[entry[0]] = reactParser.getES6ReactComponents(entry[1]);
+        break;
+      case 'ES5':
+        formatted[entry[0]] = reactParser.getES5ReactComponents(entry[1]);
+        break;
+      default:
+        formatted[entry[0]] = reactParser.getStatelessFunctionalComponents(entry[1], entry[0]);
+        break;
+    }
+  });
 
-  for (const key in formatted) {
-    formatted[key].children.forEach(ele => {
+  Object.values(formatted).forEach(node => {
+    node.children.forEach(ele => {
       if (Array.isArray(ele.props)) {
         ele.props.forEach((propped, i) => {
           if (typeof propped.value === 'object' && propped.value.name && propped.value.children) {
@@ -32,9 +39,10 @@ function d3DataBuilder(obj) {
         });
       }
     });
-  };
+  });
+
   formatted.monocleENTRY = obj.ENTRY;
-  fs.writeFileSync('data.js', JSON.stringify(formatted, null, 2))
+  fs.writeFileSync('data.js', JSON.stringify(formatted, null, 2));
 
   return formatted;
 }

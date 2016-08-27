@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 'use strict';
+
+// add babel hook to compile following requires on the fly into es5 compliant code
+const babelRegister = require('babel-register');
+babelRegister();
+
 const program = require('commander');
 const glob = require('glob');
 const astGenerator = require('../src/astGenerator');
