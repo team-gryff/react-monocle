@@ -16,11 +16,6 @@ module.exports = {
     filename: 'app.js',
     publicPath: 'http://localhost:9090/client/',
   },
-  // entry: './react/index.jsx',
-  // output: {
-  //   path: './client',
-  //   filename: 'bundle.js'
-  // },
   resolve: {
     extensions: ['', '.js', '.jsx'],
   },
@@ -30,17 +25,10 @@ module.exports = {
       loaders: ['react-hot', 'babel-loader'],
       exclude: /node_modules/,
     },
-    // {
-    //   loader: 'uglify',
-    // },
     ],
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    // new ExtractTextPlugin('style.css', { allChunks: true })
     new webpack.NoErrorsPlugin(),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   mangle: false,
-    // }),
   ],
 };

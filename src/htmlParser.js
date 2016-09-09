@@ -20,7 +20,7 @@ function findCSS(str, relPath) {
   return cssLinks.map(ele => {
     if (!ele) return;
     if (ele.search(/http/) !== -1) return ele;
-    if (ele.search(/href(\s?)=(\s?)(\\?)('|")\/{2}/)) {
+    if (ele.search(/href(\s?)=(\s?)(\\?)('|")\/{2}/) && ele.includes('www')) {
       const insertIndex = ele.indexOf('//');
       return `${ele.slice(0, insertIndex)}https:${ele.slice(insertIndex)}`;
     } else {

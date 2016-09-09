@@ -401,14 +401,7 @@ function getES6ReactComponents(ast) {
       if (reactMethods.indexOf(node.key.name) < 0) output.methods.push(node.key.name);
       this.visitChildren(node);
     },
-    // ExpressionStatement(node) {
-    //   if (node.expression.left && node.expression.left.property && node.expression.left.property.name === 'state') {
-    //     output.state = getReactStates(node.expression.right);
-    //   }
-    //   this.visitChildren(node);
-    // },
     JSXElement(node) {
-      // TODO: DO STUFF WITH JSX AFTER FINDING STUFF BOI
       output.children = getChildJSXElements(node, output.name);
       output.props = getReactProps(node, output.name);
       if (htmlElements.indexOf(node.openingElement.name.name) < 0) {
