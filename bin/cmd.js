@@ -21,7 +21,6 @@ program
   .option('-c --html <html>', 'HTML page which has your bundle and CSS files. Specify if you want CSS displayed and/or you are relying on external scripts.')
   .option('-e, --entry <entry>', 'App entry point. Defaults to JSX file where ReactDOM.render is found.')
   .option('-d, --directory <directory>', 'directory of React files. Defaults to where Monocle was called.')
-  .option('-j, --extension <extension>', 'extension of React files (jsx or js). Defaults to .jsx (only use when specifying/in directory which has your React files!)')
   .parse(process.argv);
 
 program.name = 'monocle';
@@ -42,14 +41,14 @@ program.name = 'monocle';
   }
   if (program.entry) entry = `${process.cwd()}/${program.entry}`;
   if (program.directory) directory = `${process.cwd()}/${program.directory}`;
-  const ext = program.extension || 'jsx';
+
   // bundle = previewParser.modifyBundleFile(bundle);
   let modifiedBundle = previewParser.modifySetStateStrings(bundle);
   modifiedBundle = previewParser.modifyInitialState(modifiedBundle);
   const divsArr = previewParser.getDivs(modifiedBundle);
   // globs to match any jsx in directory called
   // `**/*.js*` for both js and jsx
-  glob(`**/*.${ext}`, { cwd: directory, nosort: true, ignore: ['node_modules/**', 'react/**'] }, (err, files) => { // TODO: CHANGE BACK
+  glob(`**/*.{js,jsx}`, { cwd: directory, nosort: true, ignore: ['node_modules/**', 'react/**'] }, (err, files) => { // TODO: CHANGE BACK
     if (files.length === 0) throw new Error('No files found (try specifying file path and extension)');
     if (directory !== process.cwd()) files = files.map(ele => `${process.cwd()}/${program.directory}/${ele}`);
 
