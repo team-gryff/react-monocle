@@ -42,12 +42,11 @@ program.name = 'monocle';
   if (program.entry) entry = `${process.cwd()}/${program.entry}`;
   if (program.directory) directory = `${process.cwd()}/${program.directory}`;
 
-  // bundle = previewParser.modifyBundleFile(bundle);
   let modifiedBundle = previewParser.modifySetStateStrings(bundle);
   modifiedBundle = previewParser.modifyInitialState(modifiedBundle);
   const divsArr = previewParser.getDivs(modifiedBundle);
-  // globs to match any jsx in directory called
-  // `**/*.js*` for both js and jsx
+
+  // globs to match any jsx or js file in directory
   glob(`**/*.{js,jsx}`, { cwd: directory, nosort: true, ignore: ['node_modules/**', 'react/**'] }, (err, files) => { // TODO: CHANGE BACK
     if (files.length === 0) throw new Error('No files found (try specifying file path and extension)');
     if (directory !== process.cwd()) files = files.map(ele => `${process.cwd()}/${program.directory}/${ele}`);
@@ -57,6 +56,8 @@ program.name = 'monocle';
     let componentObject = assign.apply(null, astz); // combining into one file
     if (entry) componentObject = assign(componentObject, astGenerator(entry));
     const formatedD3Object = d3DataBuilder(componentObject); // building the tree
+
+    // render react-monocle.html output
     if (htmlElements) renderHtml(formatedD3Object, modifiedBundle, start, divsArr, htmlElements.scripts, htmlElements.css); // sending the completed tree to be built and rendered
     else renderHtml(formatedD3Object, modifiedBundle, start, divsArr, [], []);
   });
