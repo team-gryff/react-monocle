@@ -57,8 +57,14 @@ program.name = 'monocle';
     if (entry) componentObject = assign(componentObject, astGenerator(entry));
     const formatedD3Object = d3DataBuilder(componentObject); // building the tree
 
-    // render react-monocle.html output
-    if (htmlElements) renderHtml(formatedD3Object, modifiedBundle, start, divsArr, htmlElements.scripts, htmlElements.css); // sending the completed tree to be built and rendered
-    else renderHtml(formatedD3Object, modifiedBundle, start, divsArr, [], []);
+    // render react-monocle.html output with completed React component tree
+    renderHtml(
+      formatedD3Object, 
+      modifiedBundle, 
+      start,
+      divsArr, 
+      htmlElements ? htmlElements.scripts : [], 
+      htmlElements ? htmlElements.css : []
+    );
   });
 })();
